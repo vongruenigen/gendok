@@ -9,7 +9,7 @@
 var index = require('../lib');
 
 describe('gendok.index', function () {
-  it('must export an object', function () {
-    index.should.be.type('object');
-  });
+    it('must export an object', function () {
+        index.should.be.type('object');
+    });
 });
