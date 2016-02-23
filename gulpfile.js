@@ -10,7 +10,8 @@ var gulp   = require('gulp')
     jshint = require('gulp-jshint'),
     mocha  = require('gulp-mocha'),
     cover  = require('gulp-coverage'),
-    should = require('should');
+    should = require('should'),
+    exec   = require('child_process').exec;
 
 /**
  * Config variables
@@ -40,6 +41,14 @@ gulp.task('test-cov', function () {
 
 gulp.task('test', function () {
     gulp.src('test/**/*.js').pipe(mocha(mochaOpts))
+});
+
+gulp.task('clean', function (cb) {
+    exec('git clean -Xf && git clean -Xdf', function (err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        cb(err);
+    });
 });
 
 // Default Task
