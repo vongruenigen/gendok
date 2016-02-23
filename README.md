@@ -4,7 +4,7 @@ PSIT4 FS2016
 General
 -------
 
-TODO
+- Coding guidelines: http://javascript.crockford.com/code.html
 
 Coding Style
 ------------
@@ -20,10 +20,19 @@ Testing
 - Mocha: https://mochajs.org/
 - should.js: https://github.com/tj/should.js/
 
-Ideen / Links
--------------
+Architecture
+------------
 
-- Coding guidelines: http://javascript.crockford.com/code.html
-- Html to PDF: https://www.npmjs.com/package/html-pdf, bzw https://github.com/ebdrup/html2pdf.it
 - JS Patterns: http://shichuan.github.io/javascript-patterns/
-- DB: 
+
+DB
+--
+
+?
+
+HTML to PDF
+-----------
+
+- html-pdf: https://www.npmjs.com/package/html-pdf
+- html2pdf: https://github.com/ebdrup/html2pdf.it
+
