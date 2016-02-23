@@ -1,23 +1,48 @@
-// Include gulp
-var gulp = require('gulp');
+/**
+ * PSIT4 FS2016 - gendok
+ *
+ * Authors: Dirk von Grünigen, Tobias Huonder, Simon Müller,
+ *          Martin Weilenmann, Aurelio Malacarne, Hannes Klauser
+ *
+ */
 
-// Include Our Plugins
-var jshint = require('gulp-jshint'),
+var gulp   = require('gulp')
+    jshint = require('gulp-jshint'),
     mocha  = require('gulp-mocha'),
+    cover  = require('gulp-coverage'),
+    env    = require('gulp-env'),
     should = require('should');
 
-// Config variables
+/**
+ * Config variables
+ */
 var mochaOpts = {reporter: 'spec', globals: {should: should}};
 
-// Lint Tasks
+/**
+ * Tasks
+ */
 gulp.task('lint', function() {
   gulp.src(['lib/**/*.js', 'test/**/*.js'])
       .pipe(jshint())
       .pipe(jshint.reporter('default'));
 });
 
+gulp.task('test-cov', function () {
+  env({vars: {COVERAGE: true}});
+
+  gulp.src('test/**/*.js')
+      .pipe(cover.instrument({
+          pattern: ['lib/**/*.js'],
+          debugDirectory: 'debug'
+      }))
+      .pipe(mocha(mochaOpts))
+      .pipe(cover.gather())
+      .pipe(cover.format())
+      .pipe(gulp.dest('coverage'));
+});
+
 gulp.task('test', function () {
-  gulp.src('test/**/*.js').pipe(mocha(mochaOpts));
+  gulp.src('test/**/*.js').pipe(mocha(mochaOpts))
 });
 
 // Default Task
