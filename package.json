@@ -1,0 +1,48 @@
+{
+  "name": "gendok",
+  "version": "0.0.1",
+  "description": "PSIT4 FS2016 Project - Document generation as a service",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.engineering.zhaw.ch/vongrdir/PSIT4-gendok"
+  },
+  "author": "Dirk von Grünigen <vongrdir@students.zhaw.ch>",
+  "contributors": [
+    {
+      "name": "Aurelio Malacarne",
+      "email": "malacaur@students.zhaw.ch"
+    },
+    {
+      "name": "Hannes Klauser",
+      "email": "klaushan@students.zhaw.ch"
+    },
+    {
+      "name": "Martin Weilenmann",
+      "email": "weilemar@students.zhaw.ch"
+    },
+    {
+      "name": "Simon Müller",
+      "email": "muellsi3@students.zhaw.ch"
+    },
+    {
+      "name": "Tobias Huonder",
+      "email": "huondtob@students.zhaw.ch"
+    }
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "3.9.1",
+    "gulp-jshint": "2.0.0",
+    "gulp-mocha": "^2.2.0",
+    "jshint": "2.9.1",
+    "mocha": "2.4.5",
+    "should": "8.2.2"
+  }
+}
