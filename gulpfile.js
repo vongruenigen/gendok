@@ -10,7 +10,6 @@ var gulp   = require('gulp')
     jshint = require('gulp-jshint'),
     mocha  = require('gulp-mocha'),
     cover  = require('gulp-coverage'),
-    env    = require('gulp-env'),
     should = require('should');
 
 /**
@@ -28,8 +27,6 @@ gulp.task('lint', function() {
 });
 
 gulp.task('test-cov', function () {
-    env({vars: {COVERAGE: true}});
-
     gulp.src('test/**/*.js')
         .pipe(cover.instrument({
             pattern: ['lib/**/*.js'],

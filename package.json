@@ -13,7 +13,7 @@
     "type": "git",
     "url": "https://github.engineering.zhaw.ch/vongrdir/PSIT4-gendok"
   },
-  "author": "PSIT4 FS2016 IT14a",
+  "author": "gendok Team (FS2016 PSIT4)",
   "contributors": [
     {
       "name": "Aurelio Malacarne",
@@ -44,7 +44,6 @@
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-coverage": "^0.3.38",
-    "gulp-env": "^0.4.0",
     "gulp-jshint": "^2.0.0",
     "gulp-mocha": "^2.2.0",
     "jshint": "^2.9.1",
