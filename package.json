@@ -28,6 +28,10 @@
       "email": "klaushan@students.zhaw.ch"
     },
     {
+      "name": "Benjamin Contreras",
+      "email": "contrben@students.zhaw.ch"
+    },
+    {
       "name": "Martin Weilenmann",
       "email": "weilemar@students.zhaw.ch"
     },
@@ -42,6 +46,7 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "bower": "^1.7.7",
     "gulp": "^3.9.1",
     "gulp-coverage": "^0.3.38",
     "gulp-jshint": "^2.0.0",

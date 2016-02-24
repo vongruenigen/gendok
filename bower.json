@@ -1,0 +1,25 @@
+{
+  "name": "gendok",
+  "description": "PSIT4 FS2016 Project - Document generation as a service",
+  "main": "index.js",
+  "authors": [
+    "Hannes Klauser <klaushan@students.zhaw.ch>",
+    "Aurelio Malacarne <malacaur@students.zhaw.ch>",
+    "Martin Weilenmann <weilemar@students.zhaw.ch>",
+    "Simon Müller <muellsi3@students.zhaw.ch>",
+    "Benjamin Contreras <contrben@students.zhaw.ch>",
+    "Dirk von Grünigen <vongrdir@students.zhaw.ch>",
+    "Tobias Huonder <huondtob@students.zhaw.ch>"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "https://github.engineering.zhaw.ch/vongrdir/PSIT4-gendok",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

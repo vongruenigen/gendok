@@ -2,7 +2,8 @@
  * PSIT4 FS2016 - gendok
  *
  * Authors: Dirk von Grünigen, Tobias Huonder, Simon Müller,
- *          Martin Weilenmann, Aurelio Malacarne, Hannes Klauser
+ *          Martin Weilenmann, Aurelio Malacarne, Hannes Klauser,
+ *          Benjamin Contreras
  *
  */
 
