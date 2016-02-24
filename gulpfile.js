@@ -11,13 +11,12 @@ var gulp   = require('gulp')
     jshint = require('gulp-jshint'),
     mocha  = require('gulp-mocha'),
     cover  = require('gulp-coverage'),
-    should = require('should'),
     exec   = require('child_process').exec;
 
 /**
  * Config variables
  */
-var mochaOpts = {reporter: 'spec', globals: {should: should}};
+var mochaOpts = {reporter: 'spec'};
 
 /**
  * Tasks

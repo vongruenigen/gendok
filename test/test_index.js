@@ -7,10 +7,11 @@
  *
  */
 
-var index = require('../lib');
+var index  = require('../lib'),
+    expect = require('chai').expect;
 
 describe('gendok.index', function () {
     it('must export an object', function () {
-        index.should.be.type('object');
+        expect(index).to.be.an('object');
     });
 });
