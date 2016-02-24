@@ -25,7 +25,10 @@ Testing
 Architecture
 ------------
 
+- REST: http://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api
 - JS Patterns: http://shichuan.github.io/javascript-patterns/
+- Promises I: https://blog.jcoglan.com/2013/03/30/callbacks-are-imperative-promises-are-functional-nodes-biggest-missed-opportunity/
+- Promises II: https://strongloop.com/strongblog/promises-in-node-js-with-q-an-alternative-to-callbacks/
 
 DB
 --
