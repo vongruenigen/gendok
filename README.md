@@ -21,11 +21,14 @@ Testing
 - Mocha: https://mochajs.org/
 - should.js: https://github.com/tj/should.js/
 - gulp-coverage: https://github.com/dylanb/gulp-coverage
+- cucumber-js: https://github.com/cucumber/cucumber-js
+- zombie: http://zombie.js.org/
 
 Architecture
 ------------
 
 - REST: http://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api
+- Microservices: http://senecajs.org/
 - JS Patterns: http://shichuan.github.io/javascript-patterns/
 - Promises I: https://blog.jcoglan.com/2013/03/30/callbacks-are-imperative-promises-are-functional-nodes-biggest-missed-opportunity/
 - Promises II: https://strongloop.com/strongblog/promises-in-node-js-with-q-an-alternative-to-callbacks/
