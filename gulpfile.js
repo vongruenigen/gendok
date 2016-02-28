@@ -7,17 +7,22 @@
  *
  */
 
-var gulp   = require('gulp')
-    jshint = require('gulp-jshint'),
-    mocha  = require('gulp-mocha'),
-    cover  = require('gulp-coverage'),
-    exec   = require('child_process').exec;
+'use strict';
+
+var gulp       = require('gulp'),
+    jshint     = require('gulp-jshint'),
+    mocha      = require('gulp-mocha'),
+    cover      = require('gulp-coverage'),
+    istanbul   = require('gulp-istanbul'),
+    checkstyle = require('gulp-jshint-checkstyle-reporter'),
+    exec       = require('child_process').exec;
 
 /**
  * Config variables
  */
-var mochaOpts        = {reporter: 'spec'}
-    mochaJenkinsOpts = {reporter: 'mocha-jenkins-reporter'};
+var mochaOpts        = {reporter: 'spec'},
+    mochaJenkinsOpts = {reporter: 'mocha-jenkins-reporter'},
+    istanbulOpts     = {dir: './reports', reporters: ['html', 'clover']};
 
 /**
  * Tasks
@@ -26,6 +31,13 @@ gulp.task('lint', function() {
     gulp.src(['lib/**/*.js', 'test/**/*.js'])
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
+});
+
+gulp.task('lint-jenkins', function () {
+    gulp.src(['lib/**/*.js', 'test/**/*.js'])
+        .pipe(jshint())
+        .pipe(checkstyle())
+        .pipe(gulp.dest('reports'));
 });
 
 gulp.task('test', function () {
@@ -44,8 +56,17 @@ gulp.task('test-cov', function () {
         .pipe(gulp.dest('reports'));
 });
 
-gulp.task('test-jenkins', function () {
-    gulp.src('test/**/*.js').pipe(mocha(mochaJenkinsOpts));
+gulp.task('pre-test-jenkins', ['lint-jenkins'], function () {
+    gulp.src('lib/**/*.js')
+        .pipe(istanbul())
+        .pipe(istanbul.hookRequire());
+});
+
+gulp.task('test-jenkins', ['pre-test-jenkins'], function () {
+    gulp.src('test/**/*.js')
+        .pipe(mocha(mochaJenkinsOpts))
+        .pipe(istanbul.writeReports(istanbulOpts))
+        .pipe(istanbul.enforceThresholds({thresholds: {global: 90}}));;
 });
 
 gulp.task('clean', function (cb) {

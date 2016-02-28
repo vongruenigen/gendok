@@ -7,6 +7,8 @@
  *
  */
 
+'use strict';
+
 var index  = require('../lib'),
     expect = require('chai').expect;
 
