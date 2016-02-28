@@ -36,7 +36,8 @@ Architecture
 DB
 --
 
-?
+- Postgres?
+- sequelize.js: http://docs.sequelizejs.com/en/latest/
 
 HTML to PDF
 -----------

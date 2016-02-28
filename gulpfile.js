@@ -16,7 +16,8 @@ var gulp   = require('gulp')
 /**
  * Config variables
  */
-var mochaOpts = {reporter: 'spec'};
+var mochaOpts        = {reporter: 'spec'}
+    mochaJenkinsOpts = {reporter: 'mocha-jenkins-reporter'};
 
 /**
  * Tasks
@@ -25,6 +26,10 @@ gulp.task('lint', function() {
     gulp.src(['lib/**/*.js', 'test/**/*.js'])
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
+});
+
+gulp.task('test', function () {
+    gulp.src('test/**/*.js').pipe(mocha(mochaOpts));
 });
 
 gulp.task('test-cov', function () {
@@ -39,8 +44,8 @@ gulp.task('test-cov', function () {
         .pipe(gulp.dest('reports'));
 });
 
-gulp.task('test', function () {
-    gulp.src('test/**/*.js').pipe(mocha(mochaOpts))
+gulp.task('test-jenkins', function () {
+    gulp.src('test/**/*.js').pipe(mocha(mochaJenkinsOpts));
 });
 
 gulp.task('clean', function (cb) {
