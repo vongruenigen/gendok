@@ -20,53 +20,46 @@ var gulp       = require('gulp'),
 /**
  * Config variables
  */
-var mochaOpts        = {reporter: 'spec'},
-    mochaJenkinsOpts = {reporter: 'mocha-jenkins-reporter'},
-    istanbulOpts     = {dir: './reports', reporters: ['html', 'clover']};
+var mochaOpts             = {reporter: 'spec'},
+    mochaJenkinsOpts      = {reporter: 'mocha-jenkins-reporter'},
+    istanbulOpts          = {dir: './reports', reporters: ['html', 'clover']},
+    istanbulThresholdOpts = {thresholds: {global: 90}};
 
 /**
  * Tasks
  */
-gulp.task('lint', function() {
-    gulp.src(['lib/**/*.js', 'test/**/*.js'])
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'));
+gulp.task('lint', function () {
+    return gulp.src(['lib/**/*.js', 'test/**/*.js'])
+               .pipe(jshint())
+               .pipe(jshint.reporter('jshint-stylish'))
+               .pipe(jshint.reporter('fail'))
+               .pipe(checkstyle())
+               .pipe(gulp.dest('reports'));
 });
 
-gulp.task('lint-jenkins', function () {
-    gulp.src(['lib/**/*.js', 'test/**/*.js'])
-        .pipe(jshint())
-        .pipe(checkstyle())
-        .pipe(gulp.dest('reports'));
-});
-
-gulp.task('test', function () {
+gulp.task('test', ['lint'], function () {
     gulp.src('test/**/*.js').pipe(mocha(mochaOpts));
 });
 
-gulp.task('test-cov', function () {
-    gulp.src('test/**/*.js')
-        .pipe(cover.instrument({
-            pattern: ['lib/**/*.js'],
-            debugDirectory: 'debug'
-        }))
-        .pipe(mocha(mochaOpts))
-        .pipe(cover.gather())
-        .pipe(cover.format())
-        .pipe(gulp.dest('reports'));
-});
-
-gulp.task('pre-test-jenkins', ['lint-jenkins'], function () {
+gulp.task('pre-cov', function () {
     gulp.src('lib/**/*.js')
         .pipe(istanbul())
         .pipe(istanbul.hookRequire());
 });
 
-gulp.task('test-jenkins', ['pre-test-jenkins'], function () {
+var runTestsWithCov = function (opts) {
     gulp.src('test/**/*.js')
-        .pipe(mocha(mochaJenkinsOpts))
+        .pipe(mocha(opts))
         .pipe(istanbul.writeReports(istanbulOpts))
-        .pipe(istanbul.enforceThresholds({thresholds: {global: 90}}));;
+        .pipe(istanbul.enforceThresholds(istanbulThresholdOpts));
+};
+
+gulp.task('test-cov', ['pre-cov', 'lint'], function () {
+    runTestsWithCov(mochaOpts);
+});
+
+gulp.task('test-jenkins', ['pre-cov', 'lint'], function () {
+    runTestsWithCov(mochaJenkinsOpts);
 });
 
 gulp.task('clean', function (cb) {
