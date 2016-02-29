@@ -7,6 +7,7 @@ General
 -------
 
 - Best practices: http://justbuildsomething.com/node-js-best-practices/
+- 'use strict' EVERYWHERE!
 - Coding guidelines: http://javascript.crockford.com/code.html
 - Linter: https://github.com/spalger/gulp-jshint
 - Header: See index.js
@@ -23,7 +24,7 @@ Testing
 
 - Mocha: https://mochajs.org/
 - should.js: https://github.com/tj/should.js/
-- gulp-coverage: https://github.com/dylanb/gulp-coverage
+- istanbul.js: https://gotwarlost.github.io/istanbul/
 - cucumber-js: https://github.com/cucumber/cucumber-js
 - zombie: http://zombie.js.org/
 - http mocking: https://github.com/pgte/nock
