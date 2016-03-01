@@ -22,7 +22,7 @@ describe('gendok.data.db', function () {
     expect(db).to.be.an('object');
   });
 
-  before(function () {
+  beforeEach(function () {
     // Ensure there's no open database connection left
     db.disconnect();
   });

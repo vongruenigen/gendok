@@ -6,9 +6,8 @@
   "node": true,
   "expr": true,
   "predef": [
-    "describe",
-    "it",
-    "before",
-    "after"
+    "describe", "it",
+    "before", "beforeEach",
+    "after", "afterEach"
   ]
 }

@@ -1,5 +1,6 @@
-var crypto   = require('crypto'),
-    path     = require('path');
+var logger = require('..').logger;
+    crypto = require('crypto'),
+    path   = require('path');
 
 // Default config for all tests
 const DEFAULT_CONFIG = {
@@ -66,8 +67,7 @@ module.exports = {
       overwriteEnv(curr);
     } catch (err) {
       overwriteEnv(curr);
-      // TODO: Logging!
-      console.log('Error while overwriting env: %s', err);
+      logger.error('Error while setting environment: %s', err);
       throw err;
     }
   },
