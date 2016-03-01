@@ -9,15 +9,10 @@
 
 'use strict';
 
-/**
- * Export all submodules of gendok.
- *
- * @type {Object}
- */
+var path = require('path');
+
+// Configuration for sequelize-cli
 module.exports = {
-    web:    require('./web/'),
-    data:   require('./data/'),
-    api:    require('./api/'),
-    env:    require('./env'),
-    config: require('./config'),
+  'config': path.resolve('config', 'database.json'),
+
 };

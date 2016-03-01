@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "gendok",
+    "password": "gendok",
+    "database": "gendok_development",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+
+  "test": {
+    "username": "gendok",
+    "password": "gendok",
+    "database": "gendok_test",
+    "dialect": "sqlite3",
+    "storage": "./.tmp/gendok_test.sqlite3",
+    "workingDirectory": "./.tmp/"
+  },
+
+  "production": {
+    "username": "gendok",
+    "password": "gendok",
+    "database": "gendok_production",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}
