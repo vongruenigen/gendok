@@ -9,11 +9,5 @@
 
 'use strict';
 
-var index  = require('..'),
-    expect = require('chai').expect;
-
-describe('gendok.index', function () {
-    it('must export an object', function () {
-        expect(index).to.be.an('object');
-    });
-});
+// Only exports the index.js file from lib/
+module.exports = require('./lib');
