@@ -23,10 +23,10 @@ describe('gendok.config', function () {
     };
 
     it('is a function', function () {
-        expect(Config).to.be.a('function');
+      expect(Config).to.be.a('function');
 
-        var cfg = new Config();
-        expect(cfg).to.be.an('object');
+      var cfg = new Config();
+      expect(cfg).to.be.an('object');
     });
 
     describe('constructor()', function () {
@@ -65,33 +65,33 @@ describe('gendok.config', function () {
     });
 
     describe('getAvailableOptions()', function () {
-        it('returns an array of strings', function () {
-            var availableOpts = Config.getAvailableOptions();
+      it('returns an array of strings', function () {
+        var availableOpts = Config.getAvailableOptions();
 
-            expect(availableOpts).to.be.an('array');
-            expect(availableOpts.length).to.be.above(0);
+        expect(availableOpts).to.be.an('array');
+        expect(availableOpts.length).to.be.above(0);
 
-            availableOpts.forEach(function (value) {
-                expect(value).to.be.a('string');
-            });
+        availableOpts.forEach(function (value) {
+          expect(value).to.be.a('string');
         });
+      });
     });
 
     describe('sanitizeOptions()', function () {
-        it('removes all unavailable options from the object', function () {
-            var availableOpts = Config.getAvailableOptions(),
-                keys          = ['xyz', 'abc'],
-                options       = {};
+      it('removes all unavailable options from the object', function () {
+        var availableOpts = Config.getAvailableOptions(),
+            keys          = ['xyz', 'abc'],
+            options       = {};
 
-            availableOpts.concat(keys).forEach(function (value) {
-                options[value] = 'abc';
-            });
-
-            var sanitizedOptions = Config.sanitizeOptions(options);
-
-            expect(sanitizedOptions).to.be.an('object');
-            expect(sanitizedOptions).not.to.include.keys(keys);
-            expect(sanitizedOptions).to.include.keys(availableOpts);
+        availableOpts.concat(keys).forEach(function (value) {
+          options[value] = 'abc';
         });
+
+        var sanitizedOptions = Config.sanitizeOptions(options);
+
+        expect(sanitizedOptions).to.be.an('object');
+        expect(sanitizedOptions).not.to.include.keys(keys);
+        expect(sanitizedOptions).to.include.keys(availableOpts);
+      });
     });
 });
