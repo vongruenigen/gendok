@@ -12,16 +12,11 @@
 var db     = require('../..').data.db,
     model  = require('../..').data.model,
     Config = require('../..').config,
+    h      = require('../helper'),
     expect = require('chai').expect;
 
 describe('gendok.data.db', function () {
-  var config = new Config({
-    database: 'gendok_test',
-    username: 'gendok_test',
-    password: 'gendok_test',
-    storage:  ':memory:',
-    dialect:  'sqlite'
-  });
+  var config = new Config(h.getDefaultConfig());
 
   it('is an object', function () {
     expect(db).to.be.an('object');
@@ -52,13 +47,9 @@ describe('gendok.data.db', function () {
     it('loads all models', function () {
       var conn = db.connect(config);
 
-      expect(conn.models).to.be.an('object');
-
-      for (var k in model) {
-        if (model.hasOwnProperty(k)) {
-          expect(conn.models[k]).to.exist;
-        }
-      }
+      Object.keys(model).forEach(function (k) {
+        expect(conn[k]).to.exist;
+      });
     });
   });
 

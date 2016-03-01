@@ -1,6 +1,15 @@
 var crypto   = require('crypto'),
     path     = require('path');
 
+// Default config for all tests
+const DEFAULT_CONFIG = {
+  database: 'gendok_test',
+  username: 'gendok_test',
+  password: 'gendok_test',
+  storage:  ':memory:',
+  dialect:  'sqlite'
+};
+
 /**
  * Exports some utility functions
  *
@@ -19,6 +28,15 @@ module.exports = {
    */
   randomToken: function () {
     return crypto.randomBytes(64).toString('hex');
+  },
+
+  /**
+   * Returns the default config for test runs.
+   *
+   * @return {Object} The default config.
+   */
+  getDefaultConfig: function () {
+    return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
   },
 
   /**
@@ -48,6 +66,7 @@ module.exports = {
       overwriteEnv(curr);
     } catch (err) {
       overwriteEnv(curr);
+      // TODO: Logging!
       console.log('Error while overwriting env: %s', err);
       throw err;
     }
