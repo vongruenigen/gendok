@@ -13,6 +13,13 @@ General
 - Header: See index.js
 - Comments: http://usejsdoc.org/
 
+Frontend
+--------
+
+- sass: https://github.com/sass/node-sass
+- angular-js: https://angularjs.org/
+
+
 Build system
 ------------
 
@@ -23,7 +30,7 @@ Testing
 -------
 
 - Mocha: https://mochajs.org/
-- should.js: https://github.com/tj/should.js/
+- chai: http://chaijs.com/
 - istanbul.js: https://gotwarlost.github.io/istanbul/
 - cucumber-js: https://github.com/cucumber/cucumber-js
 - zombie: http://zombie.js.org/
@@ -40,7 +47,7 @@ Architecture
 - Promises II: https://strongloop.com/strongblog/promises-in-node-js-with-q-an-alternative-to-callbacks/
 
 DB
---
+---
 
 - Postgres?
 - sequelize.js: http://docs.sequelizejs.com/en/latest/
@@ -55,3 +62,5 @@ Misc
 ----
 
 - forever: https://www.npmjs.com/package/forever
+- winston: https://github.com/winstonjs/winston
+- morgan: https://github.com/expressjs/morgan
