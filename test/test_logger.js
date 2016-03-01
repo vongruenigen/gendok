@@ -26,6 +26,16 @@ describe('gendok.logger', function () {
     logger.instance = null;
   });
 
+  describe('log()', function () {
+    it('creates a logger if necessary', function () {
+      logger._logger = null;
+
+      expect(logger.get()).to.not.exist;
+      logger.log('blub');
+      expect(logger.get()).to.exist;
+    });
+  });
+
   describe('info(), warn(), error(), debug()', function () {
     it('each calls log() on the actual logger', function () {
       var count  = 0,
