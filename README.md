@@ -8,7 +8,7 @@ General
 
 - Best practices: http://justbuildsomething.com/node-js-best-practices/
 - 'use strict' EVERYWHERE!
-- Coding guidelines: http://javascript.crockford.com/code.html
+- Coding guidelines: http://javascript.crockford.com/code.html (but only 2 spaces!)
 - Linter: https://github.com/spalger/gulp-jshint
 - Header: See index.js
 - Comments: http://usejsdoc.org/
