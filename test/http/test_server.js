@@ -53,6 +53,21 @@ describe('gendok.http.Server', function () {
       expect(httpServer.isRunning()).to.eql(true);
       httpServer.start(done);
     });
+
+    it('calls the callback if an error occurs', function (done) {
+      // Just reuse the default config with the same port, this will lead
+      // to an error 100% of the time since the desired port is already in use.
+      var httpServer2 = new HttpServer(defaultConfig);
+
+      httpServer2.start(function (err) {
+        expect(err).to.exist;
+        httpServer2.stop(done);
+      });
+    });
+
+    it('throws an error if the callback is missing', function () {
+      expect(function () { httpServer.start(null); }).to.throw(Error);
+    });
   });
 
   describe('stop()', function () {
