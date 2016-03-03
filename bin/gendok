@@ -1,0 +1,53 @@
+#!/usr/bin/env node
+/**
+ * PSIT4 FS2016 - gendok
+ *
+ * Authors: Dirk von Grünigen, Tobias Huonder, Simon Müller,
+ *          Martin Weilenmann, Aurelio Malacarne, Hannes Klauser,
+ *          Benjamin Contreras
+ *
+ */
+
+'use strict';
+
+var path   = require('path'),
+    argv   = require('minimist')(process.argv.slice(2)),
+    base   = path.join(__dirname, '..'),
+    gendok = require(base),
+    config = {};
+
+var loadDefaultConfig = function () {
+  config = require(path.join(base, 'config', 'default.json'));
+};
+
+if (!gendok) {
+  console.error("Couldn't load gendok library!");
+  return;
+}
+
+if (argv.help || argv.h) {
+  console.log('Usage: gendok [options]');
+  console.log('');
+  console.log('Options');
+  console.log("  -v, --version\tprint the gendok version");
+  console.log("  -c, --config\tspecify the config.json to use");
+  return;
+}
+
+if (!argv.config && !argv.c) {
+  gendok.logger.info('config to use not specified, using default config');
+  loadDefaultConfig();
+} else {
+  var configPath = argv.config || argv.c;
+
+  try {
+    config = require(path.resolve(configPath));
+  } catch (e) {
+    console.error('Error while loading config from %s', configPath);
+    console.error('Maybe you should use an absolute path to specify the config');
+    console.log('Loading default config');
+    loadDefaultConfig();
+  }
+}
+
+console.log('Starting gendok...');
