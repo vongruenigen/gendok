@@ -15,11 +15,10 @@ var gulp       = require('gulp'),
     mocha      = require('gulp-mocha'),
     cover      = require('gulp-coverage'),
     istanbul   = require('gulp-istanbul'),
-    watch      = require('gulp-watch'),
     checkstyle = require('gulp-jshint-checkstyle-reporter'),
-    logger     = require('./').logger,
-    env        = require('./').env,
     spawn      = require('child_process').spawn,
+    logger     = require('./lib/').logger,
+    env        = require('./lib/').env,
     exec       = require('child_process').exec;
 
 /**
@@ -34,31 +33,24 @@ var mochaOpts             = {reporter: 'spec'},
  * Tasks
  */
 gulp.task('lint', function () {
-  return gulp.src(['lib/**/*.js', 'test/**/*.js'])
-             .pipe(jshint())
-             .pipe(jshint.reporter('jshint-stylish'))
-             .pipe(jshint.reporter('fail'))
-             .pipe(checkstyle())
-             .pipe(gulp.dest('reports'));
+  gulp.src(['lib/**/*.js', 'test/**/*.js'])
+      .pipe(jshint())
+      .pipe(jshint.reporter('jshint-stylish'))
+      .pipe(jshint.reporter('fail'))
+      .pipe(checkstyle())
+      .pipe(gulp.dest('reports'));
 });
 
 gulp.task('test', ['lint'], function () {
   gulp.src('test/**/*.js')
       .pipe(mocha(mochaOpts))
-      .on('error', function (e) { logger.warn('error in test: %s', e); });
-});
-
-gulp.task('test-debug', ['lint'], function () {
-  var gulpjs = path.join(__dirname, 'node_modules/gulp/bin/gulp.js');
-  spawn('node', ['--debug-brk', gulpjs, 'test'], {stdio: 'inherit'});
-});
-
-gulp.task('test-watch', function () {
-  gulp.watch(['lib/**/*.js', 'test/**/*.js'], ['test'])
+      .on('error', function (e) {
+        logger.warn('error in test: %s', e);
+      });
 });
 
 gulp.task('pre-cov', function () {
-  gulp.src(['lib/**/*.js'])
+  gulp.src('lib/**/*.js')
       .pipe(istanbul(istanbulOpts))
       .pipe(istanbul.hookRequire());
 });
@@ -72,6 +64,15 @@ var runTestsWithCov = function (opts) {
 
 gulp.task('test-cov', ['pre-cov', 'lint'], function () {
   runTestsWithCov(mochaOpts);
+});
+
+gulp.task('test-watch', function () {
+  gulp.watch(['lib/**/*.js', 'test/**/*.js'], ['test']);
+});
+
+gulp.task('test-debug', ['lint'], function () {
+  var gulpjs = path.join(__dirname, 'node_modules/gulp/bin/gulp.js');
+  spawn('node', ['--debug-brk', gulpjs, 'test'], {stdio: 'inherit'});
 });
 
 gulp.task('test-jenkins', ['pre-cov', 'lint'], function () {
