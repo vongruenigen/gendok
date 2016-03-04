@@ -1,5 +1,7 @@
 {
   "development": {
+    "http_host": "localhost",
+    "http_port": 3000,
     "username": "gendok",
     "password": "gendok",
     "database": "gendok_development",
@@ -8,15 +10,19 @@
   },
 
   "test": {
+    "http_host": "localhost",
+    "http_port": 3000,
     "username": "gendok",
     "password": "gendok",
     "database": "gendok_test",
-    "dialect": "sqlite3",
+    "dialect": "sqlite",
     "storage": "./.tmp/gendok_test.sqlite3",
     "workingDirectory": "./.tmp/"
   },
 
   "production": {
+    "http_host": "localhost",
+    "http_port": 123,
     "username": "gendok",
     "password": "gendok",
     "database": "gendok_production",

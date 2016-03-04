@@ -42,6 +42,21 @@ describe('gendok.env', function () {
     });
   });
 
+  describe('set()', function () {
+    it('sets the running environment', function () {
+      var validEnv = env.getValidEnvs()[0];
+
+      env.set(validEnv);
+      expect(process.env.GENDOK_ENV).to.eql(validEnv);
+    });
+
+    describe('when an invalid running environment is used', function () {
+      it('throws an error', function () {
+        expect(function () { env.set('gugus'); }).to.throw(Error);
+      });
+    });
+  });
+
   describe('is()', function () {
     it('checks if the return value of get() equals the param', function () {
       h.withGendokEnv(randEnv, function () {
