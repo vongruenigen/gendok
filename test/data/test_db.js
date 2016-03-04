@@ -12,11 +12,10 @@
 var db = require('../..').data.db;
 var model  = require('../..').data.model;
 var Config = require('../..').config;
-var h = require('../helper');
 var expect = require('chai').expect;
 
 describe('gendok.data.db', function () {
-  var config = new Config(h.getDefaultConfig());
+  var config = new Config();
 
   it('is an object', function () {
     expect(db).to.be.an('object');
@@ -38,7 +37,7 @@ describe('gendok.data.db', function () {
     it('ignores further calls after a connection has been established', function () {
       var conn = db.connect(config);
       var conn2 = db.connect(config);
-      
+
       expect(conn2 === conn).to.be.true;
     });
 

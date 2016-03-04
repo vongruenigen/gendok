@@ -34,15 +34,6 @@ module.exports = {
   },
 
   /**
-   * Returns the default config for test runs.
-   *
-   * @return {Object} The default config.
-   */
-  getDefaultConfig: function () {
-    return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
-  },
-
-  /**
    * Calls the supplied cb and applying all props set in the env object. After
    * the callback has finished, the environment will be reset to previous state.
    *
@@ -52,7 +43,7 @@ module.exports = {
   withEnv: function (env, cb) {
     var keys = Object.keys(env);
     var curr = {};
-    var overwrite;
+    var overwriteEnv;
 
     if (keys.length === 0) { cb(); }
 
@@ -86,7 +77,7 @@ module.exports = {
   },
 
   /**
-   * Shuffles the supplied array and returns it. Taken from:
+   * Shuffles the supplied array and returns it. Source:
    * http://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array-in-javascript
    *
    * @param  {Array} arr
@@ -109,6 +100,6 @@ module.exports = {
       arr[index] = temp;
     }
 
-    return array;
+    return arr;
   },
 };
