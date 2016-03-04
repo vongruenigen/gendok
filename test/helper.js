@@ -34,8 +34,7 @@ module.exports = {
   },
 
   /**
-   * Calls the supplied cb and applying all props set in the env object. After
-   * the callback has finished, the environment will be reset to previous state.
+   * Sets the given options as environment variables.
    *
    * @param {Object} env
    * @param {Function} cb
