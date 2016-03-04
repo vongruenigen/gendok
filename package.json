@@ -51,6 +51,7 @@
     "gulp": "^3.9.1",
     "gulp-coverage": "^0.3.38",
     "gulp-istanbul": "^0.10.3",
+    "gulp-jscs": "^3.0.2",
     "gulp-jshint": "^2.0.0",
     "gulp-jshint-checkstyle-reporter": "^1.0.0",
     "gulp-mocha": "^2.2.0",

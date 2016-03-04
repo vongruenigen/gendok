@@ -15,6 +15,7 @@ var gulp       = require('gulp'),
     cover      = require('gulp-coverage'),
     istanbul   = require('gulp-istanbul'),
     checkstyle = require('gulp-jshint-checkstyle-reporter'),
+    jscs       = require('gulp-jscs'),
     exec       = require('child_process').exec;
 
 /**
@@ -30,6 +31,8 @@ var mochaOpts             = {reporter: 'spec'},
  */
 gulp.task('lint', function () {
     return gulp.src(['lib/**/*.js', 'test/**/*.js'])
+               .pipe(jscs())
+               .pipe(jscs.reporter())
                .pipe(jshint())
                .pipe(jshint.reporter('jshint-stylish'))
                .pipe(jshint.reporter('fail'))
