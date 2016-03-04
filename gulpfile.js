@@ -45,6 +45,7 @@ gulp.task('lint', function () {
 gulp.task('format-code', function () {
   gulp.src(['lib/**/*.js', 'test/**/*.js'])
       .pipe(jscs({fix: true}))
+      .pipe(jscs.reporter())
       .pipe(jscs.reporter('fail'));
 });
 

@@ -9,13 +9,13 @@
 
 'use strict';
 
-var winston = require('winston'),
-    util    = require('util'),
-    path    = require('path'),
-    expect  = require('chai').expect,
-    logger  = require('..').logger,
-    env     = require('..').env,
-    h       = require('./helper');
+var winston = require('winston');
+var util = require('util');
+var path = require('path');
+var expect = require('chai').expect;
+var logger = require('..').logger;
+var env = require('..').env;
+var h = require('./helper');
 
 describe('gendok.logger', function () {
   it('is an object', function () {
@@ -38,13 +38,15 @@ describe('gendok.logger', function () {
 
   describe('info(), warn(), error(), debug()', function () {
     it('each calls log() on the actual logger', function () {
-      var count  = 0,
-          args   = ['%s', 'hello world'],
-          levels = ['info', 'warn', 'error', 'debug'];
+      var count = 0;
+      var args = ['%s', 'hello world'];
+      var levels = ['info', 'warn', 'error', 'debug'];
 
       logger._logger = {
-        create: function () { return {}; },
-        log:    function (level, a) {
+        create: function () {
+          return {};
+        },
+        log: function (level, a) {
           expect(levels).to.include(level);
           expect(a).to.include(args);
           count++;
@@ -66,10 +68,10 @@ describe('gendok.logger', function () {
 
     describe('with config', function () {
       it('passes it directly to the winston.Logger constructor', function () {
-        var trans    = new winston.transports.Console({label: 'gugus'}),
-            config   = {transports: [trans]},
-            created  = logger.create(config),
-            expected = new winston.Logger(config);
+        var trans = new winston.transports.Console({label: 'gugus'});
+        var config = {transports: [trans]};
+        var created = logger.create(config);
+        var expected = new winston.Logger(config);
 
         expect(created.transports).to.eql(expected.transports);
       });
@@ -78,11 +80,11 @@ describe('gendok.logger', function () {
 
   describe('configure()', function () {
     it('configures the default instance', function () {
-      var label  = 'blabla',
-          transp = new winston.transports.Console({label: label}),
-          config = {transports: [transp]};
+      var label  = 'blabla';
+      var transp = new winston.transports.Console({label: label});
+      var config = {transports: [transp]};
 
-      // Nasty!
+      // TODO: Nasty!
       logger._logger = null;
       expect(logger.get()).to.not.exist;
       logger.configure();
@@ -93,13 +95,15 @@ describe('gendok.logger', function () {
   describe('in production / development environments', function () {
     it('has a file transport logging to `cwd`/$GENDOK_ENV.log', function () {
       var envs = ['development', 'production'];
+      var file;
+      var transp;
 
       envs.forEach(function (e) {
         h.withGendokEnv(e, function () {
-          var file = util.format('%s/%s.log', process.cwd(), env.get()),
-              t    = logger.create().transports.file;
+          file = util.format('%s/%s.log', process.cwd(), env.get());
+          transp = logger.create().transports.file;
 
-          expect(path.join(t.dirname, t.filename)).to.eql(file);
+          expect(path.join(transp.dirname, transp.filename)).to.eql(file);
         });
       });
     });

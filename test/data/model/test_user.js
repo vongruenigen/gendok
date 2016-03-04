@@ -9,8 +9,8 @@
 
 'use strict';
 
-var user   = require('../../..').data.model.user,
-    expect = require('chai').expect;
+var user = require('../../..').data.model.user;
+var expect = require('chai').expect;
 
 describe('gendok.data.model.user', function () {
   it('is a function', function () {

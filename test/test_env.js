@@ -9,9 +9,9 @@
 
 'use strict';
 
-var env    = require('..').env,
-    h      = require('./helper'),
-    expect = require('chai').expect;
+var env = require('..').env;
+var h = require('./helper');
+var expect = require('chai').expect;
 
 describe('gendok.env', function () {
   it('is an object', function () {

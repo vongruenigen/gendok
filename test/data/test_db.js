@@ -9,11 +9,11 @@
 
 'use strict';
 
-var db     = require('../..').data.db,
-    model  = require('../..').data.model,
-    Config = require('../..').config,
-    h      = require('../helper'),
-    expect = require('chai').expect;
+var db = require('../..').data.db;
+var model  = require('../..').data.model;
+var Config = require('../..').config;
+var h = require('../helper');
+var expect = require('chai').expect;
 
 describe('gendok.data.db', function () {
   var config = new Config(h.getDefaultConfig());
@@ -36,7 +36,9 @@ describe('gendok.data.db', function () {
     });
 
     it('ignores further calls after a connection has been established', function () {
-      var conn = db.connect(config), conn2 = db.connect(config);
+      var conn = db.connect(config);
+      var conn2 = db.connect(config);
+      
       expect(conn2 === conn).to.be.true;
     });
 

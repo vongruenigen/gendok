@@ -9,17 +9,17 @@
 
 'use strict';
 
-var HttpServer = require('../../').http.server,
-    Config     = require('../../').config,
-    expect     = require('chai').expect;
+var HttpServer = require('../../').http.server;
+var Config = require('../../').config;
+var expect = require('chai').expect;
 
 describe('gendok.http.Server', function () {
   it('is a constructor', function () {
     expect(HttpServer).to.be.a('function');
   });
 
-  var defaultConfig = Config.getDefault(),
-      httpServer    = null;
+  var defaultConfig = Config.getDefault();
+  var httpServer = null;
 
   afterEach(function (done) {
     if (httpServer && httpServer.isRunning()) {
@@ -114,8 +114,8 @@ describe('gendok.http.Server', function () {
     });
 
     it('throws an error if the module is not a function', function () {
-      var httpServer = new HttpServer(defaultConfig),
-          moduleFn   = 'blub';
+      var httpServer = new HttpServer(defaultConfig);
+      var moduleFn = 'blub';
 
       expect(function () { httpServer.registerModule(moduleFn); }).to.throw(Error);
     });

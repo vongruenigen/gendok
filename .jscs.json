@@ -70,7 +70,7 @@
   },
   "requirePaddingNewLinesAfterBlocks": true,
   "requireSemicolons": true,
-  "safeContextKeyword": "_this",
+  "safeContextKeyword": "self",
   "validateLineBreaks": "LF",
   "validateQuoteMarks": { "mark": "'", "escape": true, "ignoreJSX": true },
   "validateIndentation": 2,

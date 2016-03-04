@@ -9,18 +9,9 @@
 
 'use strict';
 
-var logger = require('..').logger,
-    crypto = require('crypto'),
-    path   = require('path');
-
-// Default config for all tests
-const DEFAULT_CONFIG = {
-  database: 'gendok_test',
-  username: 'gendok_test',
-  password: 'gendok_test',
-  storage:  ':memory:',
-  dialect:  'sqlite'
-};
+var logger = require('..').logger;
+var crypto = require('crypto');
+var path = require('path');
 
 /**
  * Exports some utility functions
@@ -59,13 +50,14 @@ module.exports = {
    * @param {Function} cb
    */
   withEnv: function (env, cb) {
-    var keys = Object.keys(env),
-        curr = {};
+    var keys = Object.keys(env);
+    var curr = {};
+    var overwrite;
 
     if (keys.length === 0) { cb(); }
 
     // Sets the variables defined in the process.env object
-    var overwriteEnv = function (obj) {
+    overwriteEnv = function (obj) {
       Object.keys(obj).forEach(function (k) {
         curr[k] = process.env[k]; // For restore
         process.env[k] = obj[k];
@@ -94,17 +86,29 @@ module.exports = {
   },
 
   /**
-   * Shuffles the supplied array and returns it.
+   * Shuffles the supplied array and returns it. Taken from:
+   * http://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array-in-javascript
    *
    * @param  {Array} arr
    * @return {Array}
    */
   shuffle: function (arr) {
-    // http://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array-in-javascript
-    for(var j, x, i = arr.length; i;
-        j = Math.floor(Math.random() * i),
-        x = arr[--i], arr[i] = arr[j], arr[j] = x) {}
+    var counter = arr.length;
 
-    return arr;
+    // While there are elements in the array
+    while (counter > 0) {
+      // Pick a random index
+      var index = Math.floor(Math.random() * counter);
+
+      // Decrease counter by 1
+      counter--;
+
+      // And swap the last element with it
+      let temp = arr[counter];
+      arr[counter] = arr[index];
+      arr[index] = temp;
+    }
+
+    return array;
   },
 };
