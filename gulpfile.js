@@ -31,13 +31,17 @@ var mochaOpts             = {reporter: 'spec'},
  */
 gulp.task('lint', function () {
     return gulp.src(['lib/**/*.js', 'test/**/*.js'])
-               .pipe(jscs())
-               .pipe(jscs.reporter())
                .pipe(jshint())
                .pipe(jshint.reporter('jshint-stylish'))
                .pipe(jshint.reporter('fail'))
                .pipe(checkstyle())
                .pipe(gulp.dest('reports'));
+});
+
+gulp.task('format-code', function () {
+  gulp.src(['lib/**/*.js', 'test/**/*.js'])
+      .pipe(jscs({fix: true}))
+      .pipe(jscs.reporter());
 });
 
 gulp.task('test', ['lint'], function () {
