@@ -64,3 +64,4 @@ Misc
 - forever: https://www.npmjs.com/package/forever
 - winston: https://github.com/winstonjs/winston
 - morgan: https://github.com/expressjs/morgan
+- node-inspector: https://github.com/node-inspector/node-inspector

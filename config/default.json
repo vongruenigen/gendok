@@ -1,0 +1,10 @@
+{
+  "http_host": "127.0.0.1",
+  "http_port": 9000,
+  "username": "gendok",
+  "password": "gendok",
+  "database": "gendok",
+  "dialect": "sqlite",
+  "storage": "./gendok.sqlite3",
+  "workingDirectory": "/tmp"
+}
