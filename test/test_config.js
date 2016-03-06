@@ -17,9 +17,9 @@ var expect = require('chai').expect;
 
 describe('gendok.config', function () {
   var exampleCfg = {
-    development: {username: 'blub', abc: 'gugus'},
-    test:        {username: 'blub', abc: 'gugus'},
-    production:  {username: 'blub', abc: 'gugus'}
+    development: {username: 'blub1', abc: 'gugus1'},
+    test:        {username: 'blub2', abc: 'gugus2'},
+    production:  {username: 'blub3', abc: 'gugus3'}
   };
 
   it('is a function', function () {
@@ -27,6 +27,23 @@ describe('gendok.config', function () {
 
     var cfg = new Config();
     expect(cfg).to.be.an('object');
+  });
+
+  describe('get()', function () {
+    it('returns the value associated with the given key', function () {
+      var config = new Config(exampleCfg);
+      expect(config.get('username')).to.eql(exampleCfg.test.username);
+    });
+  });
+
+  describe('get()', function () {
+    it('set the associated value for the given key', function () {
+      var config = new Config(exampleCfg);
+      var name = exampleCfg.test.username + 'gaga';
+
+      config.set('username', name);
+      expect(config.get('username')).to.eql(name);
+    });
   });
 
   describe('constructor()', function () {
