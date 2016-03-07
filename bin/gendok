@@ -14,11 +14,9 @@ var path   = require('path'),
     argv   = require('minimist')(process.argv.slice(2)),
     base   = path.join(__dirname, '..'),
     gendok = require(base),
+    Config = gendok.config,
+    Server = gendok.http.server,
     config = {};
-
-var loadDefaultConfig = function () {
-  config = require(path.join(base, 'config', 'default.json'));
-};
 
 if (!gendok) {
   console.error("Couldn't load gendok library!");
@@ -36,7 +34,6 @@ if (argv.help || argv.h) {
 
 if (!argv.config && !argv.c) {
   gendok.logger.info('config to use not specified, using default config');
-  loadDefaultConfig();
 } else {
   var configPath = argv.config || argv.c;
 
@@ -46,8 +43,22 @@ if (!argv.config && !argv.c) {
     console.error('Error while loading config from %s', configPath);
     console.error('Maybe you should use an absolute path to specify the config');
     console.log('Loading default config');
-    loadDefaultConfig();
   }
 }
 
-console.log('Starting gendok...');
+var cfg = new Config(config);
+var server = new Server(cfg);
+
+server.registerModules([
+  gendok.http.web.home,
+  gendok.http.web.middleware
+]);
+
+server.start(function (err) {
+  if (err) {
+    throw err;
+  }
+
+  console.log('successfully started gendok server on %s:%s',
+              cfg.get('http_host'), cfg.get('http_port'));
+});
