@@ -33,7 +33,7 @@ var mochaOpts             = {reporter: 'spec'},
 /**
  * Tasks
  */
-gulp.task('lint', function () {
+gulp.task('lint', ['format-code'], function () {
   gulp.src(['lib/**/*.js', 'test/**/*.js'])
       .pipe(jshint())
       .pipe(jshint.reporter('jshint-stylish'))
@@ -46,7 +46,7 @@ gulp.task('format-code', function () {
   gulp.src(['lib/**/*.js', 'test/**/*.js'])
       .pipe(jscs({fix: true}))
       .pipe(jscs.reporter())
-      .pipe(jscs.reporter('fail'));
+      .pipe(jscs.reporter('failImmediately'));
 });
 
 gulp.task('test-env', function () {
