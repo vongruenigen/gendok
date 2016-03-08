@@ -13,6 +13,5 @@ var path = require('path');
 
 // Configuration for sequelize-cli
 module.exports = {
-  'config': path.resolve('config', 'database.json'),
-
+  'config': path.resolve('config', 'config.json'),
 };
