@@ -9,11 +9,12 @@
 
 'use strict';
 
-var HttpServer = require('../../..').http.server;
-var web = require('../../..').http.web;
-var Config = require('../../..').config;
-var expect = require('chai').expect;
 var Browser = require('zombie');
+var expect = require('chai').expect;
+var Config = require('../../..').config;
+var http = require('../../../').http;
+var HttpServer = http.server;
+var web = http.web;
 
 describe('gendok.http.web.home', function () {
   it('is a function', function () {
@@ -37,7 +38,7 @@ describe('gendok.http.web.home', function () {
   var server = null;
   var browser = new Browser();
   var config = Config.getDefault();
-  var modules = [web.middleware, web.home];
+  var modules = [http.middleware.basic, web.home];
   Browser.localhost(config.get('http_host'), config.get('http_port'));
 
   describe('#index', function () {
