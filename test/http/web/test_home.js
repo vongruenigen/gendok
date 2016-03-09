@@ -32,8 +32,7 @@ describe('gendok.http.web.home', function () {
 
   describe('#index', function () {
     it('containts the text "Welcome to gendok"', function (done) {
-      browser.visit('/', function(err) {
-        expect(err).to.not.exist;
+      browser.visit('/', function() {
         browser.assert.success();
         browser.assert.text('h1', 'Welcome to gendok');
         done();
