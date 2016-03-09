@@ -72,8 +72,9 @@
   "dependencies": {
     "bluebird": "3.3.3",
     "body-parser": "1.15.0",
-    "cookie-parser": "^1.4.1",
+    "cookie-parser": "1.4.1",
     "express": "4.13.4",
+    "jade": "1.11.0",
     "minimist": "1.2.0",
     "pg": "4.5.1",
     "pg-hstore": "2.3.2",
