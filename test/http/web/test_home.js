@@ -13,6 +13,7 @@ var Browser = require('zombie');
 var expect = require('chai').expect;
 var Config = require('../../..').config;
 var http = require('../../../').http;
+var helper = require('../../helper');
 var HttpServer = http.server;
 var web = http.web;
 
@@ -21,24 +22,12 @@ describe('gendok.http.web.home', function () {
     expect(web.home).to.be.a('function');
   });
 
-  before(function (done) {
-    server = new HttpServer(config);
-    server.registerModules(modules);
-    server.start(function (err) {
-      expect(server.isRunning()).to.eql(true);
-      done(err);
-    });
-  });
-
-  after(function (done) {
-    server.stop(done);
-    server = null;
-  });
-
-  var server = null;
   var browser = new Browser();
-  var config = Config.getDefault();
   var modules = [http.middleware.basic, web.home];
+  var config = Config.getDefault();
+
+  // Register http server hooks
+  helper.runHttpServer(this, modules);
   Browser.localhost(config.get('http_host'), config.get('http_port'));
 
   describe('#index', function () {
