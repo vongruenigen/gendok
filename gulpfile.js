@@ -9,29 +9,54 @@
 
 'use strict';
 
-var gulp       = require('gulp'),
-    path       = require('path'),
-    jshint     = require('gulp-jshint'),
-    mocha      = require('gulp-mocha'),
-    cover      = require('gulp-coverage'),
-    istanbul   = require('gulp-istanbul'),
-    checkstyle = require('gulp-jshint-checkstyle-reporter'),
-    jscs       = require('gulp-jscs'),
-    spawn      = require('child_process').spawn,
-    logger     = require('./lib/').logger,
-    env        = require('./lib/').env,
-    exec       = require('child_process').exec;
+var gulp = require('gulp');
+var gulpif = require('gulp-if');
+var path = require('path');
+var jshint = require('gulp-jshint');
+var mocha = require('gulp-mocha');
+var cover = require('gulp-coverage');
+var istanbul = require('gulp-istanbul');
+var uglify = require('gulp-uglify');
+var concat = require('gulp-concat');
+var cssnano = require('gulp-cssnano');
+var checkstyle = require('gulp-jshint-checkstyle-reporter');
+var jscs = require('gulp-jscs');
+var spawn = require('child_process').spawn;
+var logger = require('./lib/').logger;
+var env = require('./lib/').env;
+var exec = require('child_process').exec;
 
 /**
  * Config variables
  */
-var mochaOpts             = {reporter: 'spec'},
-    mochaJenkinsOpts      = {reporter: 'mocha-jenkins-reporter'},
-    istanbulOpts          = {dir: './reports', reporters: ['html', 'clover']},
-    istanbulThresholdOpts = {thresholds: {global: 90}};
+var mochaOpts = {reporter: 'spec'};
+var mochaJenkinsOpts = {reporter: 'mocha-jenkins-reporter'};
+var istanbulOpts = {dir: './reports', reporters: ['html', 'clover']};
+var istanbulThresholdOpts = {thresholds: {global: 90}};
+
+var publicPath = path.join(__dirname, 'public');
+var publicFontsPath = path.join(__dirname, 'fonts');
+var publicCssPath = path.join(publicPath, 'css');
+var publicJsPath = path.join(publicPath, 'js');
+
+var allJsFilename = 'all.js';
+var allCssFilename = 'all.css';
+
+// List of file patterns to glob for all required css files
+var requiredCssPaths = [
+  'bower_components/bootstrap/dist/css/bootstrap.css'
+];
+
+// List of file patterns to glob for all required js files. Order is IMPORTANT!
+var requiredJsPaths = [
+  'bower_components/jquery/dist/jquery.js',
+  'bower_components/bootstrap/dist/js/bootstrap.js',
+  'bower_components/angularjs/angular.js',
+  'lib/http/web/assets/js/**/*.js'
+];
 
 /**
- * Tasks
+ * Linting and code checking tasks
  */
 gulp.task('lint', ['format-code'], function () {
   gulp.src(['lib/**/*.js', 'test/**/*.js'])
@@ -49,16 +74,18 @@ gulp.task('format-code', function () {
       .pipe(jscs.reporter('failImmediately'));
 });
 
-gulp.task('test-env', function () {
-  env.set('test');
-});
-
+/**
+ * Testing related tasks
+ */
 gulp.task('test', ['lint', 'test-env'], function () {
   gulp.src('test/**/*.js')
       .pipe(mocha(mochaOpts))
       .on('error', function (e) {
         logger.warn('error in test: %s', e);
       });
+});
+gulp.task('test-env', function () {
+  env.set('test');
 });
 
 gulp.task('pre-cov', function () {
@@ -91,6 +118,41 @@ gulp.task('test-jenkins', ['pre-cov', 'lint', 'test-env'], function () {
   runTestsWithCov(mochaJenkinsOpts);
 });
 
+/**
+ * Build and deploy tasks
+ */
+gulp.task('build-watch', function () {
+  gulp.watch(['lib/http/web/assets/**/*', 'bower_components/**/*'], ['build']);
+});
+
+gulp.task('build', ['build-fonts', 'build-css', 'build-js'], function () {
+  console.log('All assets successfully compiled and copied to public/');
+});
+
+gulp.task('build-js', function () {
+  gulp.src(requiredJsPaths)
+      .pipe(concat(allJsFilename))
+      .pipe(gulpif(env.is('production'), uglify()))
+      .pipe(gulp.dest(publicJsPath));
+});
+
+gulp.task('build-css', ['compile-scss'], function () {
+  gulp.src(requiredCssPaths)
+      .pipe(concat(allCssFilename))
+      .pipe(gulpif(env.is('production'), cssnano()))
+      .pipe(gulp.dest(publicCssPath));
+});
+
+gulp.task('compile-scss', function () {});
+
+gulp.task('build-fonts', function () {
+  var bootsrapFontsPath = path.join(__dirname, 'bower_components/bootstrap/dist/fonts');
+  gulp.src(bootsrapFontsPath).pipe(gulp.dest(publicFontsPath));
+});
+
+/**
+ * Misc. tasks
+ */
 gulp.task('clean', function (cb) {
   exec('git clean -Xf && git clean -Xdf', function (err, stdout, stderr) {
     console.log(stdout);
