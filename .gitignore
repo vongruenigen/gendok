@@ -11,5 +11,8 @@ debug
 
 bower_components
 node_modules
+public/**/*.js
+public/**/*.css
+public/fonts/**/*
 .DS_Store
 .tmp
