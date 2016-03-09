@@ -93,14 +93,14 @@ describe('gendok.logger', function () {
   });
 
   describe('in production / development environments', function () {
-    it('has a file transport logging to `cwd`/$GENDOK_ENV.log', function () {
+    it('has a file transport logging to `cwd`/log/$GENDOK_ENV.log', function () {
       var envs = ['development', 'production'];
       var file;
       var transp;
 
       envs.forEach(function (e) {
         h.withGendokEnv(e, function () {
-          file = util.format('%s/%s.log', process.cwd(), env.get());
+          file = util.format('%s/log/%s.log', process.cwd(), env.get());
           transp = logger.create().transports.file;
 
           expect(path.join(transp.dirname, transp.filename)).to.eql(file);
