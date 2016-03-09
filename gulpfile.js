@@ -35,9 +35,10 @@ var istanbulOpts = {dir: './reports', reporters: ['html', 'clover']};
 var istanbulThresholdOpts = {thresholds: {global: 90}};
 
 var publicPath = path.join(__dirname, 'public');
-var publicFontsPath = path.join(__dirname, 'fonts');
+var publicFontsPath = path.join(publicPath, 'fonts');
 var publicCssPath = path.join(publicPath, 'css');
 var publicJsPath = path.join(publicPath, 'js');
+var publicImgPath = path.join(publicPath, 'img');
 
 var allJsFilename = 'all.js';
 var allCssFilename = 'all.css';
@@ -125,7 +126,7 @@ gulp.task('build-watch', function () {
   gulp.watch(['lib/http/web/assets/**/*', 'bower_components/**/*'], ['build']);
 });
 
-gulp.task('build', ['build-fonts', 'build-css', 'build-js'], function () {
+gulp.task('build', ['build-fonts', 'build-css', 'build-js', 'build-img'], function () {
   console.log('All assets successfully compiled and copied to public/');
 });
 
@@ -146,8 +147,13 @@ gulp.task('build-css', ['compile-scss'], function () {
 gulp.task('compile-scss', function () {});
 
 gulp.task('build-fonts', function () {
-  var bootsrapFontsPath = path.join(__dirname, 'bower_components/bootstrap/dist/fonts');
+  var bootsrapFontsPath = path.join(__dirname, 'bower_components/bootstrap/dist/fonts/**/*');
   gulp.src(bootsrapFontsPath).pipe(gulp.dest(publicFontsPath));
+});
+
+gulp.task('build-img', function () {
+  var imagesPath = path.join(__dirname, 'lib/http/web/assets/img/**/*');
+  gulp.src(imagesPath).pipe(gulp.dest(publicImgPath));
 });
 
 /**

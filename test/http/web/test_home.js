@@ -31,10 +31,10 @@ describe('gendok.http.web.home', function () {
   Browser.localhost(config.get('http_host'), config.get('http_port'));
 
   describe('#index', function () {
-    it('containts the text "Welcome to gendok"', function (done) {
+    it('contains the text "gendok"', function (done) {
       browser.visit('/', function() {
         browser.assert.success();
-        browser.assert.text('h1', 'Welcome to gendok');
+        browser.assert.text('h1', 'gendok');
         done();
       });
     });
