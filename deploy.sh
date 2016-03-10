@@ -19,8 +19,8 @@ fi
 
 cd $PULL_DIR/$REPO_NAME
 # There's probably a better way to do the following two lines
-eval `ssh-agent`
-ssh-add /home/gendok/.ssh/id_rsa
+#eval `ssh-agent`
+#ssh-add /home/gendok/.ssh/id_rsa
 git pull
 npm install --production
 gulp build
