@@ -1,15 +1,19 @@
 #!/bin/sh
 
-#PULL_DIR="/home/gendok"
-PULL_DIR="/home/hklauser/tmp"
-TARGET_DIR="/home/hklauser/tmp/gendok"
-BRANCH="setup/deployment"
+PULL_DIR="/home/gendok"
+TARGET_DIR="/srv/gendok"
 REPO_NAME="PSIT4-gendok"
 EXECUTABLE="gendok"
 
-if [! -d "$PULL_DIR/$REPO_NAME"] -o [ ! -d "$TARGET_DIR" ] -o [ ! -w "$TARGET_DIR" ]; then
-  echo "Please check the following requirements:\n"
-  echo "Pulled git repo $PULL_DIR/$REPO_NAME has to exist.\n"
+if [ ! -d "$PULL_DIR/$REPO_NAME" ]; then
+  echo "Git repo directory $PULL_DIR/$REPO_NAME has to exist.\n"
+  exit 1
+fi
+if [ ! -d "$TARGET_DIR" ]; then
+  echo "Target directory $TARGET_DIR has to exist and must be writeable.\n"
+  exit 1
+fi
+if [ ! -w "$TARGET_DIR" ]; then
   echo "Target directory $TARGET_DIR has to exist and must be writeable.\n"
   exit 1
 fi
