@@ -9,6 +9,8 @@
 
 'use strict';
 
+var fs = require('fs');
+var bower = require('bower');
 var gulp = require('gulp');
 var gulpif = require('gulp-if');
 var path = require('path');
@@ -126,7 +128,8 @@ gulp.task('build-watch', function () {
   gulp.watch(['lib/http/web/assets/**/*', 'bower_components/**/*'], ['build']);
 });
 
-gulp.task('build', ['build-fonts', 'build-css', 'build-js', 'build-img'], function () {
+gulp.task('build', ['check-bower-components', 'build-fonts',
+                    'build-css', 'build-js', 'build-img'], function () {
   console.log('All assets successfully compiled and copied to public/');
 });
 
@@ -154,6 +157,24 @@ gulp.task('build-fonts', function () {
 gulp.task('build-img', function () {
   var imagesPath = path.join(__dirname, 'lib/http/web/assets/img/**/*');
   gulp.src(imagesPath).pipe(gulp.dest(publicImgPath));
+});
+
+gulp.task('check-bower-components', function (done) {
+  var componentsPath = path.join(__dirname, 'bower_components');
+
+  fs.stat(componentsPath, function (err) {
+    if (err) {
+      // Throw the error in case it's not "file not found"
+      if (err.code !== 'ENOENT') { throw err; }
+      // Install bower components programmatically
+      bower.commands.install(undefined, undefined).on('end', function (err) {
+        if (err) { throw err; }
+        done();
+      });
+    } else {
+      done();
+    }
+  });
 });
 
 /**
