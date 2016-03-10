@@ -31,12 +31,18 @@ describe('gendok.http.web.home', function () {
   Browser.localhost(config.get('http_host'), config.get('http_port'));
 
   describe('#index', function () {
-    it('contains the text "gendok"', function (done) {
-      browser.visit('/', function() {
-        browser.assert.success();
-        browser.assert.text('h1', 'gendok');
-        done();
-      });
+    beforeEach(function (done) {
+      browser.visit('/', done);
+    });
+
+    it('contains the text "gendok"', function () {
+      browser.assert.success();
+      browser.assert.text('h1.title', 'gendok');
+    });
+
+    it('contains a welcome message from angular', function () {
+      browser.assert.success();
+      browser.assert.text('.angular-welcome', 'hello world from angular-js!');
     });
   });
 });

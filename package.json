@@ -7,6 +7,7 @@
     "test": "test"
   },
   "scripts": {
+    "start": "bin/gendok",
     "test": "gulp test"
   },
   "repository": {
