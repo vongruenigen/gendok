@@ -22,7 +22,7 @@
 
   "production": {
     "http_host": "localhost",
-    "http_port": 123,
+    "http_port": 3000,
     "username": "gendok",
     "password": "gendok",
     "database": "gendok_production",

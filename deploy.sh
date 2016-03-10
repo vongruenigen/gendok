@@ -1,41 +1,25 @@
 #!/bin/sh
 
-#PULL_DIR="/home/gendok/gendok-deploy"
+#PULL_DIR="/home/gendok"
 PULL_DIR="/home/hklauser/tmp"
-# Target directory has to exist and user needs write access.
 TARGET_DIR="/home/hklauser/tmp/gendok"
-BRANCH="development"
+BRANCH="setup/deployment"
+REPO_NAME="PSIT4-gendok"
+EXECUTABLE="gendok"
 
-if [ ! -d "$TARGET_DIR" ]; then
-  if [ -w "$TARGET_DIR" ]; then
-    echo "Target directory is not writeable"
-    exit 1
-  fi
+if [! -d "$PULL_DIR/$REPO_NAME"] -o [ ! -d "$TARGET_DIR" ] -o [ ! -w "$TARGET_DIR" ]; then
+  echo "Please check the following requirements:\n"
+  echo "Pulled git repo $PULL_DIR/$REPO_NAME has to exist.\n"
+  echo "Target directory $TARGET_DIR has to exist and must be writeable.\n"
+  exit 1
 fi
 
-FRESH_CLONE=false
-if [ ! -d "$PULL_DIR" ]; then
-  mkdir $PULL_DIR
-  FRESH_CLONE=true
-fi
-
-cd $PULL_DIR
-
-if [ "$FRESH_CLONE" ]; then
-  git clone git@github.engineering.zhaw.ch:vongrdir/PSIT4-gendok.git
-  git checkout $BRANCH
-else
-  git pull
-fi
-
-cd PSIT4-gendok
-nv4
+cd $PULL_DIR/$REPO_NAME
 npm install --production
-gulp deploy
+#gulp deploy
 ./node_modules/.bin/sequelize db:migrate
-cd $PULL_DIR
 forever stopall
-cp -r $PULL_DIR/PSIT4-gendok $TARGET_DIR
-cd $TARGET_DIR/bin
-GENDOK_ENV=production forever start gendok
+rsync -aq --exclude '$PULL_DIR/.git' --exclude '$PULL_DIR/test' --exclude '$PULL_DIR/reports' --exclude '$PULL_DIR/migrations' --exclude '$PULL_DIR/models' $PULL_DIR/$REPO_NAME/* $TARGET_DIR/.
+cd $TARGET_DIR
+GENDOK_ENV=production forever start bin/$EXECUTABLE
 exit 0
