@@ -24,8 +24,8 @@ cd $PULL_DIR/$REPO_NAME
 git pull
 npm install --production
 gulp build
-./node_modules/.bin/sequelize db:migrate
 forever stopall
+./node_modules/.bin/sequelize db:migrate
 rsync -aq $PULL_DIR/$REPO_NAME/ $TARGET_DIR/.
 cd $TARGET_DIR
 GENDOK_ENV=production forever start bin/$EXECUTABLE --config config/config.json
