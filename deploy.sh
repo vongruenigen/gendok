@@ -1,5 +1,4 @@
 #!/bin/sh
-
 PULL_DIR="/home/gendok"
 TARGET_DIR="/srv/gendok"
 REPO_NAME="PSIT4-gendok"
@@ -19,12 +18,12 @@ if [ ! -w "$TARGET_DIR" ]; then
 fi
 
 cd $PULL_DIR/$REPO_NAME
-# There's probably a better way to do the following
+# There's probably a better way to do the following two lines
 eval `ssh-agent`
 ssh-add /home/gendok/.ssh/gendok-git
 git pull
 npm install --production
-gulp deploy
+gulp build
 ./node_modules/.bin/sequelize db:migrate
 forever stopall
 rsync -aq $PULL_DIR/$REPO_NAME/ $TARGET_DIR/.
