@@ -28,5 +28,5 @@ gulp build
 forever stopall
 rsync -aq $PULL_DIR/$REPO_NAME/ $TARGET_DIR/.
 cd $TARGET_DIR
-GENDOK_ENV=production forever start bin/$EXECUTABLE
+GENDOK_ENV=production forever start bin/$EXECUTABLE --config config/config.json
 exit 0
