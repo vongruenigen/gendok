@@ -9,6 +9,6 @@
     "describe", "it",
     "before", "beforeEach",
     "after", "afterEach",
-    "angular"
+    "angular", "window"
   ]
 }
