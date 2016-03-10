@@ -19,11 +19,14 @@ if [ ! -w "$TARGET_DIR" ]; then
 fi
 
 cd $PULL_DIR/$REPO_NAME
+eval `ssh-agent`
+ssh-add /home/gendok/.ssh/gendok-git
+git pull
 npm install --production
 gulp deploy
 ./node_modules/.bin/sequelize db:migrate
 forever stopall
-rsync -av --exclude '$PULL_DIR/.git' --exclude '$PULL_DIR/test' --exclude '$PULL_DIR/reports' --exclude '$PULL_DIR/migrations' --exclude '$PULL_DIR/models' --exclude '$PULL_DIR/README.md' --exclude '$PULL_DIR/bower.json' --exclude '$PULL_DIR/test' $PULL_DIR/$REPO_NAME/* $TARGET_DIR/.
+rsync -av $PULL_DIR/$REPO_NAME/ $TARGET_DIR/.
 cd $TARGET_DIR
 GENDOK_ENV=production forever start bin/$EXECUTABLE
 exit 0
