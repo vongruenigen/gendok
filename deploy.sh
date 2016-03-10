@@ -26,7 +26,7 @@ npm install --production
 gulp deploy
 ./node_modules/.bin/sequelize db:migrate
 forever stopall
-rsync -av $PULL_DIR/$REPO_NAME/ $TARGET_DIR/.
+rsync -av --exclude '.git' --exclude 'test' --exclude 'migrations' --exclude 'reports' --exclude 'models' --exclude '.gitignore' --exclude '.jscs.json' --exclude '.jshintignore' --exclude 'jshintrc' --exclude '.npmignore' --exclude '.sequelizerc' --exclude 'bower.json' --exclude 'deploy.sh' --exclude 'gulpfile.js' --exclude 'README.md' $PULL_DIR/$REPO_NAME/ $TARGET_DIR/.
 cd $TARGET_DIR
 GENDOK_ENV=production forever start bin/$EXECUTABLE
 exit 0
