@@ -140,5 +140,12 @@ describe('gendok.http.Server', function () {
 
       expect(counter).to.eql(3);
     });
+
+    it('throws if the modules param is null or undefined', function () {
+      expect(function() {
+        var h = new HttpServer(alternativeConfig);
+        h.registerModules();
+      }).to.throw(Error);
+    });
   });
 });

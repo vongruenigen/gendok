@@ -7,6 +7,7 @@
     "test": "test"
   },
   "scripts": {
+    "start": "bin/gendok",
     "test": "gulp test"
   },
   "repository": {
@@ -49,17 +50,22 @@
     "bower": "^1.7.7",
     "chai": "^3.5.0",
     "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
     "gulp-coverage": "^0.3.38",
+    "gulp-cssnano": "^2.1.1",
+    "gulp-if": "^2.0.0",
     "gulp-istanbul": "^0.10.3",
     "gulp-jscs": "^3.0.2",
     "gulp-jshint": "^2.0.0",
     "gulp-jshint-checkstyle-reporter": "^1.0.0",
     "gulp-mocha": "^2.2.0",
+    "gulp-uglify": "^1.5.3",
     "gulp-watch": "^4.3.5",
     "jshint": "^2.9.1",
     "jshint-stylish": "^2.1.0",
     "mocha": "^2.4.5",
     "mocha-jenkins-reporter": "^0.2.0",
+    "morgan": "^1.7.0",
     "simple-mock": "^0.6.0",
     "sqlite3": "^3.1.1",
     "zombie": "^4.2.1"
@@ -67,12 +73,15 @@
   "dependencies": {
     "bluebird": "3.3.3",
     "body-parser": "1.15.0",
+    "cookie-parser": "1.4.1",
     "express": "4.13.4",
+    "jade": "1.11.0",
     "minimist": "1.2.0",
     "pg": "4.5.1",
     "pg-hstore": "2.3.2",
     "sequelize": "3.19.3",
     "sequelize-cli": "2.3.1",
+    "serve-favicon": "2.3.0",
     "winston": "2.2.0"
   }
 }

@@ -9,45 +9,40 @@
 
 'use strict';
 
-var HttpServer = require('../../..').http.server;
-var web = require('../../..').http.web;
-var Config = require('../../..').config;
-var expect = require('chai').expect;
 var Browser = require('zombie');
+var expect = require('chai').expect;
+var Config = require('../../..').config;
+var http = require('../../../').http;
+var helper = require('../../helper');
+var HttpServer = http.server;
+var web = http.web;
 
 describe('gendok.http.web.home', function () {
   it('is a function', function () {
     expect(web.home).to.be.a('function');
   });
 
-  before(function (done) {
-    server = new HttpServer(config);
-    server.registerModules(modules);
-    server.start(function (err) {
-      expect(server.isRunning()).to.eql(true);
-      done(err);
-    });
-  });
-
-  after(function (done) {
-    server.stop(done);
-    server = null;
-  });
-
-  var server = null;
   var browser = new Browser();
+  var modules = [http.middleware.basic, web.home];
   var config = Config.getDefault();
-  var modules = [web.middleware, web.home];
+
+  // Register http server hooks
+  helper.runHttpServer(this, modules);
   Browser.localhost(config.get('http_host'), config.get('http_port'));
 
   describe('#index', function () {
-    it('containts the text "Welcome to gendok"', function (done) {
-      browser.visit('/', function(err) {
-        expect(err).to.not.exist;
-        browser.assert.success();
-        browser.assert.text('h1', 'Welcome to gendok');
-        done();
-      });
+    beforeEach(function (done) {
+      browser.visit('/', done);
+    });
+
+    it('contains the text "gendok"', function () {
+      browser.assert.success();
+      browser.assert.text('h1.title', 'gendok');
+    });
+
+    it('contains a welcome message from angular', function () {
+      browser.assert.success();
+      browser.assert.text('.angular-welcome', 'hello world from angular-js!');
     });
   });
 });
