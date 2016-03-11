@@ -80,7 +80,7 @@ gulp.task('format-code', function () {
 /**
  * Testing related tasks
  */
-gulp.task('test', ['lint', 'test-env'], function () {
+gulp.task('test', ['build', 'lint', 'test-env'], function () {
   gulp.src('test/**/*.js')
       .pipe(mocha(mochaOpts))
       .on('error', function (e) {
@@ -104,7 +104,7 @@ var runTestsWithCov = function (opts) {
       .pipe(istanbul.enforceThresholds(istanbulThresholdOpts));
 };
 
-gulp.task('test-cov', ['pre-cov', 'lint', 'test-env'], function () {
+gulp.task('test-cov', ['pre-cov', 'build', 'lint', 'test-env'], function () {
   runTestsWithCov(mochaOpts);
 });
 
@@ -112,12 +112,12 @@ gulp.task('test-watch', function () {
   gulp.watch(['lib/**/*.js', 'test/**/*.js'], ['test']);
 });
 
-gulp.task('test-debug', ['lint', 'test-env'], function () {
+gulp.task('test-debug', ['build', 'lint', 'test-env'], function () {
   var gulpjs = path.join(__dirname, 'node_modules/gulp/bin/gulp.js');
   spawn('node', ['--debug-brk', gulpjs, 'test'], {stdio: 'inherit'});
 });
 
-gulp.task('test-jenkins', ['pre-cov', 'lint', 'test-env'], function () {
+gulp.task('test-jenkins', ['build', 'pre-cov', 'lint', 'test-env'], function () {
   runTestsWithCov(mochaJenkinsOpts);
 });
 
