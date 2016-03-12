@@ -4,7 +4,6 @@
   "username": "gendok",
   "password": "gendok",
   "database": "gendok",
-  "dialect": "sqlite",
-  "storage": "./gendok.sqlite3",
-  "workingDirectory": "/tmp"
+  "host": "127.0.0.1",
+  "dialect": "postgres"
 }
