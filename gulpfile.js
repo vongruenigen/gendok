@@ -49,7 +49,8 @@ var allCssFilename = 'all.css';
 
 // List of file patterns to glob for all required css files
 var requiredCssPaths = [
-  'bower_components/bootstrap/dist/css/bootstrap.css'
+  'bower_components/bootstrap/dist/css/bootstrap.css',
+  'lib/http/web/assets/css/**/*.css'
 ];
 
 // List of file patterns to glob for all required js files. Order is IMPORTANT!
@@ -152,7 +153,7 @@ gulp.task('build-css', ['compile-scss'], function () {
 gulp.task('compile-scss', function () {
   return sass('lib/http/web/assets/scss/**/*.scss')
       .pipe(autoprefixer('last 4 versions'))
-      .pipe(gulp.dest(publicCssPath));
+      .pipe(gulp.dest('lib/http/web/assets/css/'));
 });
 
 gulp.task('build-fonts', function () {
