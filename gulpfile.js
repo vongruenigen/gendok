@@ -23,6 +23,8 @@ var concat = require('gulp-concat');
 var cssnano = require('gulp-cssnano');
 var checkstyle = require('gulp-jshint-checkstyle-reporter');
 var jscs = require('gulp-jscs');
+var sass = require('gulp-ruby-sass');
+var autoprefixer = require('gulp-autoprefixer');
 var spawn = require('child_process').spawn;
 var logger = require('./lib/').logger;
 var env = require('./lib/').env;
@@ -147,7 +149,11 @@ gulp.task('build-css', ['compile-scss'], function () {
       .pipe(gulp.dest(publicCssPath));
 });
 
-gulp.task('compile-scss', function () {});
+gulp.task('compile-scss', function () {
+  return sass('lib/http/web/assets/scss/**/*.scss')
+      .pipe(autoprefixer('last 4 versions'))
+      .pipe(gulp.dest(publicCssPath));
+});
 
 gulp.task('build-fonts', function () {
   var bootsrapFontsPath = path.join(__dirname, 'bower_components/bootstrap/dist/fonts/**/*');

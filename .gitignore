@@ -16,4 +16,5 @@ public/**/*
 public/fonts/**/*
 .DS_Store
 .tmp
+*.sass-cache
 !**/*.gitkeep
