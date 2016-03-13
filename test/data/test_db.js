@@ -69,4 +69,18 @@ describe('gendok.data.db', function () {
       expect(conn).to.eql(db.getConnection());
     });
   });
+
+  describe('getModel()', function () {
+    it('return all models', function () {
+      var conn = db.connect(config);
+      Object.keys(model).forEach(function (k) {
+        expect(db.getModel(k)).to.exist;
+      });
+    });
+
+    it('throw an exception if empty string', function () {
+      var conn = db.connect(config);
+      expect(function(){db.getModel('')}).to.throw(Error);
+    });
+  });
 });

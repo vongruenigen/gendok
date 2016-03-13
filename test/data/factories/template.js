@@ -19,7 +19,7 @@ var db = require('../../..').data.db;
  * @return The factory with the defined template model.
  */
 module.exports = function (model) {
-  factory.define('template', model, {
+  factory.define('Template', model, {
     type: faker.name.firstName(),
     template: faker.lorem.paragraphs(),
     userId: faker.random.number()
