@@ -10,17 +10,16 @@
 'use strict';
 
 var faker = require('faker');
-var factory = require('factory-girl-sequelize');
+var factory = require('factory-girl');
 var db = require('../../..').data.db;
-var User = db.getModel('user');
 
 /**
  * Returns the factory with a defined user model
  *
  * @return The factory with the defined user model.
  */
-module.exports = function () {
-  factory.define('user', User, {
+module.exports = function (model) {
+  factory.define('User', model, {
     isAdmin: false,
     name: faker.name.findName(),
     email: faker.internet.email(),

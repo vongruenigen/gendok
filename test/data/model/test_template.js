@@ -9,11 +9,11 @@
 
 'use strict';
 
-var template = require('../../..').data.model.template;
+var Template = require('../../..').data.model.Template;
 var expect = require('chai').expect;
 
 describe('gendok.data.model.template', function () {
   it('is a function', function () {
-    expect(template).to.be.a('function');
+    expect(Template).to.be.a('function');
   });
 });

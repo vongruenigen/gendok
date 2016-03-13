@@ -124,7 +124,7 @@ gulp.task('test-jenkins', ['build', 'pre-cov', 'lint', 'test-env', 'db-migrate']
 
 gulp.task('db-migrate', function () {
   var sequelizeCLI = path.join(__dirname, 'node_modules/.bin/sequelize');
-  spawn('node', [sequelizeCLI, 'db:migrate'], {stdio: 'inherit'});
+  spawn('node', [sequelizeCLI, 'db:migrate'], {stdio: 'inherit', env: process.env});
 });
 
 /**

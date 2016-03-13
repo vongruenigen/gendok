@@ -15,6 +15,6 @@
  * @type {Object}
  */
 module.exports = {
-  template: require('./template'),
-  user:     require('./user')
+  Template: require('./template'),
+  User:     require('./user')
 };
