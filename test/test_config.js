@@ -88,7 +88,7 @@ describe('gendok.config', function () {
 
   describe('getDefault()', function () {
     it('returns config/default.json as a Config object', function () {
-      var configObj = require('../config/default.json');
+      var configObj = require('../config/default.json')[env.get()];
       var defaultConfig = Config.getDefault();
 
       Object.keys(configObj).forEach(function (k) {

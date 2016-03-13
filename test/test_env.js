@@ -50,6 +50,12 @@ describe('gendok.env', function () {
       expect(process.env.GENDOK_ENV).to.eql(validEnv);
     });
 
+    it('also sets NODE_ENV', function () {
+      var validEnv = env.getValidEnvs()[0];
+      env.set(validEnv);
+      expect(process.env.NODE_ENV).to.eql(validEnv);
+    });
+
     describe('when an invalid running environment is used', function () {
       it('throws an error', function () {
         expect(function () { env.set('gugus'); }).to.throw(Error);

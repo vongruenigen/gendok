@@ -10,7 +10,7 @@
 'use strict';
 
 /**
- * Export all model related submodules.
+ * Export all model factories.
  *
  * @type {Object}
  */
