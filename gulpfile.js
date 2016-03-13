@@ -58,6 +58,14 @@ var requiredJsPaths = [
   'lib/http/web/assets/js/**/*.js',
 ];
 
+// Helper function which prints the error if given and exits.
+var errorHandler = function (err) {
+  if (err) {
+    console.error('Error while running gulp: %s', err);
+    process.exit(1);
+  }
+}
+
 /**
  * Linting and code checking tasks
  */
@@ -66,6 +74,7 @@ gulp.task('lint', ['format-code'], function () {
       .pipe(jshint())
       .pipe(jshint.reporter('jshint-stylish'))
       .pipe(jshint.reporter('fail'))
+      .on('error', errorHandler)
       .pipe(checkstyle())
       .pipe(gulp.dest('reports'));
 });
