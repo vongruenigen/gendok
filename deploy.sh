@@ -17,10 +17,8 @@ if [ ! -w "$TARGET_DIR" ]; then
   exit 1
 fi
 
+export GENDOK_ENV=production
 cd $PULL_DIR/$REPO_NAME
-# There's probably a better way to do the following two lines
-#eval `ssh-agent`
-#ssh-add /home/gendok/.ssh/id_rsa
 git pull
 npm install --production
 gulp build
@@ -28,5 +26,5 @@ forever stopall
 ./node_modules/.bin/sequelize db:migrate
 rsync -aq $PULL_DIR/$REPO_NAME/ $TARGET_DIR/.
 cd $TARGET_DIR
-GENDOK_ENV=production forever start bin/$EXECUTABLE --config config/config.json
+forever start bin/$EXECUTABLE --config config/config.json
 exit 0
