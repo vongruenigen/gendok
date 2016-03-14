@@ -20,8 +20,8 @@
   },
 
   "production": {
-    "http_host": "localhost",
-    "http_port": 3000,
+    "http_host": "srv-lab-t-838.zhaw.ch",
+    "http_port": 9090,
     "username": "gendok",
     "password": "gendok",
     "database": "gendok_production",
