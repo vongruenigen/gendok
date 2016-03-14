@@ -50,16 +50,27 @@ var allCssFilename = 'all.css';
 // List of file patterns to glob for all required css files
 var requiredCssPaths = [
   'bower_components/bootstrap/dist/css/bootstrap.css',
+<<<<<<< HEAD
   'lib/http/web/assets/css/**/*.css'
+=======
+>>>>>>> development
 ];
 
 // List of file patterns to glob for all required js files. Order is IMPORTANT!
 var requiredJsPaths = [
+  'bower_components/angular/angular.js',
   'bower_components/jquery/dist/jquery.js',
   'bower_components/bootstrap/dist/js/bootstrap.js',
-  'bower_components/angularjs/angular.js',
-  'lib/http/web/assets/js/**/*.js'
+  'lib/http/web/assets/js/**/*.js',
 ];
+
+// Helper function which prints the error if given and exits.
+var errorHandler = function (err) {
+  if (err) {
+    console.error('Error while running gulp: %s', err);
+    process.exit(1);
+  }
+}
 
 /**
  * Linting and code checking tasks
@@ -69,6 +80,7 @@ gulp.task('lint', ['format-code'], function () {
       .pipe(jshint())
       .pipe(jshint.reporter('jshint-stylish'))
       .pipe(jshint.reporter('fail'))
+      .on('error', errorHandler)
       .pipe(checkstyle())
       .pipe(gulp.dest('reports'));
 });
@@ -83,13 +95,14 @@ gulp.task('format-code', function () {
 /**
  * Testing related tasks
  */
-gulp.task('test', ['lint', 'test-env'], function () {
+gulp.task('test', ['build', 'lint', 'test-env', 'db-migrate'], function () {
   gulp.src('test/**/*.js')
       .pipe(mocha(mochaOpts))
       .on('error', function (e) {
         logger.warn('error in test: %s', e);
       });
 });
+
 gulp.task('test-env', function () {
   env.set('test');
 });
@@ -107,7 +120,7 @@ var runTestsWithCov = function (opts) {
       .pipe(istanbul.enforceThresholds(istanbulThresholdOpts));
 };
 
-gulp.task('test-cov', ['pre-cov', 'lint', 'test-env'], function () {
+gulp.task('test-cov', ['pre-cov', 'build', 'lint', 'test-env', 'db-migrate'], function () {
   runTestsWithCov(mochaOpts);
 });
 
@@ -115,13 +128,18 @@ gulp.task('test-watch', function () {
   gulp.watch(['lib/**/*.js', 'test/**/*.js'], ['test']);
 });
 
-gulp.task('test-debug', ['lint', 'test-env'], function () {
+gulp.task('test-debug', ['build', 'lint', 'test-env', 'db-migrate'], function () {
   var gulpjs = path.join(__dirname, 'node_modules/gulp/bin/gulp.js');
   spawn('node', ['--debug-brk', gulpjs, 'test'], {stdio: 'inherit'});
 });
 
-gulp.task('test-jenkins', ['pre-cov', 'lint', 'test-env'], function () {
+gulp.task('test-jenkins', ['build', 'pre-cov', 'lint', 'test-env', 'db-migrate'], function () {
   runTestsWithCov(mochaJenkinsOpts);
+});
+
+gulp.task('db-migrate', function () {
+  var sequelizeCLI = path.join(__dirname, 'node_modules/.bin/sequelize');
+  spawn('node', [sequelizeCLI, 'db:migrate'], {stdio: 'inherit', env: process.env});
 });
 
 /**

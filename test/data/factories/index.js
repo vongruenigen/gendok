@@ -10,13 +10,11 @@
 'use strict';
 
 /**
- * Exports the register function for the home module.
+ * Export all model factories.
  *
- * @param {express} app
- * @type {Function}
+ * @type {Object}
  */
-module.exports = function (app) {
-  app.get('/', function (req, res) {
-    res.render('home/index');
-  });
+module.exports = {
+  Template: require('./template'),
+  User:     require('./user')
 };

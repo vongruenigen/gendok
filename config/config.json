@@ -15,14 +15,13 @@
     "username": "gendok",
     "password": "gendok",
     "database": "gendok_test",
-    "dialect": "sqlite",
-    "storage": "./.tmp/gendok_test.sqlite3",
-    "workingDirectory": "./.tmp/"
+    "host": "127.0.0.1",
+    "dialect": "postgres"
   },
 
   "production": {
-    "http_host": "localhost",
-    "http_port": 123,
+    "http_host": "srv-lab-t-838.zhaw.ch",
+    "http_port": 9090,
     "username": "gendok",
     "password": "gendok",
     "database": "gendok_production",
