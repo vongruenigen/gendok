@@ -47,7 +47,6 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "bower": "^1.7.7",
     "chai": "^3.5.0",
     "factory-girl": "^2.3.0",
     "factory-girl-sequelize": "^1.0.0",
@@ -76,6 +75,7 @@
     "zombie": "^4.2.1"
   },
   "dependencies": {
+    "bower": "^1.7.7",
     "bluebird": "3.3.3",
     "body-parser": "1.15.0",
     "cookie-parser": "1.4.1",
