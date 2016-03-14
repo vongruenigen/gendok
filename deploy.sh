@@ -18,6 +18,7 @@ if [ ! -w "$TARGET_DIR" ]; then
 fi
 
 export GENDOK_ENV=production
+export NODE_ENV=production
 cd $PULL_DIR/$REPO_NAME
 git pull
 npm install --production
