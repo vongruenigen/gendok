@@ -9,6 +9,11 @@ pids
 reports
 debug
 
+bower_components
 node_modules
+public/**/*
+public/**/*
+public/fonts/**/*
 .DS_Store
 .tmp
+!**/*.gitkeep

@@ -8,6 +8,7 @@
   "predef": [
     "describe", "it",
     "before", "beforeEach",
-    "after", "afterEach"
+    "after", "afterEach",
+    "angular", "window"
   ]
 }

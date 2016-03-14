@@ -10,8 +10,13 @@
 'use strict';
 
 var logger = require('..').logger;
+var HttpServer = require('..').http.server;
+var Config = require('..').config;
+var db = require('..').data.db;
 var crypto = require('crypto');
 var path = require('path');
+var factories = require('./data/factories');
+var factoryGirl = require('factory-girl');
 
 /**
  * Exports some utility functions
@@ -63,6 +68,84 @@ module.exports = {
       logger.error('Error while setting environment: %s', err);
       throw err;
     }
+  },
+
+  /**
+   * Starts a http server with the given modules and the supplied config. The
+   * default config will be used the config parameter is not present.
+   *
+   * Starting and stopping of the server is done within the beforeEach() and
+   * afterEach() blocks of the supplied context. So the context always has to
+   * be a mocha context. The method can then be used as follows:
+   *
+   * describe('blub', function () {
+   *   var myModules = [module1, module2, ...];
+   *   helper.runHttpServer(this, myModules);
+   *
+   *   it('must pass', function () {
+   *     // the test itself.
+   *   });
+   * });
+   *
+   * An error is thrown if the context argument is missing.
+   *
+   * @param {Object} context The current context
+   * @param {Array} modules List of modules
+   * @param {Config} cfg The config to use, uses the default if not present.
+   */
+  runHttpServer: function (context, modules, cfg) {
+    if (!context) {
+      throw new Error('context argument must be present');
+    }
+
+    var server = new HttpServer(cfg || Config.getDefault());
+    server.registerModules(modules);
+
+    context.beforeEach(function (done) {
+      server.start(done);
+    });
+
+    context.afterEach(function (done) {
+      server.stop(done);
+    });
+  },
+
+  /**
+   * Helper function to ensure that all factories have been loaded and a
+   * database connection exists. The first parameter has to be the testing
+   * context where the db-open/close hooks need to be registered. An optional
+   * Config object can be supplied as the second parameter which is then used
+   * to setup the database connection if none exists. If no Config is specified,
+   * the default config will be used.
+   *
+   * The factory-girl module is then returned after all factories have been reg-
+   * istered.
+   *
+   * @param {Object} ctx Context to register the hooks within.
+   * @param {Config} cfg The config to use to connect to the database.
+   * @return {FactoryGirl} The FactoryGirl object.
+   */
+  loadFactories: function (ctx, cfg) {
+    var mod = null;
+
+    ctx.beforeEach(function () {
+      if (!db.isConnected()) {
+        db.connect(cfg || Config.getDefault());
+      }
+
+      Object.keys(factories).forEach(function (k) {
+        factories[k](db.getModel(k));
+      });
+    });
+
+    ctx.afterEach(function () {
+      db.disconnect();
+    });
+
+    // Load the correct factory-girl adapter at the end
+    require('factory-girl-sequelize')();
+
+    return factoryGirl;
   },
 
   /**

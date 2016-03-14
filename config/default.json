@@ -1,10 +1,31 @@
 {
-  "http_host": "localhost",
-  "http_port": 9000,
-  "username": "gendok",
-  "password": "gendok",
-  "database": "gendok",
-  "dialect": "sqlite",
-  "storage": "./gendok.sqlite3",
-  "workingDirectory": "/tmp"
+  "development": {
+    "http_host": "localhost",
+    "http_port": 3000,
+    "username": "gendok",
+    "password": "gendok",
+    "database": "gendok_development",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+
+  "test": {
+    "http_host": "localhost",
+    "http_port": 3000,
+    "username": "gendok",
+    "password": "gendok",
+    "database": "gendok_test",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+
+  "production": {
+    "http_host": "localhost",
+    "http_port": 123,
+    "username": "gendok",
+    "password": "gendok",
+    "database": "gendok_production",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
 }

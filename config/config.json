@@ -15,9 +15,8 @@
     "username": "gendok",
     "password": "gendok",
     "database": "gendok_test",
-    "dialect": "sqlite",
-    "storage": "./.tmp/gendok_test.sqlite3",
-    "workingDirectory": "./.tmp/"
+    "host": "127.0.0.1",
+    "dialect": "postgres"
   },
 
   "production": {

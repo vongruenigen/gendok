@@ -10,13 +10,11 @@
 'use strict';
 
 /**
- * Export http related submodules of gendok.
+ * Export all model factories.
  *
  * @type {Object}
  */
 module.exports = {
-  web:        require('./web/'),
-  api:        require('./api/'),
-  server:     require('./server'),
-  middleware: require('./middleware/'),
+  Template: require('./template'),
+  User:     require('./user')
 };
