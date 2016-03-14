@@ -75,10 +75,10 @@ var errorHandler = function (err) {
 gulp.task('lint', ['format-code'], function () {
   gulp.src(['lib/**/*.js', 'test/**/*.js'])
       .pipe(jshint())
+      .pipe(checkstyle())
       .pipe(jshint.reporter('jshint-stylish'))
       .pipe(jshint.reporter('fail'))
       .on('error', errorHandler)
-      .pipe(checkstyle())
       .pipe(gulp.dest('reports'));
 });
 
