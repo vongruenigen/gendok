@@ -1,0 +1,31 @@
+{
+  "development": {
+    "http_host": "localhost",
+    "http_port": 3000,
+    "username": "gendok",
+    "password": "gendok",
+    "database": "gendok_development",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+
+  "test": {
+    "http_host": "localhost",
+    "http_port": 3000,
+    "username": "gendok",
+    "password": "gendok",
+    "database": "gendok_test",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+
+  "production": {
+    "http_host": "srv-lab-t-838.zhaw.ch",
+    "http_port": 9090,
+    "username": "gendok",
+    "password": "gendok",
+    "database": "gendok_production",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}

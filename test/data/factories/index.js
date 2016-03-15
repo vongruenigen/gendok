@@ -10,14 +10,11 @@
 'use strict';
 
 /**
- * Export all submodules of gendok.
+ * Export all model factories.
  *
  * @type {Object}
  */
 module.exports = {
-  env:    require('./env'),
-  config: require('./config'),
-  logger: require('./logger'),
-  data:   require('./data/'),
-  http:   require('./http/')
+  Template: require('./template'),
+  User:     require('./user')
 };

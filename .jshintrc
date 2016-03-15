@@ -1,7 +1,14 @@
 {
-    "indent": 4,
-    "curly": true,
-    "eqeqeq": true,
-    "node": true,
-    "predef": ["describe", "it"]
+  "esversion": 6,
+  "indent": 4,
+  "curly": true,
+  "eqeqeq": true,
+  "node": true,
+  "expr": true,
+  "predef": [
+    "describe", "it",
+    "before", "beforeEach",
+    "after", "afterEach",
+    "angular", "window"
+  ]
 }
