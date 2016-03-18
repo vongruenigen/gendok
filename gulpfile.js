@@ -47,6 +47,10 @@ var publicImgPath = path.join(publicPath, 'img');
 var allJsFilename = 'all.js';
 var allCssFilename = 'all.css';
 
+var redisConfigTemplate = path.join(__dirname, 'config', 'redis.conf.tmpl');
+var redisConfig = path.join(__dirname, 'config', 'redis.conf');
+var redisLogfile = path.join(__dirname, 'log', 'redis.log');
+
 // List of file patterns to glob for all required css files
 var requiredCssPaths = [
   'bower_components/bootstrap/dist/css/bootstrap.css',
@@ -68,6 +72,54 @@ var errorHandler = function (err) {
     process.exit(1);
   }
 }
+
+/**
+ * Helper function which can be used to compile text files which contains
+ * placeholder in ERB-style (e.g. <%= blub %>). It uses the values object
+ * to fill the placeholders with referenced value.
+ *
+ * The callback is invoked with an error if a placeholder without a
+ * correspondent value is found.
+ *
+ * This function is used to compile the redis configuration.
+ *
+ * @param input The path of the file to compile.
+ * @param output The path to the resulting file.
+ * @param values The values to use to replace the placeholders.
+ * @param fn The callback, which is called after the template has been compiled.
+ */
+var compileTemplate = function (input, output, values, fn) {
+  var placeholderRegex = /<%=\s*(.+)\s*%>/;
+  var match;
+
+  console.log('Starting to compile template %s', input);
+
+  fs.readFile(input, function (err, text) {
+    if (err) { return fn(err); }
+
+    // Conver binary buffer to string
+    text = text.toString();
+
+    while (match = placeholderRegex.exec(text)) {
+      var placeholder = match[0];
+      var key = match[1] && match[1].trim();
+
+      if (!values[key]) {
+        return fn(new Error('no value for placeholder ' + key + ' found!'));
+      }
+
+      text = text.replace(placeholder, values[key]);
+    }
+
+    fs.writeFile(output, text, function (err) {
+      if (!err) {
+        console.log('Successfully compiled template %s to %s', input, output);
+      }
+
+      fn(err);
+    });
+  });
+};
 
 /**
  * Linting and code checking tasks
@@ -146,9 +198,13 @@ gulp.task('build-watch', function () {
   gulp.watch(['lib/http/web/assets/**/*', 'bower_components/**/*'], ['build']);
 });
 
-gulp.task('build', ['check-bower-components', 'build-fonts',
-                    'build-css', 'build-js', 'build-img'], function () {
-  console.log('All assets successfully compiled and copied to public/');
+gulp.task('build', ['check-bower-components',
+                    'build-fonts',
+                    'build-css',
+                    'build-js',
+                    'build-img',
+                    'redis-config'], function () {
+  console.log('Everything was successfully builded!');
 });
 
 gulp.task('build-js', function () {
@@ -205,9 +261,27 @@ gulp.task('check-bower-components', function (done) {
 gulp.task('clean', function (cb) {
   exec('git clean -Xf && git clean -Xdf', function (err, stdout, stderr) {
     console.log(stdout);
-    console.log(stderr);
+    console.error(stderr);
     cb(err);
   });
+});
+
+gulp.task('redis-server', ['redis-config'], function (done) {
+  exec('which redis-server', function (err) {
+    if (err) { return done(err); }
+
+    exec('redis-server ' + redisConfig, function (err) {
+      if (err) { done(err); }
+    })
+  });
+});
+
+gulp.task('redis-config', function (done) {
+  var values = {
+    logfile: redisLogfile
+  };
+
+  compileTemplate(redisConfigTemplate, redisConfig, values, done);
 });
 
 // Default Task
