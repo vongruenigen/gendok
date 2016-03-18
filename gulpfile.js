@@ -144,11 +144,17 @@ gulp.task('format-code', function () {
 /**
  * Testing related tasks
  */
-gulp.task('test', ['build', 'lint', 'test-env', 'db-migrate'], function () {
+
+gulp.task('pre-test', ['test-env', 'build', 'lint',
+                       'redis-server', 'db-migrate'], function () {
+  console.log('Successfully prepared test run');
+});
+
+gulp.task('test', ['pre-test'], function () {
   gulp.src('test/**/*.js')
       .pipe(mocha(mochaOpts))
       .on('error', function (e) {
-        logger.warn('error in test: %s', e);
+        logger.error('error in test: %s', e);
       });
 });
 
@@ -169,7 +175,7 @@ var runTestsWithCov = function (opts) {
       .pipe(istanbul.enforceThresholds(istanbulThresholdOpts));
 };
 
-gulp.task('test-cov', ['pre-cov', 'build', 'lint', 'test-env', 'db-migrate'], function () {
+gulp.task('test-cov', ['pre-test', 'pre-cov'], function () {
   runTestsWithCov(mochaOpts);
 });
 
@@ -177,14 +183,18 @@ gulp.task('test-watch', function () {
   gulp.watch(['lib/**/*.js', 'test/**/*.js'], ['test']);
 });
 
-gulp.task('test-debug', ['build', 'lint', 'test-env', 'db-migrate'], function () {
+gulp.task('test-debug', ['pre-test'], function () {
   var gulpjs = path.join(__dirname, 'node_modules/gulp/bin/gulp.js');
   spawn('node', ['--debug-brk', gulpjs, 'test'], {stdio: 'inherit'});
 });
 
-gulp.task('test-jenkins', ['build', 'pre-cov', 'lint', 'test-env', 'db-migrate'], function () {
+gulp.task('test-jenkins', ['pre-test'], function () {
   runTestsWithCov(mochaJenkinsOpts);
 });
+
+/**
+ * Database related tasks
+ */
 
 gulp.task('db-migrate', function () {
   var sequelizeCLI = path.join(__dirname, 'node_modules/.bin/sequelize');
@@ -256,7 +266,36 @@ gulp.task('check-bower-components', function (done) {
 });
 
 /**
- * Misc. tasks
+ * Redis related tasks
+ */
+gulp.task('redis-server', ['redis-config'], function (done) {
+
+  exec('which redis-server', function (err) {
+    if (err) { return done(err); }
+
+    var redis = spawn('redis-server', [redisConfig],
+                      {detached: true, stdio: 'ignore'});
+
+    redis.unref();
+
+    process.once('exit', function () {
+      redis.kill();
+    });
+
+    done();
+ });
+});
+
+gulp.task('redis-config', function (done) {
+  var values = {
+    logfile: redisLogfile
+ };
+
+ compileTemplate(redisConfigTemplate, redisConfig, values, done);
+});
+
+/**
+ * Miscellaneous tasks
  */
 gulp.task('clean', function (cb) {
   exec('git clean -Xf && git clean -Xdf', function (err, stdout, stderr) {
@@ -264,24 +303,6 @@ gulp.task('clean', function (cb) {
     console.error(stderr);
     cb(err);
   });
-});
-
-gulp.task('redis-server', ['redis-config'], function (done) {
-  exec('which redis-server', function (err) {
-    if (err) { return done(err); }
-
-    exec('redis-server ' + redisConfig, function (err) {
-      if (err) { done(err); }
-    })
-  });
-});
-
-gulp.task('redis-config', function (done) {
-  var values = {
-    logfile: redisLogfile
-  };
-
-  compileTemplate(redisConfigTemplate, redisConfig, values, done);
 });
 
 // Default Task
