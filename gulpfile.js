@@ -278,8 +278,8 @@ gulp.task('redis-server', ['redis-config'], function (done) {
 
     // use unref() here to prevent the test process to hang
     // and wait for redis to exit by itself. The redis process
-    // will then be quit when gulp exits since it's a child
-    // process.
+    // will then be quit when gulp exits because of the on 'exit'
+    // callback below.
     if (env.is('test')) {
       redis.unref();
     }
