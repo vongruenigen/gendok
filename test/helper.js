@@ -30,15 +30,6 @@ module.exports = {
   noop: function () {},
 
   /**
-   * Generates a random token and returns it as a string.
-   *
-   * @return {String}
-   */
-  randomToken: function () {
-    return crypto.randomBytes(64).toString('hex');
-  },
-
-  /**
    * Sets the given options as environment variables.
    *
    * @param {Object} env
