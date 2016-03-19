@@ -269,14 +269,20 @@ gulp.task('check-bower-components', function (done) {
  * Redis related tasks
  */
 gulp.task('redis-server', ['redis-config'], function (done) {
-
   exec('which redis-server', function (err) {
     if (err) { return done(err); }
 
+    var stdio = env.is('development') ? 'inherit' : 'ignore';
     var redis = spawn('redis-server', [redisConfig],
-                      {detached: true, stdio: 'ignore'});
+                      {detached: env.is('test'), stdio: stdio});
 
-    redis.unref();
+    // use unref() here to prevent the test process to hang
+    // and wait for redis to exit by itself. The redis process
+    // will then be quit when gulp exits since it's a child
+    // process.
+    if (env.is('test')) {
+      redis.unref();
+    }
 
     process.once('exit', function () {
       redis.kill();
