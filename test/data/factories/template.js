@@ -22,7 +22,8 @@ module.exports = function (model) {
   factory.define('Template', model, {
     type: faker.name.firstName(),
     template: faker.lorem.paragraphs(),
-    userId: faker.random.number()
+    userId: faker.random.number(),
+    additionalCss: ''
   });
 
   return factory;
