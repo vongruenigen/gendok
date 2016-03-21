@@ -94,6 +94,20 @@ describe('gendok.data.model.template', function () {
     });
 
     describe('.userId', function () {
+      it('may not be empty', function () {
+        var values = {userId: ''};
+
+        factory.build('Template', values, function (err, template) {
+           expect(err).to.not.exist;
+           expect(template.body).to.eql(values.body);
+
+           template.validate().then(function (err) {
+             expect(err).to.exist;
+             expect(err.errors.length).to.eql(1);
+             expect(err.errors[0].path).to.eql('userId');
+           });
+        });
+      });
       it('may not be undefined', function () {
         var values = {userId: undefined};
 
@@ -119,19 +133,9 @@ describe('gendok.data.model.template', function () {
             template.userId = -1;
           }).then(function () {
             template.validate().then(function (err) {
-              console.log(template);
               expect(err).to.exist;
               expect(err.errors.length).to.eql(1);
               expect(err.errors[0].path).to.eql('userId');
-            }).then(function () {
-              template.userId = null;
-            }).then(function () {
-              console.log(template);
-              template.validate().then(function (err) {
-                expect(err).to.exist;
-                expect(err.errors.length).to.eql(1);
-                expect(err.errors[0].path).to.eql('userId');
-              });
             });
           });
         });
