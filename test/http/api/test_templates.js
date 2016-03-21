@@ -43,5 +43,8 @@ describe('gendok.http.api.templates', function () {
                });
       });
     });
+    it('returns the created template as JSON object', function () {
+
+    });
   });
 });
