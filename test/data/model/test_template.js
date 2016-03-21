@@ -40,7 +40,6 @@ describe('gendok.data.model.template', function () {
           expect(template.type).to.eql(values.type);
 
           template.validate().then(function (err) {
-            console.log(err);
             expect(err).to.exist;
             expect(err.errors.length).to.eql(1);
             expect(err.errors[0].path).to.eql('type');
@@ -120,9 +119,19 @@ describe('gendok.data.model.template', function () {
             template.userId = -1;
           }).then(function () {
             template.validate().then(function (err) {
+              console.log(template);
               expect(err).to.exist;
               expect(err.errors.length).to.eql(1);
               expect(err.errors[0].path).to.eql('userId');
+            }).then(function () {
+              template.userId = null;
+            }).then(function () {
+              console.log(template);
+              template.validate().then(function (err) {
+                expect(err).to.exist;
+                expect(err.errors.length).to.eql(1);
+                expect(err.errors[0].path).to.eql('userId');
+              });
             });
           });
         });
