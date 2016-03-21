@@ -49,4 +49,15 @@ describe('gendok.util', function () {
       expect(util.randomToken()).to.be.of.length(8);
     });
   });
+
+  describe('addCssToHtml()', function () {
+    it('adds the given css within the <head> element', function () {
+      var htmlTmpl = '<html><head>%%</head><body><h1>gendok</h1></body></html>';
+      var html = htmlTmpl.replace('%%', '');
+      var css = 'h1 { color: green; }';
+      var expected = htmlTmpl.replace('%%', '<style>' + css + '</style>');
+
+      expect(util.addCssToHtml(html, css)).to.eql(expected);
+    });
+  });
 });
