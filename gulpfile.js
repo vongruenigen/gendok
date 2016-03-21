@@ -285,7 +285,7 @@ gulp.task('redis-server', ['redis-config'], function (done) {
     }
 
     process.once('exit', function () {
-      redis.kill();
+      redis.kill('SIGKILL');
     });
 
     done();
