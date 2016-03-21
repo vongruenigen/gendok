@@ -127,19 +127,19 @@ module.exports = {
    */
   loadFactories: function (ctx, cfg) {
     var mod = null;
+    var factoriesLoaded = false;
 
-    ctx.beforeEach(function () {
+    ctx.beforeAll(function () {
       if (!db.isConnected()) {
         db.connect(cfg || Config.getDefault());
       }
 
-      Object.keys(factories).forEach(function (k) {
-        factories[k](db.getModel(k));
-      });
-    });
-
-    ctx.afterEach(function () {
-      db.disconnect();
+      if (!factoriesLoaded) {
+        Object.keys(factories).forEach(function (k) {
+          factories[k](db.getModel(k));
+        });
+        factoriesLoaded = true;
+      }
     });
 
     // Load the correct factory-girl adapter at the end
