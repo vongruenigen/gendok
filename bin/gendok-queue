@@ -16,6 +16,7 @@ var path   = require('path'),
     gendok = require(base),
     Config = gendok.config,
     Server = gendok.http.server,
+    Runner = gendok.queue.runner,
     config = {};
 
 if (!gendok) {
@@ -47,4 +48,14 @@ if (!argv.config && !argv.c) {
 }
 
 var cfg = new Config(config);
-var queue = new Queue(cfg);
+var queueRunner = new Runner(cfg);
+
+queueRunner.start(function () {
+  queueRunner.registerWorkers({
+    convert: gendok.queue.worker.convert,
+    cleanup: gendok.queue.worker.cleanup,
+    email: gendok.queue.worker.email
+  });
+
+  console.log('successfully started gendok queue runner');
+});
