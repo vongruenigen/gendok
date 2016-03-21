@@ -127,18 +127,22 @@ module.exports = {
    */
   loadFactories: function (ctx, cfg) {
     var mod = null;
+    var factoriesLoaded = false;
 
-    ctx.beforeEach(function () {
+    ctx.beforeAll(function () {
       if (!db.isConnected()) {
         db.connect(cfg || Config.getDefault());
       }
 
-      Object.keys(factories).forEach(function (k) {
-        factories[k](db.getModel(k));
-      });
+      if (!factoriesLoaded) {
+        Object.keys(factories).forEach(function (k) {
+          factories[k](db.getModel(k));
+        });
+        factoriesLoaded = true;
+      }
     });
 
-    ctx.afterEach(function () {
+    ctx.afterAll(function () {
       db.disconnect();
     });
 
