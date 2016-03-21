@@ -142,10 +142,6 @@ module.exports = {
       }
     });
 
-    ctx.afterAll(function () {
-      db.disconnect();
-    });
-
     // Load the correct factory-girl adapter at the end
     require('factory-girl-sequelize')();
 
