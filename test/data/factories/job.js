@@ -20,7 +20,6 @@ var db = require('../../..').data.db;
  */
 module.exports = function (model) {
   factory.define('Job', model, {
-    id: faker.random.number(),
     templateId: factory.assoc('Template', 'id'),
     payload: {},
     state: 'pending',
