@@ -10,8 +10,10 @@
 'use strict';
 
 var gendok = require('../../../');
+var db = gendok.data.db;
+var Config = gendok.config;
 var helper = require('../../helper');
-var convert = gendok.queue.worker.convert;
+var convert = require('../../../lib/queue/worker/convert');
 var expect = require('chai').expect;
 var simple = require('simple-mock');
 
@@ -46,6 +48,20 @@ describe('gendok.queue.worker.convert', function () {
         expect(j.result).to.not.be.empty;
         done();
       });
+    });
+  });
+
+  it('returns an error if no jobId is given or invalid', function (done) {
+    var jobData = {jobId: -1};
+
+    convert(jobData, function (err) {
+      expect(err).to.exist;
+      jobData = {};
+
+      convert(jobData, function (err) {
+        expect(err).to.exist;
+        done();
+      })
     });
   });
 });
