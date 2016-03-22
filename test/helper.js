@@ -146,7 +146,7 @@ module.exports = {
    * @param {Function} cb
    */
   withGendokEnv: function (env, cb) {
-    this.withEnv({'GENDOK_ENV': env}, cb);
+    this.withEnv({GENDOK_ENV: env}, cb);
   },
 
   /**

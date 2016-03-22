@@ -21,10 +21,10 @@ var istanbul = require('gulp-istanbul');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
 var cssnano = require('gulp-cssnano');
-var checkstyle = require('gulp-jshint-checkstyle-reporter');
 var jscs = require('gulp-jscs');
 var sass = require('gulp-ruby-sass');
 var autoprefixer = require('gulp-autoprefixer');
+var stylish = require('gulp-jscs-stylish');
 var spawn = require('child_process').spawn;
 var logger = require('./lib/').logger;
 var env = require('./lib/').env;
@@ -124,21 +124,15 @@ var compileTemplate = function (input, output, values, fn) {
 /**
  * Linting and code checking tasks
  */
-gulp.task('lint', ['format-code'], function () {
+gulp.task('lint', function () {
   gulp.src(['lib/**/*.js', 'test/**/*.js'])
       .pipe(jshint())
-      .pipe(checkstyle())
+      .pipe(jscs())
+      .pipe(stylish.combineWithHintResults())
       .pipe(jshint.reporter('jshint-stylish'))
-      .pipe(jshint.reporter('fail'))
-      .on('error', errorHandler)
-      .pipe(gulp.dest('reports'));
-});
-
-gulp.task('format-code', function () {
-  gulp.src(['lib/**/*.js', 'test/**/*.js'])
-      .pipe(jscs({fix: true}))
-      .pipe(jscs.reporter())
-      .pipe(jscs.reporter('failImmediately'));
+      .pipe(jshint.reporter('gulp-checkstyle-jenkins-reporter', {
+        filename: path.join(__dirname, 'reports', 'checkstyle.xml')
+      }));
 });
 
 /**

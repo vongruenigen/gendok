@@ -46,6 +46,7 @@ describe('gendok.logger', function () {
         create: function () {
           return {};
         },
+
         log: function (level, a) {
           expect(levels).to.include(level);
           expect(a).to.include(args);
@@ -53,7 +54,10 @@ describe('gendok.logger', function () {
         }
       };
 
-      levels.forEach(function (l) { logger[l](l, args); });
+      levels.forEach(function (l) {
+        logger[l](l, args);
+      });
+
       expect(count).to.eql(4);
     });
   });
