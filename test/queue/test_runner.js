@@ -73,7 +73,7 @@ describe('gendok.queue.runner', function () {
       r.start(function (err) {
         expect(err).to.not.exist;
         expect(runner.isRunning()).to.be.true;
-        done()
+        done();
       });
     });
   });
@@ -87,8 +87,8 @@ describe('gendok.queue.runner', function () {
   describe('registerWorker()', function () {
     it('registers the worker on the queue', function () {
       var queue = runner.getQueue();
-      var workerFn = function () {};
       var key = 'blub';
+      var workerFn = function () {};
 
       simple.mock(queue, 'process').callOriginal();
       runner.registerWorker(key, workerFn);
@@ -145,7 +145,7 @@ describe('gendok.queue.runner', function () {
     });
 
     it('throws if the workers param is null or undefined', function () {
-      expect(function() { runner.registerWorkers(); }).to.throw(Error);
+      expect(function () { runner.registerWorkers(); }).to.throw(Error);
     });
   });
 });
