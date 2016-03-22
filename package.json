@@ -73,21 +73,11 @@
     "gulp-if": "2.0.0",
     "gulp-istanbul": "0.10.3",
     "gulp-jscs": "3.0.2",
-<<<<<<< HEAD
-    "gulp-jshint-checkstyle-reporter": "1.0.0",
-    "jshint": "2.9.1",
-    "bluebird": "3.3.3",
-    "body-parser": "1.15.0",
-    "cookie-parser": "1.4.1",
-    "express": "4.13.4",
-=======
-    "gulp-jshint": "2.0.0",
     "gulp-jshint-checkstyle-reporter": "1.0.0",
     "gulp-mocha": "2.2.0",
     "gulp-ruby-sass": "2.0.6",
     "gulp-uglify": "1.5.3",
     "gulp-watch": "4.3.5",
->>>>>>> c5f9a995ab19d646e346ad90b40026a6cc52aa1b
     "jade": "1.11.0",
     "jshint": "2.9.1",
     "minimist": "1.2.0",
