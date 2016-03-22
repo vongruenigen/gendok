@@ -18,22 +18,10 @@ describe('gendok.compiler.compiler', function () {
     expect(compiler).to.be.a('object');
   });
 
-  describe('get compilers', function () {
+  describe('get available compilers', function () {
     it('is a function', function () {
       var compiler = new Compiler();
-      expect(compiler.getCompilers).to.be.a('function');
-    });
-
-    it('noop has compile function', function () {
-      var compiler = new Compiler('noop');
-      expect(compiler.compile).to.exist;
-      expect(compiler.compile).to.be.a('function');
-    });
-
-    it('mustache has compile function', function () {
-      var compiler = new Compiler('mustache');
-      expect(compiler.compile).to.exist;
-      expect(compiler.compile).to.be.a('function');
+      expect(compiler.getAvailableCompilers).to.be.a('function');
     });
   });
 });
