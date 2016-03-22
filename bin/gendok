@@ -52,6 +52,7 @@ var server = new Server(cfg);
 server.registerModules([
   gendok.http.middleware.basic,
   gendok.http.web.home,
+  gendok.http.api.templates
 ]);
 
 server.start(function (err) {

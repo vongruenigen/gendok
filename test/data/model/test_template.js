@@ -142,4 +142,24 @@ describe('gendok.data.model.template', function () {
       });
     });
   });
+
+  describe('instance methods', function () {
+    describe('toPublicObject', function () {
+      it('is a function', function () {
+        factory.build('Template', function (err, template) {
+          expect(template.toPublicObject).to.be.a('function');
+        });
+      });
+
+      it('strips the userId from the model', function () {
+        factory.build('Template', function (err, template) {
+          var publicTemplate = template.toPublicObject();
+          expect(publicTemplate.id).to.exist;
+          expect(publicTemplate.body).to.exist;
+          expect(publicTemplate.type).to.exist;
+          expect(publicTemplate.userId).to.not.exist;
+        });
+      });
+    });
+  });
 });
