@@ -40,7 +40,7 @@ describe('gendok.util', function () {
     it('returns a random token of the the specified length', function () {
       for (var i = 1; i < 255; i++) {
         var token = util.randomToken(i);
-        expect(token).to.be.of.length(i*2);
+        expect(token).to.be.of.length(i * 2);
         expect(token).to.match(/^[a-z0-9]+$/);
       }
     });
