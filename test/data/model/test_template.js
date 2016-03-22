@@ -151,10 +151,9 @@ describe('gendok.data.model.template', function () {
         });
       });
 
-      it('strips the userId from the model', function () {
+      it('strips the userId', function () {
         factory.build('Template', function (err, template) {
           var publicTemplate = template.toPublicObject();
-          expect(publicTemplate.id).to.exist;
           expect(publicTemplate.body).to.exist;
           expect(publicTemplate.type).to.exist;
           expect(publicTemplate.userId).to.not.exist;
