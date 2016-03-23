@@ -51,14 +51,14 @@ describe('gendok.data.model.template', function () {
         var values = {type: undefined};
 
         factory.build('Template', values, function (err, template) {
-           expect(err).to.not.exist;
-           expect(template.type).to.eql(values.type);
+          expect(err).to.not.exist;
+          expect(template.type).to.eql(values.type);
 
-           template.validate().then(function (err) {
-             expect(err).to.exist;
-             expect(err.errors.length).to.eql(1);
-             expect(err.errors[0].path).to.eql('type');
-           });
+          template.validate().then(function (err) {
+            expect(err).to.exist;
+            expect(err.errors.length).to.eql(1);
+            expect(err.errors[0].path).to.eql('type');
+          });
         });
       });
     });
@@ -68,27 +68,28 @@ describe('gendok.data.model.template', function () {
         var values = {body: ''};
 
         factory.build('Template', values, function (err, template) {
-           expect(err).to.not.exist;
-           expect(template.body).to.eql(values.body);
+          expect(err).to.not.exist;
+          expect(template.body).to.eql(values.body);
 
-           template.validate().then(function (err) {
-             expect(err).to.exist;
-             expect(err.errors.length).to.eql(1);
-             expect(err.errors[0].path).to.eql('body');
-           });
+          template.validate().then(function (err) {
+            expect(err).to.exist;
+            expect(err.errors.length).to.eql(1);
+            expect(err.errors[0].path).to.eql('body');
+          });
         });
       });
+
       it('may not be undefined', function () {
         var values = {body: undefined};
 
         factory.build('Template', values, function (err, template) {
-           expect(err).to.not.exist;
-           expect(template.body).to.eql(values.body);
-           template.validate().then(function (err) {
-             expect(err).to.exist;
-             expect(err.errors.length).to.eql(1);
-             expect(err.errors[0].path).to.eql('body');
-           });
+          expect(err).to.not.exist;
+          expect(template.body).to.eql(values.body);
+          template.validate().then(function (err) {
+            expect(err).to.exist;
+            expect(err.errors.length).to.eql(1);
+            expect(err.errors[0].path).to.eql('body');
+          });
         });
       });
     });
@@ -98,16 +99,17 @@ describe('gendok.data.model.template', function () {
         var values = {userId: ''};
 
         factory.build('Template', values, function (err, template) {
-           expect(err).to.not.exist;
-           expect(template.body).to.eql(values.body);
+          expect(err).to.not.exist;
+          expect(template.body).to.eql(values.body);
 
-           template.validate().then(function (err) {
-             expect(err).to.exist;
-             expect(err.errors.length).to.eql(1);
-             expect(err.errors[0].path).to.eql('userId');
-           });
+          template.validate().then(function (err) {
+            expect(err).to.exist;
+            expect(err.errors.length).to.eql(1);
+            expect(err.errors[0].path).to.eql('userId');
+          });
         });
       });
+
       it('may not be undefined', function () {
         var values = {userId: undefined};
 
@@ -122,6 +124,7 @@ describe('gendok.data.model.template', function () {
           });
         });
       });
+
       it('ensures userId is an existing user', function () {
         factory.create('Template', function (err, template) {
           expect(err).to.not.exist;
