@@ -10,14 +10,19 @@
 'use strict';
 
 var helper = require('../../helper');
-var User = require('../../..').data.model.User;
+var db = require('../../..').data.db;
 var expect = require('chai').expect;
 
 describe('gendok.data.model.user', function () {
   var factory = helper.loadFactories(this);
+  var User = null;
 
-  it('is a function', function () {
-    expect(User).to.be.a('function');
+  beforeEach(function () {
+    User = db.getModel('User');
+  });
+
+  it('is a object', function () {
+    expect(User).to.be.a('object');
   });
 
   describe('the factory', function () {
@@ -27,6 +32,13 @@ describe('gendok.data.model.user', function () {
         expect(user).to.exist;
         done();
       });
+    });
+  });
+
+  describe('defaults', function () {
+    it('automatically generates an apiToken', function () {
+      var u = User.build();
+      expect(u.apiToken).to.not.be.empty;
     });
   });
 });
