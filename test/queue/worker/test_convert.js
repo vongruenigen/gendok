@@ -47,7 +47,7 @@ describe('gendok.queue.worker.convert', function () {
       Job.findById(job.id).then(function (j) {
         expect(j.result).to.not.be.empty;
         done();
-      });
+      }).catch(done);
     });
   });
 
@@ -61,7 +61,34 @@ describe('gendok.queue.worker.convert', function () {
       convert(jobData, function (err) {
         expect(err).to.exist;
         done();
-      })
+      });
+    });
+  });
+
+  it('rejects jobs which are already finished', function (done) {
+    var jobData = {jobId: job.id};
+
+    job.update({state: 'finished'}).then(function (j) {
+      expect(j).to.exist;
+
+      convert(jobData, function (err) {
+        expect(err).to.exist;
+        done();
+      });
+    }).catch(done);
+  });
+
+  it('updates the state of the job after it has finished', function (done) {
+    var jobData = {jobId: job.id};
+
+    convert(jobData, function (err) {
+      expect(err).to.not.exist;
+
+      Job.findById(job.id).then(function (j) {
+        expect(j).to.exist;
+        expect(j.state).to.eql('finished');
+        done();
+      }).catch(done);
     });
   });
 });
