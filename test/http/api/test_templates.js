@@ -58,14 +58,14 @@ describe('gendok.http.api.templates', function () {
     it('delete a template in the database', function (done) {
       factory.create('Template', function (err, templ) {
         request.delete('api/templates/' + templ.id)
-          .end(function(err,res){
+          .end(function (err, res) {
             expect(err).to.not.exist;
             expect(res.statusCode).to.eql(200);
 
-            Template.findById(templ.id).then(function(t){
+            Template.findById(templ.id).then(function (t) {
               expect(t).to.not.exist;
-            })
-          })
+            });
+          });
       });
     });
   });
