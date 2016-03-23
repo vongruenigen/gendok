@@ -57,7 +57,7 @@ describe('gendok.data.model.template', function () {
             expect(err).to.exist;
             expect(err.errors.length).to.eql(1);
             expect(err.errors[0].path).to.eql('type');
-          });
+          }).catch(done);
         });
       });
 

@@ -21,7 +21,7 @@ var db = require('../../..').data.db;
 module.exports = function (model) {
   factory.define('Template', model, {
     userId: factory.assoc('User', 'id'),
-    additionalCss: ''
+    additionalCss: '',
     type: 'html',
     body: ['<html><head><title>hello world></title></head><body>',
            '<h1>Hello from gendok</h1></body</html>'].join('')
