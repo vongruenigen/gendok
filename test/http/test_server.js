@@ -131,18 +131,15 @@ describe('gendok.http.Server', function () {
     it('calls the modules with the app as a parameter', function () {
       var h = new HttpServer(alternativeConfig);
       var counter = 0;
+      var counterFn = function (app) { counter++; };
 
-      h.registerModules([
-        function (app) { counter++; },
-        function (app) { counter++; },
-        function (app) { counter++; },
-      ]);
+      h.registerModules([counterFn, counterFn, counterFn]);
 
       expect(counter).to.eql(3);
     });
 
     it('throws if the modules param is null or undefined', function () {
-      expect(function() {
+      expect(function () {
         var h = new HttpServer(alternativeConfig);
         h.registerModules();
       }).to.throw(Error);
