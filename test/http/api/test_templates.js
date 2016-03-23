@@ -13,6 +13,7 @@ var gendokHttp = require('../../..').http;
 var templatesApi = gendokHttp.api.templates;
 var basicMiddleware = gendokHttp.middleware.basic;
 var Template = require('../../..').data.model.template;
+var User = require('../../..').data.model.user;
 var Config = require('../../..').config;
 var expect = require('chai').expect;
 var helper = require('../../helper');
@@ -28,22 +29,26 @@ describe('gendok.http.api.templates', function () {
 
   describe('POST /api/templates/', function () {
     it('creates a template in the database', function (done) {
-      factory.build('Template', function (err, templ) {
-        request.post('/api/templates')
-              .send(templ.toJSON())
-              .set('Content-Type', 'application/json')
-              .end(function (err, res) {
-                expect(err).to.not.exist;
-                expect(res.statusCode).to.eql(201);
-
-                var createdAttrs = JSON.parse(res.body);
-
-                Template.findById(createdAttrs.id).then(function (err, templ) {
+      factory.create('User', function (err, user) {
+        factory.build('Template', values, function (err, templ) {
+          request.post('/api/templates')
+                .send(templ.toJSON())
+                .set('Content-Type', 'application/json')
+                .set('Authorization', 'Token ' + user.apiToken)
+                .end(function (err, res) {
                   expect(err).to.not.exist;
-                  expect(templ.id).to.eql(createdAttrs.id);
-                  done();
+                  expect(res.statusCode).to.eql(201);
+
+                  var createdAttrs = JSON.parse(res.body);
+                  console.log(createdAttrs);
+
+                  Template.findById(createdAttrs.id).then(function (err, templ) {
+                    expect(err).to.not.exist;
+                    expect(templ.id).to.eql(createdAttrs.id);
+                    done();
+                  });
                 });
-              });
+        });
       });
     });
 
