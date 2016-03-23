@@ -19,7 +19,6 @@
   ],
   "disallowMixedSpacesAndTabs": true,
   "disallowTrailingWhitespace": true,
-  "requireTrailingComma": { "ignoreSingleLine": true },
   "requireSpaceAfterComma": true,
   "disallowYodaConditions": true,
   "disallowKeywords": [ "with" ],
@@ -47,7 +46,6 @@
   "requireCapitalizedConstructors": true,
   "requireDotNotation": true,
   "requireSpacesInForStatement": true,
-  "requireSpacesInsideObjectBrackets": "all",
   "requireSpaceBetweenArguments": true,
   "requireCurlyBraces": [
     "do"
