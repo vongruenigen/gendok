@@ -60,13 +60,12 @@ describe('gendok.http.api.status', function () {
     describe('with a valid token', function () {
       it('returns a 200 http status code', function (done) {
         factory.create('User', function (err, user) {
-          console.log(user.apiToken);
           request.get(url)
                  .set('Authorization', 'Token ' + user.apiToken)
                  .end(function (err, res) {
                    expect(err).to.not.exist;
                    expect(res.statusCode).to.eql(200);
-                   done()
+                   done();
                  });
         });
       });

@@ -142,6 +142,7 @@ module.exports = {
         Object.keys(factories).forEach(function (k) {
           factories[k](db.getModel(k));
         });
+
         factoriesLoaded = true;
       }
     });
