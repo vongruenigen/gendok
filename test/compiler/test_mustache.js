@@ -20,11 +20,14 @@ describe('gendok.compiler.mustache', function () {
   });
 
   describe('compile()', function () {
-    it('returns the compiled tempalte', function () {
+    it('returns the compiled tempalte', function (done) {
       var compiler = new Compiler('mustache');
       var template = '<h1>Hello {{name}}</h1>';
       var expected = '<h1>Hello Name</h1>';
-      expect(compiler.compile(template, {name: 'Name'})).to.eql(expected);
+      compiler.compile(template, {name: 'Name'}, function (err, rendered) {
+        expect(rendered).to.eql(expected);
+        done();
+      });
     });
   });
 

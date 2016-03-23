@@ -20,11 +20,13 @@ describe('gendok.compiler.html', function () {
   });
 
   describe('compile()', function () {
-    it('returns the compiled tempalte', function () {
+    it('returns the compiled tempalte', function (done) {
       var compiler = new Compiler('html');
       var template = '<h1>Hello {{name}}</h1>';
-      expect(compiler.compile(template, {})).to.eql(template);
-      expect(compiler.compile(template, {name: 'Name'})).to.eql(template);
+      compiler.compile(template, {}, function (err, rendered) {
+        expect(rendered).to.eql(template);
+        done();
+      });
     });
   });
 

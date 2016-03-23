@@ -21,10 +21,17 @@ describe('gendok.data.model.template', function () {
   });
 
   describe('the factory', function () {
-    it('inserts a user into the db', function (done) {
+    it('inserts a template into the db', function (done) {
       factory.create('Template', function (err, template) {
         expect(err).to.not.exist;
         expect(template).to.exist;
+        done();
+      });
+    });
+
+    it('throws error if invalid type', function (done) {
+      factory.create('Template', {type: 'iamatype'}, function (err, template) {
+        expect(err).to.exist;
         done();
       });
     });
