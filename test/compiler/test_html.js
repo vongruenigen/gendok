@@ -30,10 +30,10 @@ describe('gendok.compiler.html', function () {
     });
   });
 
-  describe('type', function () {
+  describe('getType()', function () {
     it('returns "html" as the type', function () {
       var compiler = new Compiler('html');
-      expect(compiler.type).to.eql('html');
+      expect(compiler.getType()).to.eql('html');
     });
   });
 });

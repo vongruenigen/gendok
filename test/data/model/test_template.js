@@ -28,12 +28,23 @@ describe('gendok.data.model.template', function () {
         done();
       });
     });
+  });
 
-    it('throws error if invalid type', function (done) {
-      factory.create('Template', {type: 'iamatype'}, function (err, template) {
-        expect(err).to.exist;
-        done();
+  describe('validation', function () {
+    describe('.type', function () {
+      it('returns an error if an invalid compiler type is used', function () {
+        factory.build('Template', function (err, tmpl) {
+          expect(err).to.not.exist;
+          expect(tmpl).to.exist;
+          expect(tmpl.type).to.exist;
+
+          tmpl.type = 'bogus';
+
+          tmpl.validate().then(function (err) {
+            expect(err).to.exist;
+          });
+        });
       });
     });
-  });
+  })
 });

@@ -31,10 +31,10 @@ describe('gendok.compiler.mustache', function () {
     });
   });
 
-  describe('type', function () {
+  describe('getType()', function () {
     it('returns "mustache" as the type', function () {
       var compiler = new Compiler('mustache');
-      expect(compiler.type).to.eql('mustache');
+      expect(compiler.getType()).to.eql('mustache');
     });
   });
 });
