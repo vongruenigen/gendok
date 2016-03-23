@@ -32,6 +32,20 @@ describe('gendok.data.model.template', function () {
 
   describe('validation', function () {
     describe('.type', function () {
+      it('returns an error if an invalid compiler type is used', function () {
+        factory.build('Template', function (err, tmpl) {
+          expect(err).to.not.exist;
+          expect(tmpl).to.exist;
+          expect(tmpl.type).to.exist;
+
+          tmpl.type = 'bogus';
+
+          tmpl.validate().then(function (err) {
+            expect(err).to.exist;
+          });
+        });
+      });
+
       it('may not be empty', function () {
         var values = {type: ''};
 
@@ -108,6 +122,7 @@ describe('gendok.data.model.template', function () {
            });
         });
       });
+      
       it('may not be undefined', function () {
         var values = {userId: undefined};
 
@@ -122,6 +137,7 @@ describe('gendok.data.model.template', function () {
           });
         });
       });
+
       it('ensures userId is an existing user', function () {
         factory.create('Template', function (err, template) {
           expect(err).to.not.exist;
