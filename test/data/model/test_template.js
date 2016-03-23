@@ -10,14 +10,19 @@
 'use strict';
 
 var helper = require('../../helper');
-var Template = require('../../..').data.model.Template;
+var db = require('../../..').data.db;
 var expect = require('chai').expect;
 
 describe('gendok.data.model.template', function () {
   var factory = helper.loadFactories(this);
+  var Template = null;
 
-  it('is a function', function () {
-    expect(Template).to.be.a('function');
+  beforeEach(function () {
+    Template = db.getModel('Template');
+  });
+
+  it('is an object', function () {
+    expect(Template).to.be.an('object');
   });
 
   describe('the factory', function () {
@@ -32,7 +37,7 @@ describe('gendok.data.model.template', function () {
 
   describe('validation', function () {
     describe('.type', function () {
-      it('may not be empty', function () {
+      it('may not be empty', function (done) {
         var values = {type: ''};
 
         factory.build('Template', values, function (err, template) {
@@ -43,28 +48,14 @@ describe('gendok.data.model.template', function () {
             expect(err).to.exist;
             expect(err.errors.length).to.eql(1);
             expect(err.errors[0].path).to.eql('type');
-          });
-        });
-      });
-
-      it('may not be undefined', function () {
-        var values = {type: undefined};
-
-        factory.build('Template', values, function (err, template) {
-          expect(err).to.not.exist;
-          expect(template.type).to.eql(values.type);
-
-          template.validate().then(function (err) {
-            expect(err).to.exist;
-            expect(err.errors.length).to.eql(1);
-            expect(err.errors[0].path).to.eql('type');
+            done();
           });
         });
       });
     });
 
     describe('.body', function () {
-      it('may not be empty', function () {
+      it('may not be empty', function (done) {
         var values = {body: ''};
 
         factory.build('Template', values, function (err, template) {
@@ -75,43 +66,15 @@ describe('gendok.data.model.template', function () {
             expect(err).to.exist;
             expect(err.errors.length).to.eql(1);
             expect(err.errors[0].path).to.eql('body');
-          });
-        });
-      });
-
-      it('may not be undefined', function () {
-        var values = {body: undefined};
-
-        factory.build('Template', values, function (err, template) {
-          expect(err).to.not.exist;
-          expect(template.body).to.eql(values.body);
-          template.validate().then(function (err) {
-            expect(err).to.exist;
-            expect(err.errors.length).to.eql(1);
-            expect(err.errors[0].path).to.eql('body');
+            done();
           });
         });
       });
     });
 
     describe('.userId', function () {
-      it('may not be empty', function () {
+      it('may not be empty', function (done) {
         var values = {userId: ''};
-
-        factory.build('Template', values, function (err, template) {
-          expect(err).to.not.exist;
-          expect(template.body).to.eql(values.body);
-
-          template.validate().then(function (err) {
-            expect(err).to.exist;
-            expect(err.errors.length).to.eql(1);
-            expect(err.errors[0].path).to.eql('userId');
-          });
-        });
-      });
-
-      it('may not be undefined', function () {
-        var values = {userId: undefined};
 
         factory.build('Template', values, function (err, template) {
           expect(err).to.not.exist;
@@ -121,11 +84,12 @@ describe('gendok.data.model.template', function () {
             expect(err).to.exist;
             expect(err.errors.length).to.eql(1);
             expect(err.errors[0].path).to.eql('userId');
+            done();
           });
         });
       });
 
-      it('ensures userId is an existing user', function () {
+      it('ensures userId is an existing user', function (done) {
         factory.create('Template', function (err, template) {
           expect(err).to.not.exist;
           expect(template.getUser()).to.exist;
@@ -139,6 +103,7 @@ describe('gendok.data.model.template', function () {
               expect(err).to.exist;
               expect(err.errors.length).to.eql(1);
               expect(err.errors[0].path).to.eql('userId');
+              done();
             });
           });
         });
@@ -154,12 +119,13 @@ describe('gendok.data.model.template', function () {
         });
       });
 
-      it('strips the userId', function () {
+      it('strips the userId', function (done) {
         factory.build('Template', function (err, template) {
           var publicTemplate = template.toPublicObject();
           expect(publicTemplate.body).to.exist;
           expect(publicTemplate.type).to.exist;
           expect(publicTemplate.userId).to.not.exist;
+          done();
         });
       });
     });
