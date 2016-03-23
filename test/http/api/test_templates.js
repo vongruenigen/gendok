@@ -57,7 +57,7 @@ describe('gendok.http.api.templates', function () {
   describe('DELETE /api/templates/', function () {
     it('delete a template in the database', function (done) {
       factory.create('Template', function (err, templ) {
-        request.delete('api/templates/' + templ.id)
+        request.delete('/api/templates/' + templ.id)
           .end(function (err, res) {
             expect(err).to.not.exist;
             expect(res.statusCode).to.eql(200);
