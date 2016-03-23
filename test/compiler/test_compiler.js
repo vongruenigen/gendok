@@ -51,7 +51,6 @@ describe('gendok.compiler.compiler', function () {
     it('returns the object containing all available compilers', function () {
       var compiler = new Compiler();
       var available = gendok.compiler.available;
-
       expect(compiler.getAvailableCompilers()).to.eql(available);
     });
   });

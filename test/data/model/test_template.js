@@ -99,6 +99,7 @@ describe('gendok.data.model.template', function () {
         factory.build('Template', values, function (err, template) {
           expect(err).to.not.exist;
           expect(template.body).to.eql(values.body);
+
           template.validate().then(function (err) {
             expect(err).to.exist;
             expect(err.errors.length).to.eql(1);

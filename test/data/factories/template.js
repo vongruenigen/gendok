@@ -23,8 +23,8 @@ module.exports = function (model) {
     userId: factory.assoc('User', 'id'),
     additionalCss: '',
     type: 'html',
-    body: ['<html><head><title>hello world></title></head><body>',
-           '<h1>Hello from gendok</h1></body</html>'].join('')
+    body: '<html><head><title>hello world></title></head><body>' +
+          '<h1>Hello from gendok</h1></body</html>'
   });
 
   return factory;
