@@ -30,9 +30,9 @@ describe('gendok.data.model.job', function () {
     });
   });
 
-  describe('validation', function() {
-    describe('.templateId', function() {
-      it('may not be empty', function() {
+  describe('validation', function () {
+    describe('.templateId', function () {
+      it('may not be empty', function () {
         var values = {templateId: ''};
 
         factory.build('Job', values, function (err, job) {
@@ -47,7 +47,7 @@ describe('gendok.data.model.job', function () {
         });
       });
 
-      it('may not be undefined', function() {
+      it('may not be undefined', function () {
         var values = {templateId: undefined};
 
         factory.build('Job', values, function (err, job) {
@@ -62,7 +62,7 @@ describe('gendok.data.model.job', function () {
         });
       });
 
-      it('ensures templateId belongs to an existing template', function() {
+      it('ensures templateId belongs to an existing template', function () {
         factory.create('Job', function (err, job) {
           expect(err).to.not.exist;
           expect(job.getTemplate()).to.exist;
@@ -81,8 +81,9 @@ describe('gendok.data.model.job', function () {
         });
       });
     });
+
     describe('.state', function () {
-      it('may not be empty', function() {
+      it('may not be empty', function () {
         var values = {state: ''};
 
         factory.build('Job', values, function (err, job) {
@@ -97,7 +98,7 @@ describe('gendok.data.model.job', function () {
         });
       });
 
-      it('may not be undefined', function() {
+      it('may not be undefined', function () {
         var values = {state: undefined};
 
         factory.build('Job', values, function (err, job) {
