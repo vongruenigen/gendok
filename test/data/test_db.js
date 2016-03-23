@@ -80,7 +80,7 @@ describe('gendok.data.db', function () {
 
     it('throw an exception if empty string', function () {
       var conn = db.connect(config);
-      expect(function() {
+      expect(function () {
         db.getModel('');
       }).to.throw(Error);
     });
