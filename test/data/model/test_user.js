@@ -21,8 +21,8 @@ describe('gendok.data.model.user', function () {
     User = db.getModel('User');
   });
 
-  it('is a function', function () {
-    expect(User).to.be.a('function');
+  it('is a object', function () {
+    expect(User).to.be.a('object');
   });
 
   describe('the factory', function () {
