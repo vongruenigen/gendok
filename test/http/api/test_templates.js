@@ -47,10 +47,34 @@ describe('gendok.http.api.templates', function () {
       });
     });
     it('returns the created template as JSON object', function () {
+      factory.build('Template', function (err, templ) {
+        request.post('/api/templates')
+               .send(templ.toJSON())
+               .set('Content-Type', 'application/json')
+               .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.statusCode).to.eql(201);
 
+                   var createdAttrs = JSON.parse(res.body);
+
+                   expect(createdAttrs.type).to.eql(templ.type);
+                   expect(createdAttrs.body).to.eql(templ.body);
+                   expect(createdAttrs.id).not.to.eql(null);
+               });
+      });
     });
     it('returns an error if an invalid template is posted', function () {
+      var values = {type: ''};
 
+      factory.build('Template', values, function (err, templ) {
+        request.post('/api/templates')
+               .send(templ.toJSON())
+               .set('Content-Type', 'application/json')
+               .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.statusCode).to.eql(400);
+               });
+      });
     });
   });
 });
