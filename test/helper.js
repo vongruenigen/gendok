@@ -78,11 +78,13 @@ module.exports = {
    *   });
    * });
    *
-   * An error is thrown if the context argument is missing.
+   * An error is thrown if the context argument is missing. It returns the server
+   * object itself.
    *
    * @param {Object} context The current context
    * @param {Array} modules List of modules
    * @param {Config} cfg The config to use, uses the default if not present.
+   * @return {Server} The server which was just created.
    */
   runHttpServer: function (context, modules, cfg) {
     if (!context) {
@@ -99,6 +101,8 @@ module.exports = {
     context.afterEach(function (done) {
       server.stop(done);
     });
+
+    return server;
   },
 
   /**
@@ -118,19 +122,20 @@ module.exports = {
    */
   loadFactories: function (ctx, cfg) {
     var mod = null;
+    var factoriesLoaded = false;
 
-    ctx.beforeEach(function () {
+    ctx.beforeAll(function () {
       if (!db.isConnected()) {
         db.connect(cfg || Config.getDefault());
       }
 
-      Object.keys(factories).forEach(function (k) {
-        factories[k](db.getModel(k));
-      });
-    });
+      if (!factoriesLoaded) {
+        Object.keys(factories).forEach(function (k) {
+          factories[k](db.getModel(k));
+        });
 
-    ctx.afterEach(function () {
-      db.disconnect();
+        factoriesLoaded = true;
+      }
     });
 
     // Load the correct factory-girl adapter at the end
