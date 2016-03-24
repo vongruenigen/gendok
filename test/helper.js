@@ -87,11 +87,13 @@ module.exports = {
    *   });
    * });
    *
-   * An error is thrown if the context argument is missing.
+   * An error is thrown if the context argument is missing. It returns the server
+   * object itself.
    *
    * @param {Object} context The current context
    * @param {Array} modules List of modules
    * @param {Config} cfg The config to use, uses the default if not present.
+   * @return {Server} The server which was just created.
    */
   runHttpServer: function (context, modules, cfg) {
     if (!context) {
@@ -108,6 +110,8 @@ module.exports = {
     context.afterEach(function (done) {
       server.stop(done);
     });
+
+    return server;
   },
 
   /**
@@ -138,6 +142,7 @@ module.exports = {
         Object.keys(factories).forEach(function (k) {
           factories[k](db.getModel(k));
         });
+
         factoriesLoaded = true;
       }
     });
