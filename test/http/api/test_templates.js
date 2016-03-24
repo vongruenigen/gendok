@@ -11,17 +11,23 @@
 
 var gendokHttp = require('../../..').http;
 var templatesApi = gendokHttp.api.templates;
-var errors = gendokHttp.api.errors;
 var basicMiddleware = gendokHttp.middleware.basic;
 var authMiddleware = gendokHttp.middleware.authorization;
+var errors = gendokHttp.api.errors;
 var db = require('../../..').data.db;
 var User = require('../../..').data.model.user;
-var Config = require('../../..').config;
 var expect = require('chai').expect;
 var helper = require('../../helper');
 var request = require('superagent');
+var format = require('util').format;
 
 describe('gendok.http.api.templates', function () {
+  var factory = helper.loadFactories(this);
+  var middleware = [basicMiddleware, authMiddleware, templatesApi];
+  var server = helper.runHttpServer(this, middleware);
+  var config = server.getConfig();
+  var url = format('%s:%d/api/templates',
+                  config.get('http_host'), config.get('http_port'));
   var Template = null;
 
   beforeEach(function () {
@@ -32,14 +38,11 @@ describe('gendok.http.api.templates', function () {
     expect(templatesApi).to.be.a('function');
   });
 
-  var factory = helper.loadFactories(this);
-  helper.runHttpServer(this, [basicMiddleware, authMiddleware, templatesApi]);
-
   describe('POST /api/templates/', function () {
     it('creates a template in the database', function (done) {
       factory.create('User', function (err, user) {
         factory.build('Template', function (err, templ) {
-          request.post('localhost:3000/api/templates')
+          request.post(url)
                 .send(templ.toJSON())
                 .set('Content-Type', 'application/json')
                 .set('Authorization', 'Token ' + user.apiToken)
@@ -64,7 +67,7 @@ describe('gendok.http.api.templates', function () {
     it('returns the created template as JSON object', function (done) {
       factory.create('User', function (err, user) {
         factory.build('Template', function (err, templ) {
-          request.post('localhost:3000/api/templates')
+          request.post(url)
             .send(templ.toJSON())
             .set('Content-Type', 'application/json')
             .set('Authorization', 'Token ' + user.apiToken)
@@ -87,7 +90,7 @@ describe('gendok.http.api.templates', function () {
       factory.create('User', function (err, user) {
         var values = {type: ''};
         factory.build('Template', values, function (err, templ) {
-          request.post('localhost:3000/api/templates')
+          request.post(url)
             .send(templ.toJSON())
             .set('Content-Type', 'application/json')
             .set('Authorization', 'Token ' + user.apiToken)
