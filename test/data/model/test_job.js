@@ -101,13 +101,10 @@ describe('gendok.data.model.job', function () {
         });
       });
 
-      it('returns all properties', function (done) {
+      it('checks that result column does not exist', function (done) {
         factory.build('Job', function (err, job) {
           var publicJob = job.toPublicObject();
-          expect(publicJob.templateId).to.exist;
-          expect(publicJob.payload).to.exist;
-          expect(publicJob.state).to.exist;
-          expect(publicJob.result).to.be.null;
+          expect(publicJob.result).to.not.exist;
           done();
         });
       });
