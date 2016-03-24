@@ -28,7 +28,12 @@ describe('gendok.http.api.jobs', function () {
   var config = server.getConfig();
   var url = format('%s:%d/api/jobs',
                   config.get('http_host'), config.get('http_port'));
+  var Template = null;
   var Job = null;
+
+  beforeEach(function () {
+    Template = db.getModel('Template');
+  });
 
   beforeEach(function () {
     Job = db.getModel('Job');
@@ -39,22 +44,85 @@ describe('gendok.http.api.jobs', function () {
   });
 
   describe('POST /api/jobs/:id', function () {
-    it('returns the state of the given job', function () {
-      // TODO: Implement test-case 'returns the state of the given job'
+    var renderUrl = url + '/:id';
+
+    it('returns the state of the given job', function (done) {
+      factory.create('Template', function (err, template) {
+        template.getUser().then(function (user) {
+          factory.create('Job', {templateId: template.id}, function (err, job) {
+            request.get(renderUrl.replace(':id', job.id))
+                   .set('Authorization', 'Token ' + user.apiToken)
+                   .end(function (err, res) {
+                     expect(err).to.not.exist;
+                     expect(res.statusCode).to.eql(200);
+
+                     var returnedAttrs = res.body;
+
+                     expect(returnedAttrs.id).to.eql(job.id);
+                     expect(returnedAttrs.templateId).to.eql(template.id);
+                     expect(returnedAttrs.payload).not.to.eql(null);
+                     expect(returnedAttrs.state).not.to.eql(null);
+                     done();
+                   });
+          });
+        });
+      });
     });
 
-    it('returns an error if an invalid jobId is posted', function () {
-      // TODO: Implement test-case 'returns an error if an invalid jobId is posted'
+    it('returns an error if an invalid jobId is posted', function (done) {
+      factory.create('Template', function (err, template) {
+        template.getUser().then(function (user) {
+          factory.create('Job', {templateId: template.id}, function (err, job) {
+            request.get(renderUrl.replace(':id', ''))
+                   .set('Authorization', 'Token ' + user.apiToken)
+                   .end(function (err, res) {
+                     expect(err).to.exist;
+                     expect(res.statusCode).to.eql(404);
+                     done();
+                   });
+          });
+        });
+      });
     });
   });
 
-  describe('POST /api/jobs/:id/download', function () {
+  describe('GET /api/jobs/:id/download', function () {
+    var renderUrl = url + '/:id/download';
+
     it('returns the resulting pdf of the given job', function () {
       // TODO: Implement test-case 'returns the resulting pdf of the given job'
     });
 
-    it('returns an error if the job state is not finished', function () {
-      // TODO: Implement test-case 'returns an error if the job state is not finished'
+    it('returns an error if the job state is not finished', function (done) {
+      factory.create('Template', function (err, template) {
+        template.getUser().then(function (user) {
+          factory.create('Job', {templateId: template.id}, function (err, job) {
+            request.get(renderUrl.replace(':id', job.id))
+                   .set('Authorization', 'Token ' + user.apiToken)
+                   .end(function (err, res) {
+                     expect(err).to.exist;
+                     expect(res.statusCode).to.eql(406);
+                     done();
+                   });
+          });
+        });
+      });
+    });
+
+    it('returns an error if an invalid jobId is posted', function (done) {
+      factory.create('Template', function (err, template) {
+        template.getUser().then(function (user) {
+          factory.create('Job', {templateId: template.id}, function (err, job) {
+            request.get(renderUrl.replace(':id', ''))
+                   .set('Authorization', 'Token ' + user.apiToken)
+                   .end(function (err, res) {
+                     expect(err).to.exist;
+                     expect(res.statusCode).to.eql(404);
+                     done();
+                   });
+          });
+        });
+      });
     });
   });
 });
