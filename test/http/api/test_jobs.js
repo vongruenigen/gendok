@@ -39,10 +39,22 @@ describe('gendok.http.api.jobs', function () {
   });
 
   describe('POST /api/jobs/:id', function () {
-    // TODO: Define test cases for '/api/jobs/:id'
+    it('returns the state of the given job', function () {
+      // TODO: Implement test-case 'returns the state of the given job'
+    });
+
+    it('returns an error if an invalid jobId is posted', function () {
+      // TODO: Implement test-case 'returns an error if an invalid jobId is posted'
+    });
   });
 
   describe('POST /api/jobs/:id/download', function () {
-    // TODO: Define test cases for '/api/jobs/:id/download'
+    it('returns the resulting pdf of the given job', function () {
+      // TODO: Implement test-case 'returns the resulting pdf of the given job'
+    });
+
+    it('returns an error if the job state is not finished', function () {
+      // TODO: Implement test-case 'returns an error if the job state is not finished'
+    });
   });
 });

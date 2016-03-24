@@ -106,6 +106,16 @@ describe('gendok.http.api.templates', function () {
   });
 
   describe('POST /api/templates/:id/render', function () {
-    // TODO: Define test cases for '/api/templates/:id/render'
+    it('creates a job in the database', function () {
+      // TODO: Implement test-case 'creates a job in the database'
+    });
+
+    it('returns the created job as JSON', function () {
+      // TODO: Implement test-case 'returns the created job as JSON'
+    });
+
+    it('returns an error if an invalid templateId is posted', function () {
+      // TODO: Implement test-case 'returns an error if an invalid templateId is posted'
+    });
   });
 });
