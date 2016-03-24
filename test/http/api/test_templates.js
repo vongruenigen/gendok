@@ -104,4 +104,19 @@ describe('gendok.http.api.templates', function () {
       });
     });
   });
+
+  describe('GET /api/templates/', function () {
+    it('returns the templates as JSON objects', function (done) {
+      factory.create('User', function(err, user) {
+        factory.createMany('Template', {userId: user.id}, 3, function(err, templs) {
+          request.get('localhost:3000/api/templates')
+            .set('Authorization', 'Token ' + user.apiToken)
+            .end(function(err, res){
+              console.log(res.body);
+              done();
+            });
+        });
+      });
+    });
+  });
 });
