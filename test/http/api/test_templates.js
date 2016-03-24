@@ -104,4 +104,8 @@ describe('gendok.http.api.templates', function () {
       });
     });
   });
+
+  describe('POST /api/templates/:id/render', function () {
+    // TODO: Define test cases for '/api/templates/:id/render'
+  });
 });
