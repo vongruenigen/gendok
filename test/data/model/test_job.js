@@ -10,14 +10,19 @@
 'use strict';
 
 var helper = require('../../helper');
-var Job = require('../../..').data.model.Job;
+var db = require('../../..').data.db;
 var expect = require('chai').expect;
 
 describe('gendok.data.model.job', function () {
   var factory = helper.loadFactories(this);
+  var Job = null;
 
-  it('is a function', function () {
-    expect(Job).to.be.a('function');
+  beforeEach(function () {
+    Job = db.getModel('Job');
+  });
+
+  it('is an object', function () {
+    expect(Job).to.be.an('object');
   });
 
   describe('the factory', function () {
@@ -32,7 +37,7 @@ describe('gendok.data.model.job', function () {
 
   describe('validation', function () {
     describe('.templateId', function () {
-      it('may not be empty', function () {
+      it('may not be empty', function (done) {
         var values = {templateId: ''};
 
         factory.build('Job', values, function (err, job) {
@@ -43,26 +48,12 @@ describe('gendok.data.model.job', function () {
             expect(err).to.exist;
             expect(err.errors.length).to.eql(1);
             expect(err.errors[0].path).to.eql('templateId');
+            done();
           });
         });
       });
 
-      it('may not be undefined', function () {
-        var values = {templateId: undefined};
-
-        factory.build('Job', values, function (err, job) {
-          expect(err).to.not.exist;
-          expect(job.templateId).to.eql(values.templateId);
-
-          job.validate().then(function (err) {
-            expect(err).to.exist;
-            expect(err.errors.length).to.eql(1);
-            expect(err.errors[0].path).to.eql('templateId');
-          });
-        });
-      });
-
-      it('ensures templateId belongs to an existing template', function () {
+      it('ensures templateId belongs to an existing template', function (done) {
         factory.create('Job', function (err, job) {
           expect(err).to.not.exist;
           expect(job.getTemplate()).to.exist;
@@ -76,6 +67,7 @@ describe('gendok.data.model.job', function () {
               expect(err).to.exist;
               expect(err.errors.length).to.eql(1);
               expect(err.errors[0].path).to.eql('templateId');
+              done();
             });
           });
         });
@@ -83,7 +75,7 @@ describe('gendok.data.model.job', function () {
     });
 
     describe('.state', function () {
-      it('may not be empty', function () {
+      it('may not be empty', function (done) {
         var values = {state: ''};
 
         factory.build('Job', values, function (err, job) {
@@ -94,22 +86,29 @@ describe('gendok.data.model.job', function () {
             expect(err).to.exist;
             expect(err.errors.length).to.eql(1);
             expect(err.errors[0].path).to.eql('state');
+            done();
           });
         });
       });
+    });
+  });
 
-      it('may not be undefined', function () {
-        var values = {state: undefined};
+  describe('instance methods', function () {
+    describe('toPublicObject', function () {
+      it('is a function', function () {
+        factory.build('Job', function (err, job) {
+          expect(job.toPublicObject).to.be.a('function');
+        });
+      });
 
-        factory.build('Job', values, function (err, job) {
-          expect(err).to.not.exist;
-          expect(job.state).to.eql(values.state);
-
-          job.validate().then(function (err) {
-            expect(err).to.exist;
-            expect(err.errors.length).to.eql(1);
-            expect(err.errors[0].path).to.eql('state');
-          });
+      it('returns all properties', function (done) {
+        factory.build('Job', function (err, job) {
+          var publicJob = job.toPublicObject();
+          expect(publicJob.templateId).to.exist;
+          expect(publicJob.payload).to.exist;
+          expect(publicJob.state).to.exist;
+          expect(publicJob.result).to.be(null);
+          done();
         });
       });
     });
