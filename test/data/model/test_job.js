@@ -107,7 +107,7 @@ describe('gendok.data.model.job', function () {
           expect(publicJob.templateId).to.exist;
           expect(publicJob.payload).to.exist;
           expect(publicJob.state).to.exist;
-          expect(publicJob.result).to.be(null);
+          expect(publicJob.result).to.be.null;
           done();
         });
       });

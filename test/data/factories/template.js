@@ -20,7 +20,7 @@ var db = require('../../..').data.db;
  */
 module.exports = function (model) {
   factory.define('Template', model, {
-    type: faker.random.arrayElement(['html']),
+    type: 'html',
     body: faker.name.firstName(),
     userId: factory.assoc('User', 'id')
   });
