@@ -89,7 +89,6 @@
     "mustache": "2.2.1",
     "pg": "4.5.1",
     "pg-hstore": "2.3.2",
-    "pg-native": "1.10.0",
     "phantom-html-to-pdf": "0.4.1",
     "phantomjs-prebuilt": "^2.1.6",
     "sequelize": "3.19.3",

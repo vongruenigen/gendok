@@ -29,6 +29,7 @@ var spawn = require('child_process').spawn;
 var logger = require('./lib/').logger;
 var env = require('./lib/').env;
 var exec = require('child_process').exec;
+var argv = require('minimist')(process.argv.slice(2));
 
 /**
  * Config variables
@@ -71,7 +72,7 @@ var errorHandler = function (err) {
     console.error('Error while running gulp: %s', err);
     process.exit(1);
   }
-}
+};
 
 /**
  * Helper function which can be used to compile text files which contains
@@ -138,14 +139,8 @@ gulp.task('lint', function () {
 /**
  * Testing related tasks
  */
-
-gulp.task('pre-test', ['test-env', 'build', 'lint',
-                       'redis-server', 'db-migrate'], function () {
-  console.log('Successfully prepared test run');
-});
-
-gulp.task('test', ['pre-test'], function () {
-  gulp.src('test/**/*.js')
+gulp.task('test', ['build', 'lint', 'test-env', 'db-migrate'], function () {
+  gulp.src(argv.only || argv.o || 'test/**/*.js')
       .pipe(mocha(mochaOpts))
       .on('error', function (e) {
         logger.error('error in test: %s', e);
