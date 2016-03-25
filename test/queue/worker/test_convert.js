@@ -29,6 +29,10 @@ describe('gendok.queue.worker.convert', function () {
   beforeEach(function (done) {
     Job = gendok.data.db.getModel('Job');
 
+    // Since the tests in here can take longer than the defaulte timeout
+    // of 2000ms we'll increase it to 10'0000ms or 10s.
+    this.timeout(10000);
+
     factory.create('Job', function (err, j) {
       expect(err).to.not.exist;
       expect(j).to.exist;
