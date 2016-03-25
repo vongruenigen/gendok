@@ -107,16 +107,20 @@ describe('gendok.http.api.templates', function () {
 
   describe('DELETE /api/templates/', function () {
     it('delete a template in the database', function (done) {
-      factory.create('Template', function (err, templ) {
-        request.delete('/api/templates/' + templ.id)
-          .end(function (err, res) {
-            expect(err).to.not.exist;
-            expect(res.statusCode).to.eql(200);
-
-            Template.findById(templ.id).then(function (t) {
-              expect(t).to.not.exist;
+      factory.create('User', function (err, user) {
+        factory.create('Template', {userId: user.id}, function (err, templ) {
+          request.delete(url + '/' + templ.id)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', 'Token ' + user.apiToken)
+            .end(function (err, res) {
+              expect(err).to.not.exist;
+              expect(res.statusCode).to.eql(200);
+              Template.findById(templ.id).then(function (t) {
+                expect(t).to.not.exist;
+                done();
+              });
             });
-          });
+        });
       });
     });
   });
