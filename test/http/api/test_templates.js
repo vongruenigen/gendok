@@ -43,23 +43,23 @@ describe('gendok.http.api.templates', function () {
       factory.create('User', function (err, user) {
         factory.build('Template', function (err, templ) {
           request.post(url)
-                .send(templ.toJSON())
-                .set('Content-Type', 'application/json')
-                .set('Authorization', 'Token ' + user.apiToken)
-                .end(function (err, res) {
-                  expect(err).to.not.exist;
-                  expect(res.statusCode).to.eql(201);
+                 .send(templ.toJSON())
+                 .set('Content-Type', 'application/json')
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.statusCode).to.eql(201);
 
-                  var returnedAttrs = res.body;
+                   var returnedAttrs = res.body;
 
-                  Template.findById(returnedAttrs.id).then(function (dbTempl) {
-                    expect(dbTempl.id).to.eql(returnedAttrs.id);
-                    expect(dbTempl.body).to.eql(templ.body);
-                    expect(dbTempl.type).to.eql(templ.type);
-                    expect(dbTempl.userId).to.eql(user.id);
-                    done();
-                  });
-                });
+                   Template.findById(returnedAttrs.id).then(function (dbTempl) {
+                     expect(dbTempl.id).to.eql(returnedAttrs.id);
+                     expect(dbTempl.body).to.eql(templ.body);
+                     expect(dbTempl.type).to.eql(templ.type);
+                     expect(dbTempl.userId).to.eql(user.id);
+                     done();
+                   });
+                 });
         });
       });
     });
@@ -68,20 +68,20 @@ describe('gendok.http.api.templates', function () {
       factory.create('User', function (err, user) {
         factory.build('Template', function (err, templ) {
           request.post(url)
-            .send(templ.toJSON())
-            .set('Content-Type', 'application/json')
-            .set('Authorization', 'Token ' + user.apiToken)
-            .end(function (err, res) {
-              expect(err).to.not.exist;
-              expect(res.statusCode).to.eql(201);
+                 .send(templ.toJSON())
+                 .set('Content-Type', 'application/json')
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.statusCode).to.eql(201);
 
-              var returnedAttrs = res.body;
+                   var returnedAttrs = res.body;
 
-              expect(returnedAttrs.type).to.eql(templ.type);
-              expect(returnedAttrs.body).to.eql(templ.body);
-              expect(returnedAttrs.id).not.to.eql(null);
-              done();
-            });
+                   expect(returnedAttrs.type).to.eql(templ.type);
+                   expect(returnedAttrs.body).to.eql(templ.body);
+                   expect(returnedAttrs.id).not.to.eql(null);
+                   done();
+                 });
         });
       });
     });
@@ -91,35 +91,63 @@ describe('gendok.http.api.templates', function () {
         var values = {type: ''};
         factory.build('Template', values, function (err, templ) {
           request.post(url)
-            .send(templ.toJSON())
-            .set('Content-Type', 'application/json')
-            .set('Authorization', 'Token ' + user.apiToken)
-            .end(function (err, res) {
-              expect(err).to.exist;
-              expect(res.statusCode).to.eql(400);
-              expect(res.body).to.eql(errors.badRequest.data);
-              done();
-            });
+                 .send(templ.toJSON())
+                 .set('Content-Type', 'application/json')
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.exist;
+                   expect(res.statusCode).to.eql(400);
+                   expect(res.body).to.eql(errors.badRequest.data);
+                   done();
+                 });
         });
       });
     });
   });
 
-  describe('DELETE /api/templates/', function () {
-    it('delete a template in the database', function (done) {
+  describe('DELETE /api/templates/:id', function () {
+    it('deletes a template in the database', function (done) {
       factory.create('User', function (err, user) {
         factory.create('Template', {userId: user.id}, function (err, templ) {
           request.delete(url + '/' + templ.id)
-            .set('Content-Type', 'application/json')
-            .set('Authorization', 'Token ' + user.apiToken)
-            .end(function (err, res) {
-              expect(err).to.not.exist;
-              expect(res.statusCode).to.eql(200);
-              Template.findById(templ.id).then(function (t) {
-                expect(t).to.not.exist;
-                done();
-              });
-            });
+                 .set('Content-Type', 'application/json')
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.statusCode).to.eql(200);
+                   Template.findById(templ.id).then(function (t) {
+                     expect(t).to.not.exist;
+                     done();
+                   });
+                 });
+        });
+      });
+    });
+
+    it('returns a 404 if no template with the given id exists', function (done) {
+      factory.create('User', function (err, user) {
+        factory.create('Template', {userId: user.id}, function (err, templ) {
+          request.delete(url + '/123456789')
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.exist;
+                   expect(res.statusCode).to.eql(404);
+                   done();
+                 });
+        });
+      });
+    });
+
+    it('returns a 400 if invalid id is given', function (done) {
+      factory.create('User', function (err, user) {
+        factory.create('Template', {userId: user.id}, function (err, templ) {
+          request.delete(url + '/' + 'blub')
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.exist;
+                   expect(res.statusCode).to.eql(400);
+                   done();
+                 });
         });
       });
     });
