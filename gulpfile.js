@@ -29,6 +29,7 @@ var spawn = require('child_process').spawn;
 var logger = require('./lib/').logger;
 var env = require('./lib/').env;
 var exec = require('child_process').exec;
+var argv = require('minimist')(process.argv.slice(2));
 
 /**
  * Config variables
@@ -67,7 +68,7 @@ var errorHandler = function (err) {
     console.error('Error while running gulp: %s', err);
     process.exit(1);
   }
-}
+};
 
 /**
  * Linting and code checking tasks
@@ -87,7 +88,7 @@ gulp.task('lint', function () {
  * Testing related tasks
  */
 gulp.task('test', ['build', 'lint', 'test-env', 'db-migrate'], function () {
-  gulp.src('test/**/*.js')
+  gulp.src(argv.only || argv.o || 'test/**/*.js')
       .pipe(mocha(mochaOpts))
       .on('error', function (e) {
         logger.warn('error in test: %s', e);
