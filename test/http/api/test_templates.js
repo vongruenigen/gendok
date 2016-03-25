@@ -87,6 +87,30 @@ describe('gendok.http.api.templates', function () {
         });
       });
     });
+  });
+
+  describe('PUT /api/templates/:id', function () {
+    it('update a template in the database', function (done) {
+      factory.create('User', function (err, user) {
+        factory.create('Template', function (err, tmpl) {
+          var attrs = {body: 'content'};
+
+          request.put(url + '/' + tmpl.id)
+                .send(attrs)
+                .set('Content-Type', 'application/json')
+                .set('Authorization', 'Token ' + user.apiToken)
+                .end(function (err, res) {
+                  expect(err).to.not.exist;
+                  expect(res.statusCode).to.eql(200);
+
+                  tmpl.reload().then(function (dbTempl) {
+                    expect(dbTempl.body).to.eql(attrs.body);
+                    done();
+                  });
+                });
+        });
+      });
+    });
 
     it('returns an error if an invalid template is posted', function (done) {
       factory.create('User', function (err, user) {
@@ -138,6 +162,27 @@ describe('gendok.http.api.templates', function () {
       });
     });
 
+    it('returns an error, no update if template id not found in DB', function (done) {
+      factory.create('User', function (err, user) {
+        factory.create('Template', function (err, tmpl) {
+          request.put(url + '/' + (tmpl.id + 1000))
+                .send({})
+                .set('Content-Type', 'application/json')
+                .set('Authorization', 'Token ' + user.apiToken)
+                .end(function (err, res) {
+                  expect(err).to.exist;
+                  expect(res.statusCode).to.eql(404);
+                  expect(res.body).to.eql(errors.notFound.data);
+                  tmpl.reload().then(function (dbTempl) {
+                    expect(dbTempl.body).to.eql(tmpl.body);
+                    expect(dbTempl.type).to.eql(tmpl.type);
+                    done();
+                  });
+                });
+        });
+      });
+    });
+
     it('returns the created job as JSON', function (done) {
       var payload = {gugus: 'blub'};
 
@@ -160,6 +205,29 @@ describe('gendok.http.api.templates', function () {
                      done();
                    });
           });
+        });
+      });
+    });
+
+    it('returns an error, no update if template content type is not supported', function (done) {
+      factory.create('User', function (err, user) {
+        factory.create('Template', function (err, tmpl) {
+          var attrs = {type: 'nonsense'};
+
+          request.put(url + '/' + (tmpl.id))
+                .send(attrs)
+                .set('Content-Type', 'application/json')
+                .set('Authorization', 'Token ' + user.apiToken)
+                .end(function (err, res) {
+                  expect(err).to.exist;
+                  expect(res.statusCode).to.eql(400);
+                  expect(res.body).to.eql(errors.badRequest.data);
+                  tmpl.reload().then(function (dbTempl) {
+                    expect(dbTempl.body).to.eql(tmpl.body);
+                    expect(dbTempl.type).to.eql(tmpl.type);
+                    done();
+                  });
+                });
         });
       });
     });
