@@ -157,7 +157,8 @@ describe('gendok.http.api.templates', function () {
                  .set('Authorization', 'Token ' + user.apiToken)
                  .end(function (err, res) {
                    expect(err).to.exist;
-                   expect(res.statusCode).to.eql(404);
+                   expect(res.statusCode).to.eql(errors.notFound.code);
+                   expect(res.body).to.eql(errors.notFound.data);
                    done();
                  });
         });
@@ -171,7 +172,8 @@ describe('gendok.http.api.templates', function () {
                  .set('Authorization', 'Token ' + user.apiToken)
                  .end(function (err, res) {
                    expect(err).to.exist;
-                   expect(res.statusCode).to.eql(400);
+                   expect(res.statusCode).to.eql(errors.badRequest.code);
+                   expect(res.body).to.eql(errors.badRequest.data);
                    done();
                  });
         });
