@@ -41,11 +41,21 @@ describe('gendok.http.Server', function () {
     it('creates an express app', function () {
       expect(httpServer.getApp()).to.exist;
     });
+
+    it('creates a queue object', function () {
+      expect(httpServer.getQueue()).to.exit;
+    });
   });
 
   describe('getConfig()', function () {
     it('returns the associated Config object', function () {
       expect(httpServer.getConfig()).to.eql(defaultConfig);
+    });
+  });
+
+  describe('getQueue()', function () {
+    it('returns the associated queue object', function () {
+      expect(httpServer.getQueue()).to.exist;
     });
   });
 
@@ -101,12 +111,13 @@ describe('gendok.http.Server', function () {
   });
 
   describe('registerModule()', function () {
-
-    it('calls the module with the app as a parameter', function (done) {
+    it('calls the module with the app, config and queue as parameters', function (done) {
       var h = new HttpServer(alternativeConfig);
 
-      h.registerModule(function (app) {
+      h.registerModule(function (app, config, queue) {
         expect(app).to.eql(h.getApp());
+        expect(config).to.eql(h.getConfig());
+        expect(queue).to.eql(h.getQueue());
         done();
       });
     });

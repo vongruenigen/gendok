@@ -10,6 +10,8 @@
 'use strict';
 
 var util = require('../').util;
+var Config = require('../').config;
+var env = require('../').env;
 var expect = require('chai').expect;
 var os = require('os');
 var fs = require('fs');
@@ -58,6 +60,20 @@ describe('gendok.util', function () {
       var expected = htmlTmpl.replace('%%', '<style>' + css + '</style>');
 
       expect(util.addCssToHtml(html, css)).to.eql(expected);
+    });
+  });
+
+  describe('createQueue()', function () {
+    var config = Config.getDefault();
+
+    it('creates a new queue with the given config', function () {
+      var queue = util.createQueue(config);
+      expect(queue).to.exist;
+    });
+
+    it('sets the prefix to gendok_$ENV', function () {
+      var queue = util.createQueue(config);
+      expect(queue.client.prefix).to.eql('gendok_' + env.get());
     });
   });
 });
