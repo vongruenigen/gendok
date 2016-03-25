@@ -10,12 +10,10 @@
 'use strict';
 
 var gendokHttp = require('../../..').http;
-var templatesApi = gendokHttp.api.templates;
-var basicMiddleware = gendokHttp.middleware.basic;
-var authMiddleware = gendokHttp.middleware.authorization;
+var templates = gendokHttp.api.templates;
+var all = gendokHttp.middleware.all;
 var errors = gendokHttp.api.errors;
 var db = require('../../..').data.db;
-var User = require('../../..').data.model.user;
 var expect = require('chai').expect;
 var helper = require('../../helper');
 var request = require('superagent');
@@ -23,8 +21,7 @@ var format = require('util').format;
 
 describe('gendok.http.api.templates', function () {
   var factory = helper.loadFactories(this);
-  var middleware = [basicMiddleware, authMiddleware, templatesApi];
-  var server = helper.runHttpServer(this, middleware);
+  var server = helper.runHttpServer(this, [all, templates]);
   var config = server.getConfig();
   var url = format('%s:%d/api/templates',
                   config.get('http_host'), config.get('http_port'));
@@ -35,7 +32,7 @@ describe('gendok.http.api.templates', function () {
   });
 
   it('is a function', function () {
-    expect(templatesApi).to.be.a('function');
+    expect(templates).to.be.a('function');
   });
 
   describe('POST /api/templates/', function () {
