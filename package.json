@@ -87,7 +87,6 @@
     "mustache": "2.2.1",
     "pg": "4.5.1",
     "pg-hstore": "2.3.2",
-    "pg-native": "1.10.0",
     "sequelize": "3.19.3",
     "sequelize-cli": "2.3.1",
     "serve-favicon": "2.3.0",
