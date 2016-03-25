@@ -102,14 +102,11 @@ describe('gendok.http.api.templates', function () {
     });
   });
 
-  describe('PUT /api/templates/', function () {
+  describe('PUT /api/templates/:id', function () {
     it('update a template in the database', function (done) {
       factory.create('User', function (err, user) {
         factory.create('Template', function (err, tmpl) {
-          var attrs = {
-            body: 'content',
-            type: tmpl.type
-          };
+          var attrs = {body: 'content'};
 
           request.put(url + '/' + tmpl.id)
                 .send(attrs)
@@ -131,13 +128,8 @@ describe('gendok.http.api.templates', function () {
     it('returns an error, no update if template id not found in DB', function (done) {
       factory.create('User', function (err, user) {
         factory.create('Template', function (err, tmpl) {
-          var attrs = {
-            body: 'content',
-            type: tmpl.type
-          };
-
           request.put(url + '/' + (tmpl.id + 1000))
-                .send(attrs)
+                .send({})
                 .set('Content-Type', 'application/json')
                 .set('Authorization', 'Token ' + user.apiToken)
                 .end(function (err, res) {
@@ -157,10 +149,7 @@ describe('gendok.http.api.templates', function () {
     it('returns an error, no update if template content type is not supported', function (done) {
       factory.create('User', function (err, user) {
         factory.create('Template', function (err, tmpl) {
-          var attrs = {
-            body: 'content',
-            type: 'nonsense'
-          };
+          var attrs = {type: 'nonsense'};
 
           request.put(url + '/' + (tmpl.id))
                 .send(attrs)
