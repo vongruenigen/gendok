@@ -87,21 +87,42 @@ describe('gendok.http.api.jobs', function () {
   });
 
   describe('GET /api/jobs/:id/download', function () {
-    var renderUrl = url + '/:id/download';
+    var downloadUrl = url + '/:id/download';
 
-    it('returns the resulting pdf of the given job', function () {
-      // TODO: Implement test-case 'returns the resulting pdf of the given job'
+    it('returns the resulting pdf of the given job', function (done) {
+      factory.create('Template', function (err, template) {
+        template.getUser().then(function (user) {
+          var attrs = {
+            templateId: template.id,
+            result: 'Hello world from gendok!',
+            state: 'finished'
+          };
+
+          factory.create('Job', attrs, function (err, job) {
+            request.get(downloadUrl.replace(':id', job.id))
+                   .set('Authorization', 'Token ' + user.apiToken)
+                   .buffer()
+                   .end(function (err, res) {
+                     expect(err).not.to.exist;
+                     expect(res.statusCode).to.eql(200);
+                     expect(res.get('Content-Type')).to.eql('application/pdf');
+                     expect(res.text).to.eql(attrs.result);
+                     done();
+                   });
+          });
+        });
+      });
     });
 
     it('returns an error if the job state is not finished', function (done) {
       factory.create('Template', function (err, template) {
         template.getUser().then(function (user) {
           factory.create('Job', {templateId: template.id}, function (err, job) {
-            request.get(renderUrl.replace(':id', job.id))
+            request.get(downloadUrl.replace(':id', job.id))
                    .set('Authorization', 'Token ' + user.apiToken)
                    .end(function (err, res) {
                      expect(err).to.exist;
-                     expect(res.statusCode).to.eql(406);
+                     expect(res.statusCode).to.eql(errors.notFinished.code);
                      done();
                    });
           });
@@ -113,7 +134,7 @@ describe('gendok.http.api.jobs', function () {
       factory.create('Template', function (err, template) {
         template.getUser().then(function (user) {
           factory.create('Job', {templateId: template.id}, function (err, job) {
-            request.get(renderUrl.replace(':id', ''))
+            request.get(downloadUrl.replace(':id', ''))
                    .set('Authorization', 'Token ' + user.apiToken)
                    .end(function (err, res) {
                      expect(err).to.exist;
