@@ -10,9 +10,8 @@
 'use strict';
 
 var gendokHttp = require('../../..').http;
-var jobsApi = gendokHttp.api.jobs;
-var basicMiddleware = gendokHttp.middleware.basic;
-var authMiddleware = gendokHttp.middleware.authorization;
+var jobs = gendokHttp.api.jobs;
+var all = gendokHttp.middleware.all;
 var errors = gendokHttp.api.errors;
 var db = require('../../..').data.db;
 var Template = require('../../..').data.model.Template;
@@ -23,8 +22,7 @@ var format = require('util').format;
 
 describe('gendok.http.api.jobs', function () {
   var factory = helper.loadFactories(this);
-  var middleware = [basicMiddleware, authMiddleware, jobsApi];
-  var server = helper.runHttpServer(this, middleware);
+  var server = helper.runHttpServer(this, [all, jobs]);
   var config = server.getConfig();
   var url = format('%s:%d/api/jobs',
                   config.get('http_host'), config.get('http_port'));
@@ -40,7 +38,7 @@ describe('gendok.http.api.jobs', function () {
   });
 
   it('is a function', function () {
-    expect(jobsApi).to.be.a('function');
+    expect(jobs).to.be.a('function');
   });
 
   describe('POST /api/jobs/:id', function () {
