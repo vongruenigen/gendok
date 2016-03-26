@@ -48,6 +48,10 @@ var publicImgPath = path.join(publicPath, 'img');
 var allJsFilename = 'all.js';
 var allCssFilename = 'all.css';
 
+var redisConfigTemplate = path.join(__dirname, 'config', 'redis.conf.tmpl');
+var redisConfig = path.join(__dirname, 'config', 'redis.conf');
+var redisLogfile = path.join(__dirname, 'log', 'redis.log');
+
 // List of file patterns to glob for all required css files
 var requiredCssPaths = [
   'bower_components/bootstrap/dist/css/bootstrap.css',
@@ -71,6 +75,54 @@ var errorHandler = function (err) {
 };
 
 /**
+ * Helper function which can be used to compile text files which contains
+ * placeholder in ERB-style (e.g. <%= blub %>). It uses the values object
+ * to fill the placeholders with referenced value.
+ *
+ * The callback is invoked with an error if a placeholder without a
+ * correspondent value is found.
+ *
+ * This function is used to compile the redis configuration.
+ *
+ * @param input The path of the file to compile.
+ * @param output The path to the resulting file.
+ * @param values The values to use to replace the placeholders.
+ * @param fn The callback, which is called after the template has been compiled.
+ */
+var compileTemplate = function (input, output, values, fn) {
+  var placeholderRegex = /<%=\s*(.+)\s*%>/;
+  var match;
+
+  console.log('Starting to compile template %s', input);
+
+  fs.readFile(input, function (err, text) {
+    if (err) { return fn(err); }
+
+    // Conver binary buffer to string
+    text = text.toString();
+
+    while (match = placeholderRegex.exec(text)) {
+      var placeholder = match[0];
+      var key = match[1] && match[1].trim();
+
+      if (!values[key]) {
+        return fn(new Error('no value for placeholder ' + key + ' found!'));
+      }
+
+      text = text.replace(placeholder, values[key]);
+    }
+
+    fs.writeFile(output, text, function (err) {
+      if (!err) {
+        console.log('Successfully compiled template %s to %s', input, output);
+      }
+
+      fn(err);
+    });
+  });
+};
+
+/**
  * Linting and code checking tasks
  */
 gulp.task('lint', function () {
@@ -87,12 +139,16 @@ gulp.task('lint', function () {
 /**
  * Testing related tasks
  */
-gulp.task('test', ['build', 'lint', 'test-env', 'db-migrate'], function () {
+gulp.task('pre-test', ['test-env', 'build', 'lint',
+                       'redis-server', 'db-migrate'], function () {
+  console.log('Successfully prepared test run');
+});
+
+gulp.task('test', ['pre-test'], function () {
   gulp.src(argv.only || argv.o || 'test/**/*.js')
       .pipe(mocha(mochaOpts))
-      .on('error', function (e) {
-        logger.warn('error in test: %s', e);
-      });
+      .on('error', function (e) { logger.error('error in test: %s', e); })
+      .on('end', function () { process.exit(); });
 });
 
 gulp.task('test-env', function () {
@@ -109,10 +165,11 @@ var runTestsWithCov = function (opts) {
   gulp.src('test/**/*.js')
       .pipe(mocha(opts))
       .pipe(istanbul.writeReports(istanbulOpts))
-      .pipe(istanbul.enforceThresholds(istanbulThresholdOpts));
+      .pipe(istanbul.enforceThresholds(istanbulThresholdOpts))
+      .once('end', function () { process.exit(); });
 };
 
-gulp.task('test-cov', ['pre-cov', 'build', 'lint', 'test-env', 'db-migrate'], function () {
+gulp.task('test-cov', ['pre-test', 'pre-cov'], function () {
   runTestsWithCov(mochaOpts);
 });
 
@@ -120,14 +177,18 @@ gulp.task('test-watch', function () {
   gulp.watch(['lib/**/*.js', 'test/**/*.js'], ['test']);
 });
 
-gulp.task('test-debug', ['build', 'lint', 'test-env', 'db-migrate'], function () {
+gulp.task('test-debug', ['pre-test'], function () {
   var gulpjs = path.join(__dirname, 'node_modules/gulp/bin/gulp.js');
   spawn('node', ['--debug-brk', gulpjs, 'test'], {stdio: 'inherit'});
 });
 
-gulp.task('test-jenkins', ['build', 'pre-cov', 'lint', 'test-env', 'db-migrate'], function () {
+gulp.task('test-jenkins', ['pre-test'], function () {
   runTestsWithCov(mochaJenkinsOpts);
 });
+
+/**
+ * Database related tasks
+ */
 
 gulp.task('db-migrate', function () {
   var sequelizeCLI = path.join(__dirname, 'node_modules/.bin/sequelize');
@@ -141,9 +202,13 @@ gulp.task('build-watch', function () {
   gulp.watch(['lib/http/web/assets/**/*', 'bower_components/**/*'], ['build']);
 });
 
-gulp.task('build', ['check-bower-components', 'build-fonts',
-                    'build-css', 'build-js', 'build-img'], function () {
-  console.log('All assets successfully compiled and copied to public/');
+gulp.task('build', ['check-bower-components',
+                    'build-fonts',
+                    'build-css',
+                    'build-js',
+                    'build-img',
+                    'redis-config'], function () {
+  console.log('Everything was successfully builded!');
 });
 
 gulp.task('build-js', function () {
@@ -195,12 +260,47 @@ gulp.task('check-bower-components', function (done) {
 });
 
 /**
- * Misc. tasks
+ * Redis related tasks
+ */
+gulp.task('redis-server', ['redis-config'], function (done) {
+  exec('which redis-server', function (err) {
+    if (err) { return done(err); }
+
+    var stdio = env.is('development') ? 'inherit' : 'ignore';
+    var redis = spawn('redis-server', [redisConfig],
+                      {detached: env.is('test'), stdio: stdio});
+
+    // use unref() here to prevent the test process to hang
+    // and wait for redis to exit by itself. The redis process
+    // will then be quit when gulp exits because of the on 'exit'
+    // callback below.
+    if (env.is('test')) {
+      redis.unref();
+    }
+
+    process.once('exit', function () {
+      redis.kill('SIGKILL');
+    });
+
+    done();
+  });
+});
+
+gulp.task('redis-config', function (done) {
+  var values = {
+    logfile: redisLogfile
+  };
+
+  compileTemplate(redisConfigTemplate, redisConfig, values, done);
+});
+
+/**
+ * Miscellaneous tasks
  */
 gulp.task('clean', function (cb) {
   exec('git clean -Xf && git clean -Xdf', function (err, stdout, stderr) {
     console.log(stdout);
-    console.log(stderr);
+    console.error(stderr);
     cb(err);
   });
 });
