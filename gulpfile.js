@@ -139,12 +139,16 @@ gulp.task('lint', function () {
 /**
  * Testing related tasks
  */
-gulp.task('test', ['build', 'lint', 'test-env', 'db-migrate'], function () {
+gulp.task('pre-test', ['test-env', 'build', 'lint',
+                       'redis-server', 'db-migrate'], function () {
+  console.log('Successfully prepared test run');
+});
+
+gulp.task('test', ['pre-test'], function () {
   gulp.src(argv.only || argv.o || 'test/**/*.js')
       .pipe(mocha(mochaOpts))
-      .on('error', function (e) {
-        logger.error('error in test: %s', e);
-      });
+      .on('error', function (e) { logger.error('error in test: %s', e); })
+      .on('end', function () { process.exit(); });
 });
 
 gulp.task('test-env', function () {
@@ -161,7 +165,8 @@ var runTestsWithCov = function (opts) {
   gulp.src('test/**/*.js')
       .pipe(mocha(opts))
       .pipe(istanbul.writeReports(istanbulOpts))
-      .pipe(istanbul.enforceThresholds(istanbulThresholdOpts));
+      .pipe(istanbul.enforceThresholds(istanbulThresholdOpts))
+      .once('end', function () { process.exit(); });
 };
 
 gulp.task('test-cov', ['pre-test', 'pre-cov'], function () {
@@ -278,15 +283,15 @@ gulp.task('redis-server', ['redis-config'], function (done) {
     });
 
     done();
- });
+  });
 });
 
 gulp.task('redis-config', function (done) {
   var values = {
     logfile: redisLogfile
- };
+  };
 
- compileTemplate(redisConfigTemplate, redisConfig, values, done);
+  compileTemplate(redisConfigTemplate, redisConfig, values, done);
 });
 
 /**

@@ -42,7 +42,7 @@ describe('gendok.queue.worker.convert', function () {
     });
   });
 
-  it('renders the given template as a pdf and updates the job', function (done) {
+  it('renders the given template as a pdf', function (done) {
     var jobData = {jobId: job.id};
 
     convert(jobData, function (err) {
@@ -50,6 +50,12 @@ describe('gendok.queue.worker.convert', function () {
 
       Job.findById(job.id).then(function (j) {
         expect(j.result).to.not.be.empty;
+
+        var pdfString = j.result.toString();
+
+        // The header of every PDF file always starts with %PDF-1.x where
+        // can be any number from 1-7 currently.
+        expect(pdfString).to.match(/%PDF-1\.[0-9]+\n/);
         done();
       }).catch(done);
     });
