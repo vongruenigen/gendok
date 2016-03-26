@@ -22,3 +22,4 @@ public/fonts/**/*
 *.sass-cache
 lib/http/web/assets/css/**/*.css
 !**/*.gitkeep
+*.pdf

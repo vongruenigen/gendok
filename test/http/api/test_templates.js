@@ -17,6 +17,7 @@ var db = require('../../..').data.db;
 var expect = require('chai').expect;
 var helper = require('../../helper');
 var request = require('superagent');
+var simple = require('simple-mock');
 var format = require('util').format;
 
 describe('gendok.http.api.templates', function () {
@@ -66,6 +67,24 @@ describe('gendok.http.api.templates', function () {
       });
     });
 
+    it('returns an error if an invalid template is posted', function (done) {
+      factory.create('User', function (err, user) {
+        var values = {type: ''};
+        factory.build('Template', values, function (err, templ) {
+          request.post(url)
+                 .send(templ.toJSON())
+                 .set('Content-Type', 'application/json')
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.exist;
+                   expect(res.statusCode).to.eql(400);
+                   expect(res.body).to.eql(errors.badRequest.data);
+                   done();
+                 });
+        });
+      });
+    });
+
     it('returns the created template as JSON object', function (done) {
       factory.create('User', function (err, user) {
         factory.build('Template', function (err, templ) {
@@ -86,6 +105,17 @@ describe('gendok.http.api.templates', function () {
                  });
         });
       });
+    });
+
+    it('returns an unauthorized error without a valid api token', function (done) {
+      request.post(url)
+             .set('Authorization', 'Token blubiblub')
+             .end(function (err, res) {
+               expect(err).to.exist;
+               expect(res.statusCode).to.eql(errors.unauthorized.code);
+               expect(res.body).to.eql(errors.unauthorized.data);
+               done();
+             });
     });
   });
 
@@ -112,21 +142,60 @@ describe('gendok.http.api.templates', function () {
       });
     });
 
-    it('returns an error if an invalid template is posted', function (done) {
+    it('returns an error, no update if validation fails', function (done) {
       factory.create('User', function (err, user) {
-        var values = {type: ''};
-        factory.build('Template', values, function (err, templ) {
-          request.post(url)
-                 .send(templ.toJSON())
-                 .set('Content-Type', 'application/json')
-                 .set('Authorization', 'Token ' + user.apiToken)
-                 .end(function (err, res) {
-                   expect(err).to.exist;
-                   expect(res.statusCode).to.eql(400);
-                   expect(res.body).to.eql(errors.badRequest.data);
-                   done();
-                 });
+        factory.create('Template', function (err, tmpl) {
+          var attrs = {type: 'nonsense'};
+
+          request.put(url + '/' + (tmpl.id))
+                .send(attrs)
+                .set('Content-Type', 'application/json')
+                .set('Authorization', 'Token ' + user.apiToken)
+                .end(function (err, res) {
+                  expect(err).to.exist;
+                  expect(res.statusCode).to.eql(400);
+                  expect(res.body).to.eql(errors.badRequest.data);
+                  tmpl.reload().then(function (dbTempl) {
+                    expect(dbTempl.body).to.eql(tmpl.body);
+                    expect(dbTempl.type).to.eql(tmpl.type);
+                    done();
+                  });
+                });
         });
+      });
+    });
+
+    it('returns an error, no update if template id not found in DB', function (done) {
+      factory.create('User', function (err, user) {
+        factory.create('Template', function (err, tmpl) {
+          request.put(url + '/' + (tmpl.id + 1000))
+                .send({})
+                .set('Content-Type', 'application/json')
+                .set('Authorization', 'Token ' + user.apiToken)
+                .end(function (err, res) {
+                  expect(err).to.exist;
+                  expect(res.statusCode).to.eql(404);
+                  expect(res.body).to.eql(errors.notFound.data);
+                  tmpl.reload().then(function (dbTempl) {
+                    expect(dbTempl.body).to.eql(tmpl.body);
+                    expect(dbTempl.type).to.eql(tmpl.type);
+                    done();
+                  });
+                });
+        });
+      });
+    });
+
+    it('returns an unauthorized error without a valid api token', function (done) {
+      factory.create('Template', function (err, tmpl) {
+        request.post(url)
+               .set('Authorization', 'Token blubiblub')
+               .end(function (err, res) {
+                 expect(err).to.exist;
+                 expect(res.statusCode).to.eql(errors.unauthorized.code);
+                 expect(res.body).to.eql(errors.unauthorized.data);
+                 done();
+               });
       });
     });
   });
@@ -179,6 +248,19 @@ describe('gendok.http.api.templates', function () {
         });
       });
     });
+
+    it('returns an unauthorized error without a valid api token', function (done) {
+      factory.create('Template', function (err, tmpl) {
+        request.delete(url + '/' + tmpl.id)
+               .set('Authorization', 'Token blubiblub')
+               .end(function (err, res) {
+                 expect(err).to.exist;
+                 expect(res.statusCode).to.eql(errors.unauthorized.code);
+                 expect(res.body).to.eql(errors.unauthorized.data);
+                 done();
+               });
+      });
+    });
   });
 
   describe('POST /api/templates/:id/render', function () {
@@ -189,74 +271,46 @@ describe('gendok.http.api.templates', function () {
 
       factory.create('Template', function (err, template) {
         template.getUser().then(function (user) {
-          factory.build('Job', {templateId: template.id}, function (err, job) {
-            request.post(renderUrl.replace(':id', template.id))
-                   .send(payload)
-                   .set('Content-Type', 'application/json')
-                   .set('Authorization', 'Token ' + user.apiToken)
-                   .end(function (err, res) {
-                     expect(err).to.not.exist;
-                     expect(res.statusCode).to.eql(201);
+          request.post(renderUrl.replace(':id', template.id))
+                 .send(payload)
+                 .set('Content-Type', 'application/json')
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.statusCode).to.eql(201);
 
-                     var returnedAttrs = res.body;
-
-                     Job.findById(returnedAttrs.id).then(function (dbJob) {
-                       expect(dbJob.templateId).to.eql(template.id);
-                       expect(dbJob.payload).to.eql(payload);
-                       expect(dbJob.state).to.eql('pending');
-                       done();
-                     });
+                   Job.findById(res.body.id).then(function (job) {
+                     expect(job.templateId).to.eql(res.body.templateId);
+                     expect(job.payload).to.eql(res.body.payload);
+                     expect(job.state).to.eql(res.body.state);
+                     done();
                    });
-          });
-        });
-      });
-
-      it('schedules job for the worker', function (done) {
-        var payload = {gugus: 'blub'};
-
-        factory.create('Template', function (err, template) {
-          template.getUser().then(function (user) {
-            factory.build('Job', {templateId: template.id}, function (err, job) {
-              request.post(renderUrl.replace(':id', template.id))
-                     .send(payload)
-                     .set('Content-Type', 'application/json')
-                     .set('Authorization', 'Token ' + user.apiToken)
-                     .end(function (err, res) {
-                       expect(err).to.not.exist;
-                       expect(res.statusCode).to.eql(201);
-
-                       var returnedAttrs = res.body;
-
-                       Job.findById(returnedAttrs.id).then(function (dbJob) {
-                         expect(dbJob.templateId).to.eql(template.id);
-                         expect(dbJob.payload).to.eql(payload);
-                         expect(dbJob.state).to.eql('pending');
-                         done();
-                       });
-                     });
-            });
-          });
+                 });
         });
       });
     });
 
-    it('returns an error, no update if template id not found in DB', function (done) {
-      factory.create('User', function (err, user) {
-        factory.create('Template', function (err, tmpl) {
-          request.put(url + '/' + (tmpl.id + 1000))
-                .send({})
-                .set('Content-Type', 'application/json')
-                .set('Authorization', 'Token ' + user.apiToken)
-                .end(function (err, res) {
-                  expect(err).to.exist;
-                  expect(res.statusCode).to.eql(404);
-                  expect(res.body).to.eql(errors.notFound.data);
-                  tmpl.reload().then(function (dbTempl) {
-                    expect(dbTempl.body).to.eql(tmpl.body);
-                    expect(dbTempl.type).to.eql(tmpl.type);
-                    done();
-                  });
-                });
+    it('schedules job for the worker', function (done) {
+      var payload = {gugus: 'blub'};
+      var queue = server.getQueue();
+
+      factory.create('Template', function (err, template) {
+        template.getUser().then(function (user) {
+          simple.mock(queue, 'create').callOriginal();
+
+          request.post(renderUrl.replace(':id', template.id))
+                 .send(payload)
+                 .set('Content-Type', 'application/json')
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.statusCode).to.eql(201);
+
+                   expect(queue.create.callCount).to.eql(1);
+                   expect(queue.create.calls[0].args[0]).eql('convert');
+                   expect(queue.create.calls[0].args[1]).to.have.property('jobId');
+                   done();
+                 });
         });
       });
     });
@@ -287,46 +341,54 @@ describe('gendok.http.api.templates', function () {
       });
     });
 
-    it('returns an error, no update if template content type is not supported', function (done) {
-      factory.create('User', function (err, user) {
-        factory.create('Template', function (err, tmpl) {
-          var attrs = {type: 'nonsense'};
-
-          request.put(url + '/' + (tmpl.id))
-                .send(attrs)
-                .set('Content-Type', 'application/json')
-                .set('Authorization', 'Token ' + user.apiToken)
-                .end(function (err, res) {
-                  expect(err).to.exist;
-                  expect(res.statusCode).to.eql(400);
-                  expect(res.body).to.eql(errors.badRequest.data);
-                  tmpl.reload().then(function (dbTempl) {
-                    expect(dbTempl.body).to.eql(tmpl.body);
-                    expect(dbTempl.type).to.eql(tmpl.type);
-                    done();
-                  });
-                });
-        });
-      });
-    });
-
     it('returns an error if an invalid templateId is posted', function (done) {
       var payload = {gugus: 'blub'};
 
       factory.create('Template', function (err, template) {
         template.getUser().then(function (user) {
-          factory.build('Job', {templateId: template.id}, function (err, job) {
-            request.post(renderUrl.replace(':id', ''))
-                   .send(payload)
-                   .set('Content-Type', 'application/json')
-                   .set('Authorization', 'Token ' + user.apiToken)
-                   .end(function (err, res) {
-                     expect(err).to.exist;
-                     expect(res.statusCode).to.eql(404);
-                     done();
-                   });
-          });
+          request.post(renderUrl.replace(':id', 'blub'))
+                 .send(payload)
+                 .set('Content-Type', 'application/json')
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.exist;
+                   expect(res.statusCode).to.eql(errors.badRequest.code);
+                   expect(res.body).to.eql(errors.badRequest.data);
+                   done();
+                 });
         });
+      });
+    });
+
+    it('returns a 404 for a inexistent template id', function (done) {
+      var payload = {gugus: 'blub'};
+
+      factory.create('Template', function (err, template) {
+        template.getUser().then(function (user) {
+          request.post(renderUrl.replace(':id', '1234567890'))
+                 .send(payload)
+                 .set('Content-Type', 'application/json')
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.exist;
+                   expect(res.statusCode).to.eql(errors.notFound.code);
+                   expect(res.body).to.eql(errors.notFound.data);
+                   done();
+                 });
+        });
+      });
+    });
+
+    it('returns an unauthorized error without a valid api token', function (done) {
+      factory.create('Template', function (err, tmpl) {
+        request.post(renderUrl.replace(':id', tmpl.id))
+               .set('Authorization', 'Token blubiblub')
+               .end(function (err, res) {
+                 expect(err).to.exist;
+                 expect(res.statusCode).to.eql(errors.unauthorized.code);
+                 expect(res.body).to.eql(errors.unauthorized.data);
+                 done();
+               });
       });
     });
   });

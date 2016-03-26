@@ -43,7 +43,7 @@ describe('gendok.queue.worker.convert', function () {
   });
 
   it('renders the given template as a pdf', function (done) {
-    var jobData = {jobId: job.id};
+    var jobData = {data: {jobId: job.id}};
 
     convert(jobData, function (err) {
       expect(err).to.not.exist;
@@ -62,11 +62,11 @@ describe('gendok.queue.worker.convert', function () {
   });
 
   it('returns an error if no jobId is given or invalid', function (done) {
-    var jobData = {jobId: -1};
+    var jobData = {data: {jobId: -1}};
 
     convert(jobData, function (err) {
       expect(err).to.exist;
-      jobData = {};
+      jobData = {data: {}};
 
       convert(jobData, function (err) {
         expect(err).to.exist;
@@ -76,7 +76,7 @@ describe('gendok.queue.worker.convert', function () {
   });
 
   it('rejects jobs which are already finished', function (done) {
-    var jobData = {jobId: job.id};
+    var jobData = {data: {jobId: job.id}};
 
     job.update({state: 'finished'}).then(function (j) {
       expect(j).to.exist;
@@ -89,7 +89,7 @@ describe('gendok.queue.worker.convert', function () {
   });
 
   it('updates the state of the job after it has finished', function (done) {
-    var jobData = {jobId: job.id};
+    var jobData = {data: {jobId: job.id}};
 
     convert(jobData, function (err) {
       expect(err).to.not.exist;

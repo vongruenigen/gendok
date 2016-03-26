@@ -50,10 +50,11 @@ var cfg = new Config(config);
 var server = new Server(cfg);
 
 server.registerModules([
-  gendok.http.middleware.basic,
-  gendok.http.middleware.authorization,
+  gendok.http.middleware.all,
   gendok.http.web.home,
-  gendok.http.api.templates
+  gendok.http.api.status,
+  gendok.http.api.templates,
+  gendok.http.api.jobs
 ]);
 
 server.start(function (err) {
