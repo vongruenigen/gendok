@@ -45,23 +45,23 @@ describe('gendok.http.api.templates', function () {
       factory.create('User', function (err, user) {
         factory.build('Template', function (err, templ) {
           request.post(url)
-                .send(templ.toJSON())
-                .set('Content-Type', 'application/json')
-                .set('Authorization', 'Token ' + user.apiToken)
-                .end(function (err, res) {
-                  expect(err).to.not.exist;
-                  expect(res.statusCode).to.eql(201);
+                 .send(templ.toJSON())
+                 .set('Content-Type', 'application/json')
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.statusCode).to.eql(201);
 
-                  var returnedAttrs = res.body;
+                   var returnedAttrs = res.body;
 
-                  Template.findById(returnedAttrs.id).then(function (dbTempl) {
-                    expect(dbTempl.id).to.eql(returnedAttrs.id);
-                    expect(dbTempl.body).to.eql(templ.body);
-                    expect(dbTempl.type).to.eql(templ.type);
-                    expect(dbTempl.userId).to.eql(user.id);
-                    done();
-                  });
-                });
+                   Template.findById(returnedAttrs.id).then(function (dbTempl) {
+                     expect(dbTempl.id).to.eql(returnedAttrs.id);
+                     expect(dbTempl.body).to.eql(templ.body);
+                     expect(dbTempl.type).to.eql(templ.type);
+                     expect(dbTempl.userId).to.eql(user.id);
+                     done();
+                   });
+                 });
         });
       });
     });
@@ -70,20 +70,44 @@ describe('gendok.http.api.templates', function () {
       factory.create('User', function (err, user) {
         factory.build('Template', function (err, templ) {
           request.post(url)
-            .send(templ.toJSON())
-            .set('Content-Type', 'application/json')
-            .set('Authorization', 'Token ' + user.apiToken)
-            .end(function (err, res) {
-              expect(err).to.not.exist;
-              expect(res.statusCode).to.eql(201);
+                 .send(templ.toJSON())
+                 .set('Content-Type', 'application/json')
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.statusCode).to.eql(201);
 
-              var returnedAttrs = res.body;
+                   var returnedAttrs = res.body;
 
-              expect(returnedAttrs.type).to.eql(templ.type);
-              expect(returnedAttrs.body).to.eql(templ.body);
-              expect(returnedAttrs.id).not.to.eql(null);
-              done();
-            });
+                   expect(returnedAttrs.type).to.eql(templ.type);
+                   expect(returnedAttrs.body).to.eql(templ.body);
+                   expect(returnedAttrs.id).not.to.eql(null);
+                   done();
+                 });
+        });
+      });
+    });
+  });
+
+  describe('PUT /api/templates/:id', function () {
+    it('update a template in the database', function (done) {
+      factory.create('User', function (err, user) {
+        factory.create('Template', function (err, tmpl) {
+          var attrs = {body: 'content'};
+
+          request.put(url + '/' + tmpl.id)
+                .send(attrs)
+                .set('Content-Type', 'application/json')
+                .set('Authorization', 'Token ' + user.apiToken)
+                .end(function (err, res) {
+                  expect(err).to.not.exist;
+                  expect(res.statusCode).to.eql(200);
+
+                  tmpl.reload().then(function (dbTempl) {
+                    expect(dbTempl.body).to.eql(attrs.body);
+                    done();
+                  });
+                });
         });
       });
     });
@@ -93,15 +117,65 @@ describe('gendok.http.api.templates', function () {
         var values = {type: ''};
         factory.build('Template', values, function (err, templ) {
           request.post(url)
-            .send(templ.toJSON())
-            .set('Content-Type', 'application/json')
-            .set('Authorization', 'Token ' + user.apiToken)
-            .end(function (err, res) {
-              expect(err).to.exist;
-              expect(res.statusCode).to.eql(400);
-              expect(res.body).to.eql(errors.badRequest.data);
-              done();
-            });
+                 .send(templ.toJSON())
+                 .set('Content-Type', 'application/json')
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.exist;
+                   expect(res.statusCode).to.eql(400);
+                   expect(res.body).to.eql(errors.badRequest.data);
+                   done();
+                 });
+        });
+      });
+    });
+  });
+
+  describe('DELETE /api/templates/:id', function () {
+    it('deletes a template in the database', function (done) {
+      factory.create('User', function (err, user) {
+        factory.create('Template', {userId: user.id}, function (err, templ) {
+          request.delete(url + '/' + templ.id)
+                 .set('Content-Type', 'application/json')
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.statusCode).to.eql(200);
+                   Template.findById(templ.id).then(function (t) {
+                     expect(t).to.not.exist;
+                     done();
+                   });
+                 });
+        });
+      });
+    });
+
+    it('returns a 404 if no template with the given id exists', function (done) {
+      factory.create('User', function (err, user) {
+        factory.create('Template', {userId: user.id}, function (err, templ) {
+          request.delete(url + '/123456789')
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.exist;
+                   expect(res.statusCode).to.eql(errors.notFound.code);
+                   expect(res.body).to.eql(errors.notFound.data);
+                   done();
+                 });
+        });
+      });
+    });
+
+    it('returns a 400 if invalid id is given', function (done) {
+      factory.create('User', function (err, user) {
+        factory.create('Template', {userId: user.id}, function (err, templ) {
+          request.delete(url + '/' + 'blub')
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.exist;
+                   expect(res.statusCode).to.eql(errors.badRequest.code);
+                   expect(res.body).to.eql(errors.badRequest.data);
+                   done();
+                 });
         });
       });
     });
@@ -166,6 +240,27 @@ describe('gendok.http.api.templates', function () {
       });
     });
 
+    it('returns an error, no update if template id not found in DB', function (done) {
+      factory.create('User', function (err, user) {
+        factory.create('Template', function (err, tmpl) {
+          request.put(url + '/' + (tmpl.id + 1000))
+                .send({})
+                .set('Content-Type', 'application/json')
+                .set('Authorization', 'Token ' + user.apiToken)
+                .end(function (err, res) {
+                  expect(err).to.exist;
+                  expect(res.statusCode).to.eql(404);
+                  expect(res.body).to.eql(errors.notFound.data);
+                  tmpl.reload().then(function (dbTempl) {
+                    expect(dbTempl.body).to.eql(tmpl.body);
+                    expect(dbTempl.type).to.eql(tmpl.type);
+                    done();
+                  });
+                });
+        });
+      });
+    });
+
     it('returns the created job as JSON', function (done) {
       var payload = {gugus: 'blub'};
 
@@ -188,6 +283,29 @@ describe('gendok.http.api.templates', function () {
                      done();
                    });
           });
+        });
+      });
+    });
+
+    it('returns an error, no update if template content type is not supported', function (done) {
+      factory.create('User', function (err, user) {
+        factory.create('Template', function (err, tmpl) {
+          var attrs = {type: 'nonsense'};
+
+          request.put(url + '/' + (tmpl.id))
+                .send(attrs)
+                .set('Content-Type', 'application/json')
+                .set('Authorization', 'Token ' + user.apiToken)
+                .end(function (err, res) {
+                  expect(err).to.exist;
+                  expect(res.statusCode).to.eql(400);
+                  expect(res.body).to.eql(errors.badRequest.data);
+                  tmpl.reload().then(function (dbTempl) {
+                    expect(dbTempl.body).to.eql(tmpl.body);
+                    expect(dbTempl.type).to.eql(tmpl.type);
+                    done();
+                  });
+                });
         });
       });
     });
