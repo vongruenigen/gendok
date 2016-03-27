@@ -392,4 +392,37 @@ describe('gendok.http.api.templates', function () {
       });
     });
   });
+
+  describe('GET /api/templates/', function () {
+    it('returns all templates of the user as JSON objects', function ( done ) {
+      factory.create('User', function(err, user) {
+        factory.createMany('Template', {userId: user.id}, 3, function( err, templs ) {
+          var createdTemplates = [];
+          templs.forEach(function( template ) {
+            createdTemplates.push(template.toPublicObject());
+          });
+
+          request.get('localhost:3000/api/templates')
+            .set('Authorization', 'Token ' + user.apiToken)
+            .end(function(err, res) {
+              expect(err).to.not.exist;
+              expect( res.body ).to.deep.equal( createdTemplates );
+              done();
+            });
+        });
+      });
+    });
+
+    it('returns an empty array if there aren\'t any templates for the given user', function ( done ) {
+      factory.create('User', function(err, user) {
+        request.get('localhost:3000/api/templates')
+          .set('Authorization', 'Token ' + user.apiToken)
+          .end(function(err, res) {
+            expect(err).to.not.exist;
+            expect( res.body ).to.eql( [] );
+            done();
+          });
+      });
+    });
+  });
 });
