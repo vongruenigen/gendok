@@ -41,7 +41,7 @@ describe('gendok.http.api.jobs', function () {
     expect(jobs).to.be.a('function');
   });
 
-  describe('POST /api/jobs/:id', function () {
+  describe('GET /api/jobs/:id', function () {
     var renderUrl = url + '/:id';
 
     it('returns the state of the given job', function (done) {
@@ -71,16 +71,28 @@ describe('gendok.http.api.jobs', function () {
       factory.create('Template', function (err, template) {
         template.getUser().then(function (user) {
           factory.create('Job', {templateId: template.id}, function (err, job) {
-            request.get(renderUrl.replace(':id', ''))
+            request.get(renderUrl.replace(':id', '1234565'))
                    .set('Authorization', 'Token ' + user.apiToken)
                    .end(function (err, res) {
                      expect(err).to.exist;
-                     expect(res.statusCode).to.eql(404);
+                     expect(res.statusCode).to.eql(errors.notFound.code);
+                     expect(res.body).to.eql(errors.notFound.data);
                      done();
                    });
           });
         });
       });
+    });
+
+    it('returns an unauthorized error without a valid api token', function (done) {
+      request.get(renderUrl.replace(':id', '1'))
+             .set('Authorization', 'Token blubiblub')
+             .end(function (err, res) {
+               expect(err).to.exist;
+               expect(res.statusCode).to.eql(errors.unauthorized.code);
+               expect(res.body).to.eql(errors.unauthorized.data);
+               done();
+             });
     });
   });
 
@@ -109,6 +121,17 @@ describe('gendok.http.api.jobs', function () {
                    });
           });
         });
+      });
+
+      it('returns an unauthorized error without a valid api token', function (done) {
+        request.post(downloadUrl.replace(':id', '1'))
+               .set('Authorization', 'Token blubiblub')
+               .end(function (err, res) {
+                 expect(err).to.exist;
+                 expect(res.statusCode).to.eql(errors.unauthorized.code);
+                 expect(res.body).to.eql(errors.unauthorized.data);
+                 done();
+               });
       });
     });
 
