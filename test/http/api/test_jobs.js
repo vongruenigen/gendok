@@ -143,7 +143,7 @@ describe('gendok.http.api.jobs', function () {
                    .set('Authorization', 'Token ' + user.apiToken)
                    .end(function (err, res) {
                      expect(err).to.exist;
-                     expect(res.statusCode).to.eql(errors.notFinished.code);
+                     expect(res.statusCode).to.eql(errors.forbidden.code);
                      done();
                    });
           });
