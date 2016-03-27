@@ -68,5 +68,16 @@ describe('gendok.http.api.status', function () {
         });
       });
     });
+
+    describe('without a Authorization header', function () {
+      it('returns an unauthorized error', function (done) {
+        request.get(url).end(function (err, res) {
+          expect(err).to.exist;
+          expect(res.statusCode).to.eql(errors.unauthorized.code);
+          expect(res.body).to.eql(errors.unauthorized.data);
+          done();
+        });
+      });
+    });
   });
 });
