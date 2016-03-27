@@ -247,10 +247,16 @@ gulp.task('check-bower-components', function (done) {
   fs.stat(componentsPath, function (err) {
     if (err) {
       // Throw the error in case it's not "file not found"
-      if (err.code !== 'ENOENT') { throw err; }
+      if (err.code !== 'ENOENT') {
+        throw err;
+      }
+
       // Install bower components programmatically
       bower.commands.install(undefined, undefined).on('end', function (err) {
-        if (err) { throw err; }
+        if (err) {
+          throw err;
+        }
+
         done();
       });
     } else {
