@@ -36,7 +36,8 @@ var argv = require('minimist')(process.argv.slice(2));
  */
 var mochaOpts = {reporter: 'spec'};
 var mochaJenkinsOpts = {reporter: 'mocha-jenkins-reporter'};
-var istanbulOpts = {dir: './reports', reporters: ['html', 'clover']};
+var istanbulOpts = {dir: './reports',
+                    reporters: ['text-summary', 'html', 'clover']};
 var istanbulThresholdOpts = {thresholds: {global: 90}};
 
 var publicPath = path.join(__dirname, 'public');
@@ -156,9 +157,9 @@ gulp.task('test-env', function () {
 });
 
 gulp.task('pre-cov', function () {
-  gulp.src('lib/**/*.js')
-      .pipe(istanbul(istanbulOpts))
-      .pipe(istanbul.hookRequire());
+  return gulp.src('lib/**/**.js')
+             .pipe(istanbul())
+             .pipe(istanbul.hookRequire());
 });
 
 var runTestsWithCov = function (opts) {
@@ -166,7 +167,7 @@ var runTestsWithCov = function (opts) {
       .pipe(mocha(opts))
       .pipe(istanbul.writeReports(istanbulOpts))
       .pipe(istanbul.enforceThresholds(istanbulThresholdOpts))
-      .once('end', function () { process.exit(); });
+      .on('end', function () { process.exit(); });
 };
 
 gulp.task('test-cov', ['pre-test', 'pre-cov'], function () {
