@@ -10,13 +10,13 @@
 
 'use strict';
 
-var path   = require('path'),
-    argv   = require('minimist')(process.argv.slice(2)),
-    base   = path.join(__dirname, '..'),
-    gendok = require(base),
-    Config = gendok.config,
-    Server = gendok.http.server,
-    config = {};
+var path = require('path');
+var argv = require('minimist')(process.argv.slice(2));
+var base = path.join(__dirname, '..');
+var gendok = require(base);
+var Config = gendok.config;
+var Server = gendok.http.server;
+var config = {};
 
 if (!gendok) {
   console.error("Couldn't load gendok library!");
@@ -27,8 +27,8 @@ if (argv.help || argv.h) {
   console.log('Usage: gendok-http [options]');
   console.log('');
   console.log('Options');
-  console.log("  -v, --version\tprint the gendok version");
-  console.log("  -c, --config\tspecify the config.json to use");
+  console.log('  -v, --version\tprint the gendok version');
+  console.log('  -c, --config\tspecify the config.json to use');
   return;
 }
 
