@@ -394,35 +394,88 @@ describe('gendok.http.api.templates', function () {
   });
 
   describe('GET /api/templates/', function () {
-    it('returns all templates of the user as JSON objects', function ( done ) {
-      factory.create('User', function(err, user) {
-        factory.createMany('Template', {userId: user.id}, 3, function( err, templs ) {
+    it('returns all templates of the user as JSON objects', function (done) {
+      factory.create('User', function (err, user) {
+        factory.createMany('Template', {userId: user.id}, 3, function (err, templs) {
           var createdTemplates = [];
-          templs.forEach(function( template ) {
+          templs.forEach(function (template) {
             createdTemplates.push(template.toPublicObject());
           });
 
-          request.get('localhost:3000/api/templates')
-            .set('Authorization', 'Token ' + user.apiToken)
-            .end(function(err, res) {
-              expect(err).to.not.exist;
-              expect( res.body ).to.deep.equal( createdTemplates );
-              done();
-            });
+          request.get(url)
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.body).to.deep.equal(createdTemplates);
+                   done();
+                 });
         });
       });
     });
 
-    it('returns an empty array if there aren\'t any templates for the given user', function ( done ) {
-      factory.create('User', function(err, user) {
-        request.get('localhost:3000/api/templates')
-          .set('Authorization', 'Token ' + user.apiToken)
-          .end(function(err, res) {
-            expect(err).to.not.exist;
-            expect( res.body ).to.eql( [] );
-            done();
-          });
+    it('returns an empty array if there aren\'t any templates for the given user', function (done) {
+      factory.create('User', function (err, user) {
+        request.get(url)
+               .set('Authorization', 'Token ' + user.apiToken)
+               .end(function (err, res) {
+                 expect(err).to.not.exist;
+                 expect(res.body).to.eql([]);
+                 done();
+               });
       });
+    });
+
+    it('returns an unauthorized error without a valid api token', function (done) {
+      factory.create('Template', function (err, tmpl) {
+        request.post(url)
+               .set('Authorization', 'Token blubiblub')
+               .end(function (err, res) {
+                 expect(err).to.exist;
+                 expect(res.statusCode).to.eql(errors.unauthorized.code);
+                 expect(res.body).to.eql(errors.unauthorized.data);
+                 done();
+               });
+      });
+    });
+  });
+
+  describe('GET /api/templates/:id', function () {
+    it('the specified template as a JSON object', function (done) {
+      factory.create('User', function (err, user) {
+        factory.create('Template', {userId: user.id}, function (err, tmpl) {
+          request.get(url + '/' + tmpl.id)
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.body).to.deep.equal(tmpl.toPublicObject());
+                   done();
+                 });
+        });
+      });
+    });
+
+    it('returns a 404 if the specified template doesnt exist', function (done) {
+      factory.create('User', function (err, user) {
+        request.get(url + '/123456')
+               .set('Authorization', 'Token ' + user.apiToken)
+               .end(function (err, res) {
+                 expect(err).to.exist;
+                 expect(res.statusCode).to.eql(errors.notFound.code);
+                 expect(res.body).to.eql(errors.notFound.data);
+                 done();
+               });
+      });
+    });
+
+    it('returns an unauthorized error without a valid api token', function (done) {
+      request.get(url + '/12345')
+             .set('Authorization', 'Token blubiblub')
+             .end(function (err, res) {
+               expect(err).to.exist;
+               expect(res.statusCode).to.eql(errors.unauthorized.code);
+               expect(res.body).to.eql(errors.unauthorized.data);
+               done();
+             });
     });
   });
 });
