@@ -29,9 +29,9 @@ describe('gendok.env', function () {
 
     it('defaults to "development" if missing or invalid', function () {
       var expects = {
-        '': 'development',
-        'testing': 'development',
-        'prod':    'development'
+        null: 'development',
+        testing: 'development',
+        prod: 'development'
       };
 
       Object.keys(expects).forEach(function (key) {

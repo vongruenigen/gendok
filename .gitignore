@@ -9,6 +9,9 @@ pids
 reports
 debug
 
+# Is compile from the config/redis.conf.tmpl files via 'gulp redis-config'
+config/redis.conf
+
 bower_components
 node_modules
 public/**/*
@@ -19,3 +22,4 @@ public/fonts/**/*
 *.sass-cache
 lib/http/web/assets/css/**/*.css
 !**/*.gitkeep
+*.pdf
