@@ -183,7 +183,7 @@ gulp.task('test-debug', ['pre-test'], function () {
   spawn('node', ['--debug-brk', gulpjs, 'test'], {stdio: 'inherit'});
 });
 
-gulp.task('test-jenkins', ['pre-test'], function () {
+gulp.task('test-jenkins', ['pre-test', 'pre-cov'], function () {
   runTestsWithCov(mochaJenkinsOpts);
 });
 
