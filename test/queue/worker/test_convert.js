@@ -12,8 +12,9 @@
 var gendok = require('../../../');
 var db = gendok.data.db;
 var Config = gendok.config;
+var convert = gendok.queue.worker.convert;
+var Compiler = gendok.compiler.compiler;
 var helper = require('../../helper');
-var convert = require('../../../lib/queue/worker/convert');
 var expect = require('chai').expect;
 var simple = require('simple-mock');
 
@@ -99,6 +100,40 @@ describe('gendok.queue.worker.convert', function () {
         expect(j.state).to.eql('finished');
         done();
       }).catch(done);
+    });
+  });
+
+  it('renders the template with the compiler before converting to pdf', function (done) {
+    // Attributes to ensure that we use an actual compiler for this tests
+    var templateAttrs = {
+      type: 'mustache',
+      body: '<html><head><title>blub</title></head>' +
+            '<body><h1>{{data}}</h1></body></html>'
+    };
+
+    var jobAttrs = {payload: {data: 'bluebdiblub'}};
+
+    factory.create('Template', templateAttrs, function (err, t) {
+      jobAttrs.templateId = t.id;
+
+      factory.create('Job', jobAttrs, function (err, j) {
+        var jobData = {data: {jobId: j.id}};
+
+        convert(jobData, function (err) {
+          expect(err).to.not.exist;
+
+          // Compare contents of generated result with our generated pdf
+          j.reload().then(function (j) {
+            helper.parsePdf(j.result, function (err, data) {
+              var pdfText = data.chars.join('');
+
+              expect(err).to.not.exist;
+              expect(pdfText).to.include(jobAttrs.payload.data);
+              done(err);
+            });
+          }).catch(done);
+        });
+      });
     });
   });
 });
