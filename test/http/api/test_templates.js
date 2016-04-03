@@ -283,6 +283,7 @@ describe('gendok.http.api.templates', function () {
                      expect(job.templateId).to.eql(res.body.templateId);
                      expect(job.payload).to.eql(res.body.payload);
                      expect(job.state).to.eql(res.body.state);
+                     expect(job.format).to.eql(res.body.format);
                      done();
                    });
                  });

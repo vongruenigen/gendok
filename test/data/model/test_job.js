@@ -92,6 +92,24 @@ describe('gendok.data.model.job', function () {
         });
       });
     });
+
+    describe('.format', function () {
+      it('may not be empty', function (done) {
+        var values = {format: ''};
+
+        factory.build('Job', values, function (err, job) {
+          expect(err).to.not.exist;
+          expect(job.format).to.eql(values.format);
+
+          job.validate().then(function (err) {
+            expect(err).to.exist;
+            expect(err.errors.length).to.eql(1);
+            expect(err.errors[0].path).to.eql('format');
+            done();
+          });
+        });
+      });
+    });
   });
 
   describe('instance methods', function () {
