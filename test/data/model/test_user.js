@@ -41,6 +41,7 @@ describe('gendok.data.model.user', function () {
       expect(u.apiToken).to.not.be.empty;
     });
   });
+
   describe('validation', function () {
     describe('.email', function () {
       it('email address must have a valid format', function (done) {
@@ -48,7 +49,7 @@ describe('gendok.data.model.user', function () {
           expect(err).to.not.exist;
           usr.validate().then(function (err) {
             expect(err).to.not.exist;
-          }).then (function () {
+          }).then(function () {
             usr.email = 'xyz';
           }).then(function () {
             usr.validate().then(function (err) {
@@ -60,6 +61,7 @@ describe('gendok.data.model.user', function () {
           });
         });
       });
+
       // it('email adress has to be unique', function (done) {
       //   var values = {email: 'test@gendok.ch'}
       //   factory.build('User', values, function (err, usr) {
