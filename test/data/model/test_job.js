@@ -12,6 +12,7 @@
 var helper = require('../../helper');
 var db = require('../../..').data.db;
 var expect = require('chai').expect;
+var simple = require('simple-mock');
 
 describe('gendok.data.model.job', function () {
   var factory = helper.loadFactories(this);
@@ -105,6 +106,43 @@ describe('gendok.data.model.job', function () {
         factory.build('Job', function (err, job) {
           var publicJob = job.toPublicObject();
           expect(publicJob.result).to.not.exist;
+          done();
+        });
+      });
+    });
+
+    describe('schedule()', function () {
+      it('schedules a "convert" worker job on the given queue', function (done) {
+        var queueJob = { save: simple.stub().callbackWith(null) };
+        var queue = { create: simple.stub().returnWith(queueJob) };
+
+        factory.create('Job', function (err, job) {
+          expect(err).to.not.exist;
+
+          job.schedule(queue, function errorHandler(err, j) {
+            expect(err).to.not.exist;
+            expect(j).to.eql(queueJob);
+
+            // Check calls on create() stub
+            expect(queue.create.callCount).to.eql(1);
+            expect(queue.create.lastCall.args[0]).to.eql('convert');
+            expect(queue.create.lastCall.args[1]).to.eql({jobId: job.id});
+
+            // Check calls on save() stub
+            expect(queueJob.save.callCount).to.eql(1);
+            expect(queueJob.save.lastCall.arg).to.be.a('function');
+
+            done();
+          });
+        });
+      });
+
+      it('throws an error if the callback or queue is missing', function (done) {
+        var noop = function () { };
+
+        factory.create('Job', function (err, job) {
+          expect(function () { job.schedule({}, null); }).to.throw(Error);
+          expect(function () { job.schedule(null, noop); }).to.throw(Error);
           done();
         });
       });

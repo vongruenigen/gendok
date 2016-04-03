@@ -294,23 +294,17 @@ describe('gendok.http.api.templates', function () {
       var payload = {gugus: 'blub'};
       var queue = server.getQueue();
 
+      queue.once('job enqueue', function () {
+        done();
+      });
+
       factory.create('Template', function (err, template) {
         template.getUser().then(function (user) {
-          simple.mock(queue, 'create').callOriginal();
-
           request.post(renderUrl.replace(':id', template.id))
                  .send(payload)
                  .set('Content-Type', 'application/json')
                  .set('Authorization', 'Token ' + user.apiToken)
-                 .end(function (err, res) {
-                   expect(err).to.not.exist;
-                   expect(res.statusCode).to.eql(201);
-
-                   expect(queue.create.callCount).to.eql(1);
-                   expect(queue.create.calls[0].args[0]).eql('convert');
-                   expect(queue.create.calls[0].args[1]).to.have.property('jobId');
-                   done();
-                 });
+                 .end();
         });
       });
     });
