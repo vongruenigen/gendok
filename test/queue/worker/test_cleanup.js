@@ -19,7 +19,7 @@ var expect = require('chai').expect;
 describe('gendok.queue.worker.cleanup', function (done) {
   var factory = helper.loadFactories(this);
   var Job = null;
-  var ttl = 5000;
+  var ttl = 20000000;
 
   beforeEach(function (done) {
     Job = gendok.data.db.getModel('Job');
@@ -38,7 +38,7 @@ describe('gendok.queue.worker.cleanup', function (done) {
   it('removes the PDF from a job which has reached the ttl', function (done) {
     var workerData = {data: {ttl: ttl}};
     var values = {
-      renderedAt: 1234567890,
+      renderedAt: Date.now(),
       result: 'I\'m a PDF, LOL!'
     };
     var now = values.renderedAt + ttl;
@@ -60,7 +60,7 @@ describe('gendok.queue.worker.cleanup', function (done) {
   it('doesn\'t remove PDFs from jobs which are below the ttl', function (done) {
     var workerData = {data: {ttl: ttl}};
     var values = {
-      renderedAt: 1234567890,
+      renderedAt: Date.now(),
       result: 'I\'m a PDF, LOL!'
     };
     var now = values.renderedAt + ttl - 1;
@@ -80,8 +80,5 @@ describe('gendok.queue.worker.cleanup', function (done) {
     });
   });
 
-  it('adds itself to the queue after it is done', function (done) {
-    expect(null).to.not.be.null;
-    done();
-  });
+  it('adds itself to the queue after it is done');
 });
