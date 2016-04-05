@@ -109,6 +109,7 @@ describe('gendok.queue.worker.convert', function () {
       expect(err).to.not.exist;
 
       Job.findById(job.id).then(function (j) {
+        expect(j.renderedAt).to.exist;
         expect(j.renderedAt).not.to.eql(null);
         done();
       }).catch(done);
