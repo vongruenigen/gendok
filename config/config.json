@@ -6,7 +6,9 @@
     "password": "gendok",
     "database": "gendok_development",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "cleanup_ttl": 432000,
+    "cleanup_interval": 900
   },
 
   "test": {
@@ -16,7 +18,9 @@
     "password": "gendok",
     "database": "gendok_test",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "cleanup_ttl": 432000,
+    "cleanup_interval": 900
   },
 
   "production": {
@@ -26,6 +30,8 @@
     "password": "gendok",
     "database": "gendok_production",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "cleanup_ttl": 432000,
+    "cleanup_interval": 900
   }
 }
