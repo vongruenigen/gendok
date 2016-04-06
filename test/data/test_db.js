@@ -78,12 +78,28 @@ describe('gendok.data.db', function () {
         db.getModel('');
       }).to.throw(Error);
     });
+
+    it('throws an error if the db connection is not open', function () {
+      db.disconnect();
+
+      expect(function () {
+        db.getModel('');
+      }).to.throw(Error);
+    });
   });
 
   describe('getAllModels()', function () {
     it('returns an object containing all models', function () {
       var conn = db.connect(config);
       expect(db.getAllModels()).to.eql(conn.models);
+    });
+
+    it('throws an error if the db connection is not open', function () {
+      db.disconnect();
+
+      expect(function () {
+        db.getAllModels();
+      }).to.throw(Error);
     });
   });
 });
