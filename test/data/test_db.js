@@ -79,4 +79,11 @@ describe('gendok.data.db', function () {
       }).to.throw(Error);
     });
   });
+
+  describe('getAllModels()', function () {
+    it('returns an object containing all models', function () {
+      var conn = db.connect(config);
+      expect(db.getAllModels()).to.eql(conn.models);
+    });
+  });
 });
