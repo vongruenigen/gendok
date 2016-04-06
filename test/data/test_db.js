@@ -42,7 +42,7 @@ describe('gendok.data.db', function () {
       var conn = db.connect();
 
       Object.keys(model).forEach(function (k) {
-        expect(conn[k]).to.exist;
+        expect(conn.models[k]).to.exist;
       });
     });
   });
@@ -66,6 +66,7 @@ describe('gendok.data.db', function () {
   describe('getModel()', function () {
     it('return all models', function () {
       var conn = db.connect();
+
       Object.keys(model).forEach(function (k) {
         expect(db.getModel(k)).to.exist;
       });
