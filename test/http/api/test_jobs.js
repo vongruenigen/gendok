@@ -18,14 +18,11 @@ var Template = require('../../..').data.model.Template;
 var expect = require('chai').expect;
 var helper = require('../../helper');
 var request = require('superagent');
-var format = require('util').format;
 
 describe('gendok.http.api.jobs', function () {
   var factory = helper.loadFactories(this);
   var server = helper.runHttpServer(this, [all, jobs]);
-  var config = server.getConfig();
-  var url = format('%s:%d/api/jobs',
-                  config.get('http_host'), config.get('http_port'));
+  var url = helper.getUrl('/api/jobs');
   var Template = null;
   var Job = null;
 

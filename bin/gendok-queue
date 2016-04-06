@@ -14,7 +14,7 @@ var path = require('path');
 var argv = require('minimist')(process.argv.slice(2));
 var base = path.join(__dirname, '..');
 var gendok = require(base);
-var Config = gendok.config;
+var config = gendok.config;
 var Server = gendok.http.server;
 var Runner = gendok.queue.runner;
 var config = {};
@@ -39,7 +39,7 @@ if (!argv.config && !argv.c) {
   var configPath = argv.config || argv.c;
 
   try {
-    config = require(path.resolve(configPath));
+    config.load(require(path.resolve(configPath)));
   } catch (e) {
     console.error('Error while loading config from %s', configPath);
     console.error('Maybe you should use an absolute path to specify the config');
@@ -47,8 +47,7 @@ if (!argv.config && !argv.c) {
   }
 }
 
-var cfg = new Config(config);
-var queueRunner = new Runner(cfg);
+var queueRunner = new Runner();
 
 queueRunner.start(function () {
   queueRunner.registerWorkers({
