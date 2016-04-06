@@ -7,6 +7,8 @@
  *
  */
 
+'use strict';
+
 var gendok = require('../../..');
 var all = gendok.http.middleware.all;
 var status = gendok.http.api.status;
@@ -14,9 +16,6 @@ var errors = gendok.http.api.errors;
 var request = require('superagent');
 var helper = require('../../helper');
 var expect = require('chai').expect;
-var format = require('util').format;
-
-'use strict';
 
 describe('gendok.http.api.status', function () {
   it('is a function', function () {
@@ -25,9 +24,7 @@ describe('gendok.http.api.status', function () {
 
   var factory = helper.loadFactories(this);
   var server = helper.runHttpServer(this, [all, status]);
-  var config = server.getConfig();
-  var url = format('%s:%d/api/status',
-                   config.get('http_host'), config.get('http_port'));
+  var url = helper.getUrl('/api/status');
 
   describe('GET /api/status/', function () {
     describe('with an invalid token', function () {

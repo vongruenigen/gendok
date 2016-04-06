@@ -11,7 +11,7 @@
 
 var Browser = require('zombie');
 var expect = require('chai').expect;
-var Config = require('../../..').config;
+var config = require('../../..').config;
 var http = require('../../../').http;
 var helper = require('../../helper');
 var HttpServer = http.server;
@@ -24,7 +24,6 @@ describe('gendok.http.web.home', function () {
 
   var browser = new Browser();
   var modules = [http.middleware.basic, web.home];
-  var config = Config.getDefault();
 
   // Register http server hooks
   helper.runHttpServer(this, modules);
