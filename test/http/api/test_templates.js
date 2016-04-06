@@ -266,58 +266,85 @@ describe('gendok.http.api.templates', function () {
   describe('POST /api/templates/:id/render', function () {
     var renderUrl = url + '/:id/render';
 
-    it('creates a job in the database', function (done) {
-      var payload = {gugus: 'blub'};
+    describe('when async is set to false', function () {
+      it('returns the generated output', function (done) {
+        var data = {
+          payload: {gugus: 'blub'},
+          async: false
+        };
 
-      factory.create('Template', function (err, template) {
-        template.getUser().then(function (user) {
-          request.post(renderUrl.replace(':id', template.id))
-                 .send(payload)
-                 .set('Content-Type', 'application/json')
-                 .set('Authorization', 'Token ' + user.apiToken)
-                 .end(function (err, res) {
-                   expect(err).to.not.exist;
-                   expect(res.statusCode).to.eql(201);
+        var mockResult = 'mockResult';
 
-                   Job.findById(res.body.id).then(function (job) {
-                     expect(job.templateId).to.eql(res.body.templateId);
-                     expect(job.payload).to.eql(res.body.payload);
-                     expect(job.state).to.eql(res.body.state);
-                     expect(job.format).to.eql(res.body.format);
+        // Add a "mock" convert worker, otherwise this test never finishes
+        server.getQueue().process('convert', function (j, d) {
+          Job.findById(j.data.jobId).then(function (job) {
+            // Set the mock content above on the new Job object
+            job.update({result: mockResult}).then(function () {
+              d();
+            }).catch(d);
+          }).catch(d);
+        });
+
+        factory.create('Template', function (err, template) {
+          template.getUser().then(function (user) {
+            request.post(renderUrl.replace(':id', template.id))
+                   .send(data)
+                   .buffer()
+                   .set('Content-Type', 'application/json')
+                   .set('Authorization', 'Token ' + user.apiToken)
+                   .end(function (err, res) {
+                     expect(err).to.not.exist;
+                     expect(res.statusCode).to.eql(200);
+
+                     expect(res.get('Content-Type')).to.include('application/pdf');
+                     expect(res.text).to.eql(mockResult);
+
                      done();
                    });
-                 });
+          });
         });
       });
     });
 
-    it('schedules job for the worker', function (done) {
-      var payload = {gugus: 'blub'};
-      var queue = server.getQueue();
+    describe('when async is set to true', function () {
+      it('creates a job in the database', function (done) {
+        var data = {
+          payload: {gugus: 'blub'},
+          async: true
+        };
 
-      queue.once('job enqueue', function () {
-        done();
-      });
-
-      factory.create('Template', function (err, template) {
-        template.getUser().then(function (user) {
-          request.post(renderUrl.replace(':id', template.id))
-                 .send(payload)
-                 .set('Content-Type', 'application/json')
-                 .set('Authorization', 'Token ' + user.apiToken)
-                 .end();
-        });
-      });
-    });
-
-    it('returns the created job as JSON', function (done) {
-      var payload = {gugus: 'blub'};
-
-      factory.create('Template', function (err, template) {
-        template.getUser().then(function (user) {
-          factory.build('Job', {templateId: template.id}, function (err, job) {
+        factory.create('Template', function (err, template) {
+          template.getUser().then(function (user) {
             request.post(renderUrl.replace(':id', template.id))
-                   .send(payload)
+                   .send(data)
+                   .set('Content-Type', 'application/json')
+                   .set('Authorization', 'Token ' + user.apiToken)
+                   .end(function (err, res) {
+                     expect(err).to.not.exist;
+                     expect(res.statusCode).to.eql(201);
+
+                     Job.findById(res.body.id).then(function (job) {
+                       expect(job.templateId).to.eql(res.body.templateId);
+                       expect(job.payload).to.eql(res.body.payload);
+                       expect(job.state).to.eql(res.body.state);
+                       expect(job.format).to.eql(res.body.format);
+                       done();
+                     });
+                   });
+          });
+        });
+      });
+
+      it('returns the created job as JSON', function (done) {
+        var data = {
+          payload: {gugus: 'blub'},
+          async: true
+        };
+
+        factory.create('Template', function (err, template) {
+          template.getUser().then(function (user) {
+            request.post(renderUrl.replace(':id', template.id))
+                   .send(data)
                    .set('Content-Type', 'application/json')
                    .set('Authorization', 'Token ' + user.apiToken)
                    .end(function (err, res) {
@@ -326,11 +353,32 @@ describe('gendok.http.api.templates', function () {
 
                      var returnedAttrs = res.body;
 
-                     expect(returnedAttrs.id).not.to.eql(null);
-                     expect(returnedAttrs.payload).to.eql(payload);
+                     expect(returnedAttrs.id).not.to.be.null;
                      expect(returnedAttrs.state).to.eql('pending');
+                     expect(returnedAttrs.payload).to.eql(data.payload);
+                     expect(returnedAttrs.async).to.eql(data.async);
                      done();
                    });
+          });
+        });
+      });
+
+      it('schedules job for the worker', function (done) {
+        var payload = {gugus: 'blub', async: true};
+        var queue = server.getQueue();
+
+        queue.once('job enqueue', function (id, type) {
+          expect(type).to.eql('convert');
+          done();
+        });
+
+        factory.create('Template', function (err, template) {
+          template.getUser().then(function (user) {
+            request.post(renderUrl.replace(':id', template.id))
+                   .send(payload)
+                   .set('Content-Type', 'application/json')
+                   .set('Authorization', 'Token ' + user.apiToken)
+                   .end();
           });
         });
       });
