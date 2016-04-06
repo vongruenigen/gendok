@@ -90,7 +90,7 @@ describe('gendok.data.db', function () {
 
   describe('getAllModels()', function () {
     it('returns an object containing all models', function () {
-      var conn = db.connect(config);
+      var conn = db.connect();
       expect(db.getAllModels()).to.eql(conn.models);
     });
 
