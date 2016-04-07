@@ -38,7 +38,7 @@ describe('gendok.http.api.users', function () {
 
   describe('POST /api/users/', function () {
     it('creates a user in the database', function (done) {
-      factory.create('User', function (err, creator) {
+      factory.create('User', {isAdmin: true}, function (err, creator) {
         factory.build('User', function (err, user) {
           request.post(url)
                  .send(user.toJSON())
@@ -58,7 +58,7 @@ describe('gendok.http.api.users', function () {
     });
 
     it('returns an error if an invalid user is posted', function (done) {
-      factory.create('User', function (err, creator) {
+      factory.create('User', {isAdmin: true}, function (err, creator) {
         var values = {email: ''};
         factory.build('User', values, function (err, user) {
           request.post(url)
@@ -76,7 +76,7 @@ describe('gendok.http.api.users', function () {
     });
 
     it('returns the created user as JSON object', function (done) {
-      factory.create('User', function (err, creator) {
+      factory.create('User', {isAdmin: true}, function (err, creator) {
         factory.build('User', function (err, user) {
           request.post(url)
                  .send(user.toJSON())
@@ -107,11 +107,24 @@ describe('gendok.http.api.users', function () {
                done();
              });
     });
+
+    it('returns an unauthorized error if the specified user is not an admin', function (done) {
+      factory.create('User', function (err, user) {
+        request.get(url + '/123456')
+               .set('Authorization', 'Token ' + user.apiToken)
+               .end(function (err, res) {
+                 expect(err).to.exist;
+                 expect(res.statusCode).to.eql(errors.unauthorized.code);
+                 expect(res.body).to.eql(errors.unauthorized.data);
+                 done();
+               });
+      });
+    });
   });
 
   describe('GET /api/users/:id', function () {
     it('the specified user as a JSON object', function (done) {
-      factory.create('User', function (err, creator) {
+      factory.create('User', {isAdmin: true}, function (err, creator) {
         factory.create('User', function (err, user) {
           request.get(url + '/' + user.id)
                  .set('Authorization', 'Token ' + creator.apiToken)
@@ -126,7 +139,7 @@ describe('gendok.http.api.users', function () {
     });
 
     it('returns a 404 if the specified user does not exist', function (done) {
-      factory.create('User', function (err, user) {
+      factory.create('User', {isAdmin: true}, function (err, user) {
         request.get(url + '/123456')
                .set('Authorization', 'Token ' + user.apiToken)
                .end(function (err, res) {
@@ -147,6 +160,19 @@ describe('gendok.http.api.users', function () {
                expect(res.body).to.eql(errors.unauthorized.data);
                done();
              });
+    });
+
+    it('returns an unauthorized error if the specified user is not an admin', function (done) {
+      factory.create('User', function (err, user) {
+        request.get(url + '/123456')
+               .set('Authorization', 'Token ' + user.apiToken)
+               .end(function (err, res) {
+                 expect(err).to.exist;
+                 expect(res.statusCode).to.eql(errors.unauthorized.code);
+                 expect(res.body).to.eql(errors.unauthorized.data);
+                 done();
+               });
+      });
     });
   });
 });
