@@ -10,6 +10,8 @@
 'use strict';
 
 var gendok = require('../../../');
+var config = require('../../../lib/config');
+var util = gendok.util;
 var cleanup = require('../../../lib/queue/worker/cleanup');
 var db = gendok.data.db;
 var helper = require('../../helper');
@@ -18,8 +20,12 @@ var expect = require('chai').expect;
 
 describe('gendok.queue.worker.cleanup', function (done) {
   var factory = helper.loadFactories(this);
+  var queue = util.createQueue();
   var Job = null;
-  var ttl = 20000000;
+
+  before(function () {
+    queue.testMode.enter();
+  });
 
   beforeEach(function (done) {
     Job = gendok.data.db.getModel('Job');
@@ -30,22 +36,29 @@ describe('gendok.queue.worker.cleanup', function (done) {
     done();
   });
 
+  afterEach(function () {
+    queue.testMode.clear();
+  });
+
+  after(function () {
+    queue.testMode.exit();
+  });
+
   it('is a function', function (done) {
     expect(cleanup).to.be.a('function');
     done();
   });
 
   it('removes the PDF from a job which has reached the ttl', function (done) {
-    var workerData = {data: {ttl: ttl}};
     var values = {
       renderedAt: Date.now(),
       result: 'I\'m a PDF, LOL!'
     };
-    var now = values.renderedAt + ttl;
+    var now = values.renderedAt + config.get('cleanup_ttl');
     simple.mock(Date, 'now').returnWith(now);
 
     factory.create('Job', values, function (err, job) {
-      cleanup(workerData, function (err) {
+      cleanup({}, function (err) {
 
         expect(err).to.not.exist;
 
@@ -58,16 +71,15 @@ describe('gendok.queue.worker.cleanup', function (done) {
   });
 
   it('doesn\'t remove PDFs from jobs which are below the ttl', function (done) {
-    var workerData = {data: {ttl: ttl}};
     var values = {
       renderedAt: Date.now(),
       result: 'I\'m a PDF, LOL!'
     };
-    var now = values.renderedAt + ttl - 1;
+    var now = values.renderedAt + config.get('cleanup_ttl') - 1;
     simple.mock(Date, 'now').returnWith(now);
 
     factory.create('Job', values, function (err, job) {
-      cleanup(workerData, function (err) {
+      cleanup({}, function (err) {
         expect(err).to.not.exist;
 
         Job.findById(job.id).then(function (j) {
@@ -80,5 +92,17 @@ describe('gendok.queue.worker.cleanup', function (done) {
     });
   });
 
-  it('adds itself to the queue after it is done');
+  it('adds itself to the queue after it is done', function (done) {
+    var worker = queue.create('cleanup', {});
+
+    worker.save(function () {
+      queue.on('job complete', function (id, type) {
+        console.log('ENQUEUED, YAY!');
+        expect(queue.testMode.jobs.length).to.eql(1);
+        expect(queue.testMode.jobs[0].type).to.eql('cleanup');
+        expect(type).to.eql('cleanup');
+        done();
+      });
+    });
+  });
 });
