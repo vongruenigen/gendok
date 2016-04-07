@@ -114,6 +114,8 @@ describe('gendok.queue.worker.convert', function () {
         expect(j.renderedAt).not.to.eql(null);
         done();
       }).catch(done);
+    });
+  });
 
   it('renders the template with the compiler before converting to pdf', function (done) {
     // Attributes to ensure that we use an actual compiler for this tests
