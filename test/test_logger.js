@@ -64,22 +64,9 @@ describe('gendok.logger', function () {
   });
 
   describe('create()', function () {
-    describe('without a config', function () {
-      it('returns a configured winston.Logger instance', function () {
-        var l = logger.create();
-        expect(Object.keys(l.transports).length).to.be.above(0);
-      });
-    });
-
-    describe('with config', function () {
-      it('passes it directly to the winston.Logger constructor', function () {
-        var trans = new winston.transports.Console({label: 'gugus'});
-        var config = {transports: [trans]};
-        var created = logger.create(config);
-        var expected = new winston.Logger(config);
-
-        expect(created.transports).to.eql(expected.transports);
-      });
+    it('creates a new windston.Logger instance', function () {
+      var l = logger.create();
+      expect(l.transports).to.exist;
     });
   });
 
