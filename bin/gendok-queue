@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+/**
+ * PSIT4 FS2016 - gendok
+ *
+ * Authors: Dirk von Grünigen, Tobias Huonder, Simon Müller,
+ *          Martin Weilenmann, Aurelio Malacarne, Hannes Klauser,
+ *          Benjamin Contreras
+ *
+ */
+
+'use strict';
+
+var path = require('path');
+var argv = require('minimist')(process.argv.slice(2));
+var base = path.join(__dirname, '..');
+var gendok = require(base);
+var config = gendok.config;
+var Server = gendok.http.server;
+var Runner = gendok.queue.runner;
+var config = {};
+
+if (!gendok) {
+  console.error("Couldn't load gendok library!");
+  return;
+}
+
+if (argv.help || argv.h) {
+  console.log('Usage: gendok-queue [options]');
+  console.log('');
+  console.log('Options');
+  console.log('  -v, --version\tprint the gendok version');
+  console.log('  -c, --config\tspecify the config.json to use');
+  return;
+}
+
+if (!argv.config && !argv.c) {
+  gendok.logger.info('config to use not specified, using default config');
+} else {
+  var configPath = argv.config || argv.c;
+
+  try {
+    config.load(require(path.resolve(configPath)));
+  } catch (e) {
+    console.error('Error while loading config from %s', configPath);
+    console.error('Maybe you should use an absolute path to specify the config');
+    console.log('Loading default config');
+  }
+}
+
+var queueRunner = new Runner();
+
+queueRunner.start(function () {
+  queueRunner.registerWorkers({
+    convert: gendok.queue.worker.convert,
+    cleanup: gendok.queue.worker.cleanup,
+    email: gendok.queue.worker.email
+  });
+
+  console.log('successfully started gendok queue runner');
+});

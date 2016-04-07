@@ -2,7 +2,8 @@
 PULL_DIR="/home/gendok"
 TARGET_DIR="/srv/gendok"
 REPO_NAME="PSIT4-gendok"
-EXECUTABLE="gendok"
+HTTP_EXECUTABLE="gendok-http"
+QUEUE_EXECUTABLE="gendok-queue"
 
 if [ ! -d "$PULL_DIR/$REPO_NAME" ]; then
   echo "Git repo directory $PULL_DIR/$REPO_NAME has to exist.\n"
@@ -21,11 +22,12 @@ export GENDOK_ENV=production
 export NODE_ENV=production
 cd $PULL_DIR/$REPO_NAME
 git pull
-npm install --production
+npm install --production --no-optional
 gulp build
 forever stopall
 ./node_modules/.bin/sequelize db:migrate
 rsync -aq $PULL_DIR/$REPO_NAME/ $TARGET_DIR/.
 cd $TARGET_DIR
-forever start bin/$EXECUTABLE --config config/config.json
+forever start bin/$HTTP_EXECUTABLE --config config/config.json
+forever start bin/$QUEUE_EXECUTABLE --config config/config.json
 exit 0

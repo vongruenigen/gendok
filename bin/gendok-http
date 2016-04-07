@@ -10,13 +10,13 @@
 
 'use strict';
 
-var path   = require('path'),
-    argv   = require('minimist')(process.argv.slice(2)),
-    base   = path.join(__dirname, '..'),
-    gendok = require(base),
-    Config = gendok.config,
-    Server = gendok.http.server,
-    config = {};
+var path = require('path');
+var argv = require('minimist')(process.argv.slice(2));
+var base = path.join(__dirname, '..');
+var gendok = require(base);
+var config = gendok.config;
+var Server = gendok.http.server;
+var config = {};
 
 if (!gendok) {
   console.error("Couldn't load gendok library!");
@@ -24,11 +24,11 @@ if (!gendok) {
 }
 
 if (argv.help || argv.h) {
-  console.log('Usage: gendok [options]');
+  console.log('Usage: gendok-http [options]');
   console.log('');
   console.log('Options');
-  console.log("  -v, --version\tprint the gendok version");
-  console.log("  -c, --config\tspecify the config.json to use");
+  console.log('  -v, --version\tprint the gendok version');
+  console.log('  -c, --config\tspecify the config.json to use');
   return;
 }
 
@@ -38,7 +38,7 @@ if (!argv.config && !argv.c) {
   var configPath = argv.config || argv.c;
 
   try {
-    config = require(path.resolve(configPath));
+    config.load(require(path.resolve(configPath)));
   } catch (e) {
     console.error('Error while loading config from %s', configPath);
     console.error('Maybe you should use an absolute path to specify the config');
@@ -46,14 +46,14 @@ if (!argv.config && !argv.c) {
   }
 }
 
-var cfg = new Config(config);
-var server = new Server(cfg);
+var server = new Server();
 
 server.registerModules([
-  gendok.http.middleware.basic,
-  gendok.http.middleware.authorization,
+  gendok.http.middleware.all,
   gendok.http.web.home,
-  gendok.http.api.templates
+  gendok.http.api.status,
+  gendok.http.api.templates,
+  gendok.http.api.jobs
 ]);
 
 server.start(function (err) {

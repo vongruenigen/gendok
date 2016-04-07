@@ -63,6 +63,22 @@ describe('gendok.data.model.template', function () {
             expect(err.errors.length).to.eql(1);
             expect(err.errors[0].path).to.eql('type');
             done();
+          }).catch(done);
+        });
+      });
+
+      it('may not be undefined', function (done) {
+        var values = {type: ''};
+
+        factory.build('Template', values, function (err, template) {
+          expect(err).to.not.exist;
+          expect(template.type).to.eql(values.type);
+
+          template.validate().then(function (err) {
+            expect(err).to.exist;
+            expect(err.errors.length).to.eql(1);
+            expect(err.errors[0].path).to.eql('type');
+            done();
           });
         });
       });

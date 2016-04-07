@@ -2,6 +2,8 @@
   "development": {
     "http_host": "localhost",
     "http_port": 3000,
+    "redis_host": "127.0.0.1",
+    "redis_port": 6379,
     "username": "gendok",
     "password": "gendok",
     "database": "gendok_development",
@@ -12,6 +14,8 @@
   "test": {
     "http_host": "localhost",
     "http_port": 3000,
+    "redis_host": "127.0.0.1",
+    "redis_port": 6379,
     "username": "gendok",
     "password": "gendok",
     "database": "gendok_test",
@@ -21,7 +25,9 @@
 
   "production": {
     "http_host": "localhost",
-    "http_port": 123,
+    "http_port": 80,
+    "redis_host": "127.0.0.1",
+    "redis_port": 6379,
     "username": "gendok",
     "password": "gendok",
     "database": "gendok_production",

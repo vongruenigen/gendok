@@ -14,17 +14,16 @@ var factory = require('factory-girl');
 var db = require('../../..').data.db;
 
 /**
- * Returns the factory with a defined template model
+ * Returns the factory with a defined job model
  *
- * @return The factory with the defined template model.
+ * @return The factory with the defined job model.
  */
 module.exports = function (model) {
-  factory.define('Template', model, {
-    userId: factory.assoc('User', 'id'),
-    additionalCss: '',
-    type: 'html',
-    body: '<html><head><title>hello world></title></head><body>' +
-          '<h1>Hello from gendok</h1></body</html>'
+  factory.define('Job', model, {
+    templateId: factory.assoc('Template', 'id'),
+    payload: {},
+    state: 'pending',
+    result: null
   });
 
   return factory;
