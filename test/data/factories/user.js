@@ -24,7 +24,7 @@ module.exports = function (model) {
     name: faker.name.findName(),
     email: factory.seq(function () {
       //TODO: Ugly email generator, later we dont need this, because of db clear.
-      var milliseconds = (new Date).getTime();
+      var milliseconds = (new Date()).getTime();
       return 'test_user_' + milliseconds + '@gendok.com';
     }),
 
