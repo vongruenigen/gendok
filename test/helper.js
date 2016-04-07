@@ -11,12 +11,14 @@
 
 var logger = require('..').logger;
 var HttpServer = require('..').http.server;
-var Config = require('..').config;
+var config = require('..').config;
 var db = require('..').data.db;
 var crypto = require('crypto');
 var path = require('path');
 var factories = require('./data/factories');
 var factoryGirl = require('factory-girl');
+var PdfParser = require('pdf2json');
+var format = require('util').format;
 
 /**
  * Exports some utility functions
@@ -28,6 +30,17 @@ module.exports = {
    * Noop function.
    */
   noop: function () {},
+
+  /**
+   * Returns the URL to the given path prefixed with the current host.
+   *
+   * @param {String} p The path to get the URL for.
+   * @return {String} The full URL.
+   */
+  getUrl: function (p) {
+    var host = format('%s:%d', config.get('http_host'), config.get('http_port'));
+    return path.join(host, p);
+  },
 
   /**
    * Sets the given options as environment variables.
@@ -62,8 +75,42 @@ module.exports = {
   },
 
   /**
-   * Starts a http server with the given modules and the supplied config. The
-   * default config will be used the config parameter is not present.
+   * Helper function for parsing a PDF in a buffer given as the first parameter.
+   * It then calls the supplied callback with an error (if any occured) and the
+   * resulting object containing all the PDF content.
+   *
+   * @param {Buffer} buf The buffer containing the PDF data
+   * @param {Function} fn The callback to invoke after the parsing
+   */
+  parsePdf: function (buf, fn) {
+    var pdfParser = new PdfParser();
+    var pdfObject = {chars: []};
+
+    // Invoke the callback with an error if any occures
+    pdfParser.on('pdfParser_dataError', function (err) {
+      fn(err, null);
+    });
+
+    // Invoke the callback with the results as soon as they're available
+    pdfParser.on('pdfParser_dataReady', function (data) {
+      // Iterate over all pages, the including chars an each run, also
+      // see https://github.com/modesty/pdf2json#page-object-reference
+      data.formImage.Pages.forEach(function (p) {
+        p.Texts.forEach(function (t) {
+          t.R.forEach(function (r) {
+            pdfObject.chars.push(r.T);
+          });
+        });
+      });
+
+      fn(null, pdfObject);
+    });
+
+    pdfParser.parseBuffer(buf);
+  },
+
+  /**
+   * Starts a http server with the given modules.
    *
    * Starting and stopping of the server is done within the beforeEach() and
    * afterEach() blocks of the supplied context. So the context always has to
@@ -83,15 +130,14 @@ module.exports = {
    *
    * @param {Object} context The current context
    * @param {Array} modules List of modules
-   * @param {Config} cfg The config to use, uses the default if not present.
    * @return {Server} The server which was just created.
    */
-  runHttpServer: function (context, modules, cfg) {
+  runHttpServer: function (context, modules) {
     if (!context) {
       throw new Error('context argument must be present');
     }
 
-    var server = new HttpServer(cfg || Config.getDefault());
+    var server = new HttpServer();
     server.registerModules(modules);
 
     context.beforeEach(function (done) {
@@ -108,25 +154,21 @@ module.exports = {
   /**
    * Helper function to ensure that all factories have been loaded and a
    * database connection exists. The first parameter has to be the testing
-   * context where the db-open/close hooks need to be registered. An optional
-   * Config object can be supplied as the second parameter which is then used
-   * to setup the database connection if none exists. If no Config is specified,
-   * the default config will be used.
+   * context where the db-open/close hooks need to be registered.
    *
    * The factory-girl module is then returned after all factories have been reg-
    * istered.
    *
    * @param {Object} ctx Context to register the hooks within.
-   * @param {Config} cfg The config to use to connect to the database.
    * @return {FactoryGirl} The FactoryGirl object.
    */
-  loadFactories: function (ctx, cfg) {
+  loadFactories: function (ctx) {
     var mod = null;
     var factoriesLoaded = false;
 
     ctx.beforeAll(function () {
       if (!db.isConnected()) {
-        db.connect(cfg || Config.getDefault());
+        db.connect();
       }
 
       if (!factoriesLoaded) {
