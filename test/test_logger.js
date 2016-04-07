@@ -14,6 +14,7 @@ var util = require('util');
 var path = require('path');
 var expect = require('chai').expect;
 var logger = require('..').logger;
+var config = require('..').config;
 var env = require('..').env;
 var h = require('./helper');
 

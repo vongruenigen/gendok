@@ -118,5 +118,5 @@ describe('gendok.util', function () {
       expect(Object.keys(res).length).to.eql(0);
       done();
     });
-  }):
+  });
 });
