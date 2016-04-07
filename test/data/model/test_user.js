@@ -62,17 +62,19 @@ describe('gendok.data.model.user', function () {
         });
       });
 
-      // it('email adress has to be unique', function (done) {
-      //   var values = {email: 'test@gendok.ch'}
-      //   factory.build('User', values, function (err, usr) {
-      //     expect(err).to.not.exist;
-      //   }).then (function () {
-      //     usr.validate().then(function (err) {
-      //       expect(err).to.exist;
-      //       done();
-      //     });
-      //   });
-      // });
+      it('email adress has to be unique', function (done) {
+        factory.create('User', function (err, usr1) {
+          expect(err).to.not.exist;
+          factory.build('User', function (err, usr2) {
+            expect(err).to.not.exist;
+            usr2.email = usr1.email;
+            usr2.validate().then(function (err) {
+              expect(err).to.exist;
+              done();
+            });
+          });
+        });
+      });
     });
   });
 });
