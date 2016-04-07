@@ -23,25 +23,9 @@ describe('gendok.queue.worker.cleanup', function (done) {
   var queue = util.createQueue();
   var Job = null;
 
-  before(function () {
-    queue.testMode.enter();
-  });
-
   beforeEach(function (done) {
     Job = gendok.data.db.getModel('Job');
-
-    // Since the tests in here can take longer than the defaulte timeout
-    // of 2000ms we'll increase it to 10'0000ms or 10s.
-    this.timeout(10000);
     done();
-  });
-
-  afterEach(function () {
-    queue.testMode.clear();
-  });
-
-  after(function () {
-    queue.testMode.exit();
   });
 
   it('is a function', function (done) {
@@ -54,12 +38,12 @@ describe('gendok.queue.worker.cleanup', function (done) {
       renderedAt: Date.now(),
       result: 'I\'m a PDF, LOL!'
     };
+
     var now = values.renderedAt + config.get('cleanup_ttl');
     simple.mock(Date, 'now').returnWith(now);
 
     factory.create('Job', values, function (err, job) {
       cleanup({}, function (err) {
-
         expect(err).to.not.exist;
 
         Job.findById(job.id).then(function (j) {
@@ -93,16 +77,15 @@ describe('gendok.queue.worker.cleanup', function (done) {
   });
 
   it('adds itself to the queue after it is done', function (done) {
-    var worker = queue.create('cleanup', {});
+    // Add alibi-handler for 'cleanup' jobs, otherwise it won't be queued
+    // and the 'job enqueue' event won't be triggered.
+    queue.process('cleanup', function (j, d) { d(); });
 
-    worker.save(function () {
-      queue.on('job complete', function (id, type) {
-        console.log('ENQUEUED, YAY!');
-        expect(queue.testMode.jobs.length).to.eql(1);
-        expect(queue.testMode.jobs[0].type).to.eql('cleanup');
-        expect(type).to.eql('cleanup');
-        done();
-      });
+    queue.once('job enqueue', function (id, type) {
+      expect(type).to.eql('cleanup');
+      done();
     });
+
+    cleanup({}, helper.noop);
   });
 });
