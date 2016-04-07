@@ -175,4 +175,134 @@ describe('gendok.http.api.users', function () {
       });
     });
   });
+
+  describe('PUT /api/users/:id', function () {
+    it('update a user in the database', function (done) {
+      factory.create('User', {isAdmin: true}, function (err, user) {
+        var attrs = {name: 'gendok'};
+        request.put(url + '/' + user.id)
+              .send(attrs)
+              .set('Content-Type', 'application/json')
+              .set('Authorization', 'Token ' + user.apiToken)
+              .end(function (err, res) {
+                expect(err).to.not.exist;
+                expect(res.statusCode).to.eql(200);
+                user.reload().then(function (dbUser) {
+                  expect(dbUser.body).to.eql(attrs.body);
+                  done();
+                });
+              });
+      });
+    });
+
+    it('returns an error, no update if validation fails', function (done) {
+      factory.create('User', {isAdmin: true}, function (err, user) {
+        var attrs = {name: ''};
+
+        request.put(url + '/' + (user.id))
+              .send(attrs)
+              .set('Content-Type', 'application/json')
+              .set('Authorization', 'Token ' + user.apiToken)
+              .end(function (err, res) {
+                expect(err).to.exist;
+                expect(res.statusCode).to.eql(400);
+                expect(res.body).to.eql(errors.badRequest.data);
+                user.reload().then(function (dbUser) {
+                  expect(dbUser.body).to.eql(user.body);
+                  expect(dbUser.type).to.eql(user.type);
+                  done();
+                });
+              });
+      });
+    });
+
+    it('returns an error, no update if user id not found in DB', function (done) {
+      factory.create('User', {isAdmin: true}, function (err, user) {
+        request.put(url + '/' + (user.id + 1000))
+              .send({})
+              .set('Content-Type', 'application/json')
+              .set('Authorization', 'Token ' + user.apiToken)
+              .end(function (err, res) {
+                expect(err).to.exist;
+                expect(res.statusCode).to.eql(404);
+                expect(res.body).to.eql(errors.notFound.data);
+                user.reload().then(function (dbUser) {
+                  expect(dbUser.body).to.eql(user.body);
+                  expect(dbUser.type).to.eql(user.type);
+                  done();
+                });
+              });
+      });
+    });
+
+    it('returns an unauthorized error without a valid api token', function (done) {
+      factory.create('User', {isAdmin: true}, function (err, user) {
+        request.post(url)
+               .set('Authorization', 'Token blubiblub')
+               .end(function (err, res) {
+                 expect(err).to.exist;
+                 expect(res.statusCode).to.eql(errors.unauthorized.code);
+                 expect(res.body).to.eql(errors.unauthorized.data);
+                 done();
+               });
+      });
+    });
+  });
+
+  describe('DELETE /api/users/:id', function () {
+    it('deletes a user in the database', function (done) {
+      factory.create('User', {isAdmin: true}, function (err, user) {
+        request.delete(url + '/' + user.id)
+               .set('Content-Type', 'application/json')
+               .set('Authorization', 'Token ' + user.apiToken)
+               .end(function (err, res) {
+                 expect(err).to.not.exist;
+                 expect(res.statusCode).to.eql(200);
+                 User.findById(user.id).then(function (t) {
+                   expect(t).to.not.exist;
+                   done();
+                 });
+               });
+      });
+    });
+
+    it('returns a 404 if no user with the given id exists', function (done) {
+      factory.create('User', {isAdmin: true}, function (err, user) {
+        request.delete(url + '/123456789')
+               .set('Authorization', 'Token ' + user.apiToken)
+               .end(function (err, res) {
+                 expect(err).to.exist;
+                 expect(res.statusCode).to.eql(errors.notFound.code);
+                 expect(res.body).to.eql(errors.notFound.data);
+                 done();
+               });
+      });
+    });
+
+    it('returns a 400 if invalid id is given', function (done) {
+      factory.create('User', {isAdmin: true}, function (err, user) {
+        request.delete(url + '/' + 'blub')
+               .set('Authorization', 'Token ' + user.apiToken)
+               .end(function (err, res) {
+                 expect(err).to.exist;
+                 expect(res.statusCode).to.eql(errors.badRequest.code);
+                 expect(res.body).to.eql(errors.badRequest.data);
+                 done();
+               });
+      });
+    });
+
+    it('returns an unauthorized error without a valid api token', function (done) {
+      factory.create('User', function (err, user) {
+        request.delete(url + '/' + user.id)
+               .set('Authorization', 'Token blubiblub')
+               .end(function (err, res) {
+                 expect(err).to.exist;
+                 expect(res.statusCode).to.eql(errors.unauthorized.code);
+                 expect(res.body).to.eql(errors.unauthorized.data);
+                 done();
+               });
+      });
+    });
+  });
 });

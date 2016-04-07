@@ -124,7 +124,6 @@ describe('gendok.http.api.templates', function () {
       factory.create('User', function (err, user) {
         factory.create('Template', function (err, tmpl) {
           var attrs = {body: 'content'};
-
           request.put(url + '/' + tmpl.id)
                 .send(attrs)
                 .set('Content-Type', 'application/json')
