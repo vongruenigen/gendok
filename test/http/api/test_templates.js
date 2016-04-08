@@ -70,6 +70,7 @@ describe('gendok.http.api.templates', function () {
     it('returns an error if an invalid template is posted', function (done) {
       factory.create('User', function (err, user) {
         var values = {type: ''};
+
         factory.build('Template', values, function (err, templ) {
           request.post(url)
                  .send(templ.toJSON())
@@ -79,12 +80,11 @@ describe('gendok.http.api.templates', function () {
                    expect(err).to.exist;
                    expect(res.statusCode).to.eql(errors.validation.code);
 
-                   //TODO ???
-                   templ.create().catch(function (err) {
-                   var expectedError = errors.validation.data(err);
-                   expect(res.body).to.eql(expectedError);
-                   done();
-                 });
+                   Template.create(templ.toJSON()).catch(function (err) {
+                     var expectedError = errors.validation.data(err);
+                     expect(res.body).to.eql(expectedError);
+                     done();
+                   });
                  });
         });
       });
