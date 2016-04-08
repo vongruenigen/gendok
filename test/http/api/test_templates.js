@@ -9,32 +9,29 @@
 
 'use strict';
 
-var gendokHttp = require('../../..').http;
-var templates = gendokHttp.api.templates;
-var all = gendokHttp.middleware.all;
-var errors = gendokHttp.api.errors;
+var gendok = require('../../..');
+var templates = gendok.http.api.templates;
+var all = gendok.http.middleware.all;
+var errors = gendok.http.api.errors;
+var util = require('../../..').util;
 var db = require('../../..').data.db;
 var expect = require('chai').expect;
 var helper = require('../../helper');
 var request = require('superagent');
 var simple = require('simple-mock');
-var format = require('util').format;
 
 describe('gendok.http.api.templates', function () {
   var factory = helper.loadFactories(this);
+  var queue = util.createQueue();
   var server = helper.runHttpServer(this, [all, templates]);
-  var config = server.getConfig();
-  var url = format('%s:%d/api/templates',
-                  config.get('http_host'), config.get('http_port'));
+
+  var url = helper.getUrl('/api/templates');
   var Template = null;
   var Job = null;
 
   beforeEach(function () {
-    Template = db.getModel('Template');
-  });
-
-  beforeEach(function () {
     Job = db.getModel('Job');
+    Template = db.getModel('Template');
   });
 
   it('is a function', function () {
@@ -297,11 +294,12 @@ describe('gendok.http.api.templates', function () {
 
     it('schedules job for the worker', function (done) {
       var payload = {gugus: 'blub'};
-      var queue = server.getQueue();
 
       factory.create('Template', function (err, template) {
         template.getUser().then(function (user) {
-          simple.mock(queue, 'create').callOriginal();
+          queue.on('job enqueue', function (id, type) {
+            expect(type).to.eql('convert');
+          });
 
           request.post(renderUrl.replace(':id', template.id))
                  .send(payload)
@@ -310,10 +308,6 @@ describe('gendok.http.api.templates', function () {
                  .end(function (err, res) {
                    expect(err).to.not.exist;
                    expect(res.statusCode).to.eql(201);
-
-                   expect(queue.create.callCount).to.eql(1);
-                   expect(queue.create.calls[0].args[0]).eql('convert');
-                   expect(queue.create.calls[0].args[1]).to.have.property('jobId');
                    done();
                  });
         });
