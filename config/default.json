@@ -10,7 +10,12 @@
     "host": "127.0.0.1",
     "dialect": "postgres",
     "cleanup_ttl": 432000,
-    "cleanup_interval": 900
+    "cleanup_interval": 900,
+    "log_file": true,
+    "log_console": false,
+    "log_timestamp": true,
+    "log_json": false,
+    "log_level": "debug"
   },
 
   "test": {
@@ -24,7 +29,12 @@
     "host": "127.0.0.1",
     "dialect": "postgres",
     "cleanup_ttl": 432000,
-    "cleanup_interval": 1
+    "cleanup_interval": 1,
+    "log_file": true,
+    "log_console": false,
+    "log_timestamp": true,
+    "log_json": false,
+    "log_level": "debug"
   },
 
   "production": {
@@ -38,6 +48,11 @@
     "host": "127.0.0.1",
     "dialect": "postgres",
     "cleanup_ttl": 432000,
-    "cleanup_interval": 900
+    "cleanup_interval": 900,
+    "log_file": true,
+    "log_console": false,
+    "log_timestamp": true,
+    "log_json": false,
+    "log_level": "info"
   }
 }
