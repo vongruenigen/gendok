@@ -77,10 +77,14 @@ describe('gendok.http.api.templates', function () {
                  .set('Authorization', 'Token ' + user.apiToken)
                  .end(function (err, res) {
                    expect(err).to.exist;
-                   expect(res.statusCode).to.eql(400);
-                   expect(res.body).to.eql({ error: 'validation errors',
-                    validationErrors: { type: ['Should not be empty'] } });
+                   expect(res.statusCode).to.eql(errors.validation.code);
+
+                   //TODO ???
+                   templ.create().catch(function (err) {
+                   var expectedError = errors.validation.data(err);
+                   expect(res.body).to.eql(expectedError);
                    done();
+                 });
                  });
         });
       });
@@ -154,12 +158,11 @@ describe('gendok.http.api.templates', function () {
                 .set('Authorization', 'Token ' + user.apiToken)
                 .end(function (err, res) {
                   expect(err).to.exist;
-                  expect(res.statusCode).to.eql(400);
-                  expect(res.body).to.eql({ error: 'validation errors',
-                      validationErrors: { type: ['Type nonsense is not available'] } });
-                  tmpl.reload().then(function (dbTempl) {
-                    expect(dbTempl.body).to.eql(tmpl.body);
-                    expect(dbTempl.type).to.eql(tmpl.type);
+                  expect(res.statusCode).to.eql(errors.validation.code);
+
+                  tmpl.update(attrs).catch(function (err) {
+                    var expectedError = errors.validation.data(err);
+                    expect(res.body).to.eql(expectedError);
                     done();
                   });
                 });
