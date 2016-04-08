@@ -26,9 +26,30 @@ describe('gendok.http.api.errors', function () {
         };
 
         var expectedError = {
-          error: 'validation errors',
-          validationErrors: {
+          message: 'validation errors',
+          errors: {
             gugus: ['blub'],
+            dadat: ['abcd']
+          }
+        };
+
+        var generatedError = errors.validation.data(validationError);
+
+        expect(generatedError).to.eql(expectedError);
+      });
+
+      it('rewrites errors with type "notNull Violation"', function () {
+        var validationError = {
+          errors: [
+            {path: 'gugus', type: 'notNull Violation', message: 'blub'},
+            {path: 'dadat', message: 'abcd'}
+          ]
+        };
+
+        var expectedError = {
+          message: 'validation errors',
+          errors: {
+            gugus: ['may not be empty'],
             dadat: ['abcd']
           }
         };
