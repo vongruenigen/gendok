@@ -9,32 +9,29 @@
 
 'use strict';
 
-var gendokHttp = require('../../..').http;
-var templates = gendokHttp.api.templates;
-var all = gendokHttp.middleware.all;
-var errors = gendokHttp.api.errors;
+var gendok = require('../../..');
+var templates = gendok.http.api.templates;
+var all = gendok.http.middleware.all;
+var errors = gendok.http.api.errors;
+var util = require('../../..').util;
 var db = require('../../..').data.db;
 var expect = require('chai').expect;
 var helper = require('../../helper');
 var request = require('superagent');
 var simple = require('simple-mock');
-var format = require('util').format;
 
 describe('gendok.http.api.templates', function () {
   var factory = helper.loadFactories(this);
+  var queue = util.createQueue();
   var server = helper.runHttpServer(this, [all, templates]);
-  var config = server.getConfig();
-  var url = format('%s:%d/api/templates',
-                  config.get('http_host'), config.get('http_port'));
+
+  var url = helper.getUrl('/api/templates');
   var Template = null;
   var Job = null;
 
   beforeEach(function () {
-    Template = db.getModel('Template');
-  });
-
-  beforeEach(function () {
     Job = db.getModel('Job');
+    Template = db.getModel('Template');
   });
 
   it('is a function', function () {
@@ -276,7 +273,7 @@ describe('gendok.http.api.templates', function () {
         var mockResult = 'mockResult';
 
         // Add a "mock" convert worker, otherwise this test never finishes
-        server.getQueue().process('convert', function (j, d) {
+        queue.process('convert', function (j, d) {
           Job.findById(j.data.jobId).then(function (job) {
             // Set the mock content above on the new Job object
             job.update({result: mockResult}).then(function () {
@@ -365,7 +362,6 @@ describe('gendok.http.api.templates', function () {
 
       it('schedules job for the worker', function (done) {
         var payload = {gugus: 'blub', async: true};
-        var queue = server.getQueue();
 
         queue.once('job enqueue', function (id, type) {
           expect(type).to.eql('convert');
