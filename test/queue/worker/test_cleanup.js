@@ -23,9 +23,21 @@ describe('gendok.queue.worker.cleanup', function (done) {
   var queue = util.createQueue();
   var Job = null;
 
+  before(function () {
+    queue.testMode.enter();
+  });
+
   beforeEach(function (done) {
     Job = gendok.data.db.getModel('Job');
     done();
+  });
+
+  afterEach(function () {
+    queue.testMode.clear();
+  });
+
+  after(function () {
+    queue.testMode.exit();
   });
 
   it('is a function', function (done) {
@@ -77,15 +89,10 @@ describe('gendok.queue.worker.cleanup', function (done) {
   });
 
   it('adds itself to the queue after it is done', function (done) {
-    // Add alibi-handler for 'cleanup' jobs, otherwise it won't be queued
-    // and the 'job enqueue' event won't be triggered.
-    queue.process('cleanup', function (j, d) { d(); });
-
-    queue.once('job enqueue', function (id, type) {
-      expect(type).to.eql('cleanup');
+    cleanup({}, function () {
+      expect(queue.testMode.jobs.length).to.eql(1);
+      expect(queue.testMode.jobs[0].type).to.eql('cleanup');
       done();
     });
-
-    cleanup({}, helper.noop);
   });
 });
