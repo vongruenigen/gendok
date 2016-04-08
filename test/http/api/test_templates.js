@@ -155,7 +155,8 @@ describe('gendok.http.api.templates', function () {
                 .end(function (err, res) {
                   expect(err).to.exist;
                   expect(res.statusCode).to.eql(400);
-                  expect(res.body).to.eql(errors.badRequest.data);
+                  expect(res.body).to.eql({ error: 'validation errors',
+                      validationErrors: { type: ['Type nonsense is not available'] } });
                   tmpl.reload().then(function (dbTempl) {
                     expect(dbTempl.body).to.eql(tmpl.body);
                     expect(dbTempl.type).to.eql(tmpl.type);
