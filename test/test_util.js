@@ -79,10 +79,10 @@ describe('gendok.util', function () {
 
   describe('isArray()', function () {
     it('returns true if the object is an array', function () {
-      var blub = ['ab', 2, 3, new Object()];
+      var blub = ['ab', 2, 3, {}];
 
       expect(util.isArray(blub)).to.eql(true);
       expect(util.isArray('not an array')).to.eql(false);
     });
-  })
+  });
 });
