@@ -8,7 +8,12 @@
     "password": "gendok",
     "database": "gendok_development",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "log_file": true,
+    "log_console": false,
+    "log_timestamp": true,
+    "log_json": false,
+    "log_level": "debug"
   },
 
   "test": {
@@ -20,7 +25,12 @@
     "password": "gendok",
     "database": "gendok_test",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "log_file": true,
+    "log_console": false,
+    "log_timestamp": true,
+    "log_json": false,
+    "log_level": "debug"
   },
 
   "production": {
@@ -32,6 +42,11 @@
     "password": "gendok",
     "database": "gendok_production",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "log_file": true,
+    "log_console": false,
+    "log_timestamp": true,
+    "log_json": false,
+    "log_level": "info"
   }
 }

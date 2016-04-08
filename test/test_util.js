@@ -76,4 +76,47 @@ describe('gendok.util', function () {
       expect(queue.client.prefix).to.eql('gendok_' + env.get());
     });
   });
+
+  describe('extend()', function () {
+    it('is a function', function (done) {
+      expect(util.extend).to.be.a('function');
+      done();
+    });
+
+    it('combines attributes and values of two objects', function (done) {
+      var obj1 = {
+        a: true
+      };
+      var obj2 = {
+        b: 'lorem ipsum'
+      };
+      var res = util.extend(obj1, obj2);
+      expect(res.a).to.eql(obj1.a);
+      expect(res.b).to.eql(obj2.b);
+      expect(Object.keys(res).length).to.eql(2);
+      done();
+    });
+
+    it('prefers the values of the second argument', function (done) {
+      var obj1 = {
+        a: true,
+        b: 'abc'
+      };
+      var obj2 = {
+        a: 'false'
+      };
+      var res = util.extend(obj1, obj2);
+      expect(res.a).to.eql(obj2.a);
+      expect(res.b).to.eql(obj1.b);
+      expect(Object.keys(res).length).to.eql(2);
+      done();
+    });
+
+    it('returns an empty object when called without an argument', function (done) {
+      var res = util.extend();
+      expect(res).to.be.an('object');
+      expect(Object.keys(res).length).to.eql(0);
+      done();
+    });
+  });
 });
