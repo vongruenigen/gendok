@@ -56,5 +56,8 @@ queueRunner.start(function () {
     email: gendok.queue.worker.email
   });
 
+  // Initial scheduling of cleanup worker
+  queueRunner.getQueue().create('cleanup', {});
+
   console.log('successfully started gendok queue runner');
 });
