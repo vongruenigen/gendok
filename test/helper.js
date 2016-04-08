@@ -12,6 +12,7 @@
 var logger = require('..').logger;
 var HttpServer = require('..').http.server;
 var config = require('..').config;
+var util = require('..').util;
 var db = require('..').data.db;
 var crypto = require('crypto');
 var path = require('path');
@@ -140,15 +141,45 @@ module.exports = {
     var server = new HttpServer();
     server.registerModules(modules);
 
-    context.beforeEach(function (done) {
+    context.beforeAll(function (done) {
       server.start(done);
     });
 
-    context.afterEach(function (done) {
+    context.afterAll(function (done) {
       server.stop(done);
     });
 
     return server;
+  },
+
+  /**
+   * This helper creates a queue via util.createQueue() and sets up the required
+   * before, after and afterEach hooks to run it in test mode. It uses the given
+   * context to set up the hooks in.
+   *
+   * @param {Object} ctx The context to register the ooks in
+   * @return {Queue} A queue object running in test mode
+   */
+  createQueue: function (ctx) {
+    if (!ctx) {
+      throw new Error('context is missing');
+    }
+
+    var queue = util.createQueue();
+
+    ctx.beforeAll(function () {
+      queue.testMode.enter();
+    });
+
+    ctx.beforeEach(function () {
+      queue.testMode.clear();
+    });
+
+    ctx.afterAll(function () {
+      queue.testMode.exit();
+    });
+
+    return queue;
   },
 
   /**
