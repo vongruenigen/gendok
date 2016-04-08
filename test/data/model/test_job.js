@@ -142,6 +142,29 @@ describe('gendok.data.model.job', function () {
       });
     });
 
+    describe('getContentType()', function () {
+      describe('when format is set to pdf', function () {
+        it('returns application/pdf', function () {
+          expect(Job.build({format: 'pdf'})
+                    .getContentType()).to.eql('application/pdf');
+        });
+      });
+
+      describe('when format is set to png', function () {
+        it('returns image/png', function () {
+          expect(Job.build({format: 'png'})
+                    .getContentType()).to.eql('image/png');
+        });
+      });
+
+      describe('when the payload contains an array', function () {
+        it('returns application/zip', function () {
+          expect(Job.build({payload: []})
+                    .getContentType()).to.eql('application/zip');
+        });
+      });
+    });
+
     describe('schedule()', function () {
       it('schedules a "convert" worker job on the given queue', function (done) {
         factory.create('Job', function (err, job) {
