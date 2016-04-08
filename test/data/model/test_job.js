@@ -36,6 +36,18 @@ describe('gendok.data.model.job', function () {
     });
   });
 
+  describe('isBatch()', function () {
+    it('returns true if the payload is an array of object', function () {
+      var job = Job.build({payload: [{}, {}, {}]});
+      expect(job.isBatch()).to.be.true;
+    });
+
+    it('returns false if the payload is a single object', function () {
+      var job = Job.build({payload: {}});
+      expect(job.isBatch()).to.be.false;
+    });
+  });
+
   describe('validation', function () {
     describe('.templateId', function () {
       it('may not be empty', function (done) {
