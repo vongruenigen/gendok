@@ -76,4 +76,13 @@ describe('gendok.util', function () {
       expect(queue.client.prefix).to.eql('gendok_' + env.get());
     });
   });
+
+  describe('isArray()', function () {
+    it('returns true if the object is an array', function () {
+      var blub = ['ab', 2, 3, new Object()];
+
+      expect(util.isArray(blub)).to.eql(true);
+      expect(util.isArray('not an array')).to.eql(false);
+    });
+  })
 });
