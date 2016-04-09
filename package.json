@@ -54,13 +54,14 @@
     "jshint-stylish": "^2.1.0",
     "mocha": "^2.4.5",
     "mocha-jenkins-reporter": "^0.2.0",
-    "pdf2json": "^1.1.5",
+    "pdfjs-dist": "1.4.213",
     "simple-mock": "^0.6.0",
     "sqlite3": "^3.1.1",
     "superagent": "^1.8.1",
     "zombie": "^4.2.1"
   },
   "dependencies": {
+    "adm-zip": "0.4.7",
     "bluebird": "3.3.3",
     "body-parser": "1.15.0",
     "bower": "1.7.7",

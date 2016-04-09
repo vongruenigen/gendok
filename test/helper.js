@@ -18,7 +18,7 @@ var crypto = require('crypto');
 var path = require('path');
 var factories = require('./data/factories');
 var factoryGirl = require('factory-girl');
-var PdfParser = require('pdf2json');
+var pdfjs = require('pdfjs-dist');
 var format = require('util').format;
 
 /**
@@ -84,30 +84,28 @@ module.exports = {
    * @param {Function} fn The callback to invoke after the parsing
    */
   parsePdf: function (buf, fn) {
-    var pdfParser = new PdfParser();
-    var pdfObject = {chars: []};
+    var data = {text: []};
+    var proms = [];
 
-    // Invoke the callback with an error if any occures
-    pdfParser.on('pdfParser_dataError', function (err) {
-      fn(err, null);
-    });
-
-    // Invoke the callback with the results as soon as they're available
-    pdfParser.on('pdfParser_dataReady', function (data) {
-      // Iterate over all pages, the including chars an each run, also
-      // see https://github.com/modesty/pdf2json#page-object-reference
-      data.formImage.Pages.forEach(function (p) {
-        p.Texts.forEach(function (t) {
-          t.R.forEach(function (r) {
-            pdfObject.chars.push(r.T);
+    pdfjs.getDocument(buf).then(function (pdf) {
+      for (var i = 1; i <= pdf.pdfInfo.numPages; i++) {
+        proms.push(pdf.getPage(i).then(function (page) {
+          return page.getTextContent();
+        }).then(function (text) {
+          text.items.forEach(function (item) {
+            data.text.push(item.str);
           });
-        });
+        }).catch(function (e) {
+          fn(e, null);
+        }));
+      };
+
+      Promise.all(proms).then(function () {
+        fn(null, data);
+      }).catch(function (err) {
+        fn(err, null);
       });
-
-      fn(null, pdfObject);
     });
-
-    pdfParser.parseBuffer(buf);
   },
 
   /**
