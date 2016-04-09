@@ -84,6 +84,24 @@ describe('gendok.http.api.jobs', function () {
       });
     });
 
+    it('returns a 404 error if the job doesnt exist for the specified user', function (done) {
+      factory.createMany('User', 2, function (err, users) {
+        factory.create('Template', {userId: users[0].id}, function (err, tmpl) {
+          factory.create('Job', {templateId: tmpl.id}, function (err, job) {
+            request.get(jobUrl.replace(':id', job.id))
+                   .set('Authorization', 'Token ' + users[1].apiToken)
+                   .end(function (err, res) {
+                     expect(err).to.exist;
+                     expect(res.statusCode).to.eql(404);
+                     expect(res.statusCode).to.eql(errors.notFound.code);
+                     expect(res.body).to.eql(errors.notFound.data);
+                     done();
+                   });
+          });
+        });
+      });
+    });
+
     it('returns an unauthorized error without a valid api token', function (done) {
       request.get(jobUrl.replace(':id', '1'))
              .set('Authorization', 'Token blubiblub')
@@ -160,6 +178,24 @@ describe('gendok.http.api.jobs', function () {
                    .end(function (err, res) {
                      expect(err).to.exist;
                      expect(res.statusCode).to.eql(404);
+                     done();
+                   });
+          });
+        });
+      });
+    });
+
+    it('returns a 404 error if the job doesnt exist for the specified user', function (done) {
+      factory.createMany('User', 2, function (err, users) {
+        factory.create('Template', {userId: users[0].id}, function (err, tmpl) {
+          factory.create('Job', {templateId: tmpl.id}, function (err, job) {
+            request.get(downloadUrl.replace(':id', job.id))
+                   .set('Authorization', 'Token ' + users[1].apiToken)
+                   .end(function (err, res) {
+                     expect(err).to.exist;
+                     expect(res.statusCode).to.eql(404);
+                     expect(res.statusCode).to.eql(errors.notFound.code);
+                     expect(res.body).to.eql(errors.notFound.data);
                      done();
                    });
           });
