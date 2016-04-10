@@ -104,6 +104,20 @@ describe('gendok.queue.worker.convert', function () {
     });
   });
 
+  it('adds the current date and time', function (done) {
+    var jobData = {data: {jobId: job.id}};
+
+    convert(jobData, function (err) {
+      expect(err).to.not.exist;
+
+      Job.findById(job.id).then(function (j) {
+        expect(j.renderedAt).to.exist;
+        expect(j.renderedAt).not.to.eql(null);
+        done();
+      }).catch(done);
+    });
+  });
+
   it('renders the template with the compiler before converting to pdf', function (done) {
     // Attributes to ensure that we use an actual compiler for this tests
     var templateAttrs = {
