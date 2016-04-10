@@ -119,9 +119,6 @@ describe('gendok.queue.worker.convert', function () {
   });
 
   it('renders the template with the compiler before converting to pdf', function (done) {
-    // TODO: Fix problems with pdfjs on our CI server!
-    if (process.env.CI) { return done(); }
-
     // Attributes to ensure that we use an actual compiler for this tests
     var templateAttrs = {
       type: 'mustache',
@@ -154,9 +151,6 @@ describe('gendok.queue.worker.convert', function () {
   });
 
   it('renders a template for each payload and returns a zip', function (done) {
-    // TODO: Fix problems with pdfjs on our CI server!
-    if (process.env.CI) { return done(); }
-
     var templateAttrs = {
       type: 'mustache',
       body: '<html><head><title>blub</title></head>' +
