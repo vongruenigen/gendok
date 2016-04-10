@@ -124,7 +124,7 @@ describe('gendok.http.api.templates', function () {
   describe('PUT /api/templates/:id', function () {
     it('update a template in the database', function (done) {
       factory.create('User', function (err, user) {
-        factory.create('Template', function (err, tmpl) {
+        factory.create('Template', {userId: user.id}, function (err, tmpl) {
           var attrs = {body: 'content'};
 
           request.put(url + '/' + tmpl.id)
@@ -146,7 +146,7 @@ describe('gendok.http.api.templates', function () {
 
     it('returns an error, no update if validation fails', function (done) {
       factory.create('User', function (err, user) {
-        factory.create('Template', function (err, tmpl) {
+        factory.create('Template', {userId: user.id}, function (err, tmpl) {
           var attrs = {type: 'nonsense'};
 
           request.put(url + '/' + (tmpl.id))
@@ -169,7 +169,7 @@ describe('gendok.http.api.templates', function () {
 
     it('returns an error, no update if template id not found in DB', function (done) {
       factory.create('User', function (err, user) {
-        factory.create('Template', function (err, tmpl) {
+        factory.create('Template', {userId: user.id}, function (err, tmpl) {
           request.put(url + '/' + (tmpl.id + 1000))
                 .send({})
                 .set('Content-Type', 'application/json')
@@ -184,6 +184,25 @@ describe('gendok.http.api.templates', function () {
                     done();
                   });
                 });
+        });
+      });
+    });
+
+    it('returns a 404, no update if the template doesnt exist for the user', function (done) {
+      factory.createMany('User', 2, function (err, users) {
+        factory.create('Template', {userId: users[0].id}, function (err, tmpl) {
+          request.put(url + '/' + tmpl.id)
+                 .set('Authorization', 'Token ' + users[1].apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.exist;
+                   expect(res.statusCode).to.eql(404);
+                   expect(res.body).to.eql(errors.notFound.data);
+                   tmpl.reload().then(function (dbTempl) {
+                     expect(dbTempl.body).to.eql(tmpl.body);
+                     expect(dbTempl.type).to.eql(tmpl.type);
+                     done();
+                   });
+                 });
         });
       });
     });
@@ -228,6 +247,22 @@ describe('gendok.http.api.templates', function () {
                  .set('Authorization', 'Token ' + user.apiToken)
                  .end(function (err, res) {
                    expect(err).to.exist;
+                   expect(res.statusCode).to.eql(errors.notFound.code);
+                   expect(res.body).to.eql(errors.notFound.data);
+                   done();
+                 });
+        });
+      });
+    });
+
+    it('returns a 404 error if the template doesnt exist for the specified user', function (done) {
+      factory.createMany('User', 2, function (err, users) {
+        factory.create('Template', {userId: users[0].id}, function (err, tmpl) {
+          request.delete(url + '/' + tmpl.id)
+                 .set('Authorization', 'Token ' + users[1].apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.exist;
+                   expect(res.statusCode).to.eql(404);
                    expect(res.statusCode).to.eql(errors.notFound.code);
                    expect(res.body).to.eql(errors.notFound.data);
                    done();
@@ -378,6 +413,22 @@ describe('gendok.http.api.templates', function () {
       });
     });
 
+    it('returns a 404 error if the template doesnt exist for the specified user', function (done) {
+      factory.createMany('User', 2, function (err, users) {
+        factory.create('Template', {userId: users[0].id}, function (err, tmpl) {
+          request.post(renderUrl.replace(':id', tmpl.id))
+                 .set('Authorization', 'Token ' + users[1].apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.exist;
+                   expect(res.statusCode).to.eql(404);
+                   expect(res.statusCode).to.eql(errors.notFound.code);
+                   expect(res.body).to.eql(errors.notFound.data);
+                   done();
+                 });
+        });
+      });
+    });
+
     it('returns an unauthorized error without a valid api token', function (done) {
       factory.create('Template', function (err, tmpl) {
         request.post(renderUrl.replace(':id', tmpl.id))
@@ -463,6 +514,22 @@ describe('gendok.http.api.templates', function () {
                  expect(res.body).to.eql(errors.notFound.data);
                  done();
                });
+      });
+    });
+
+    it('returns a 404 error if the template doesnt exist for the specified user', function (done) {
+      factory.createMany('User', 2, function (err, users) {
+        factory.create('Template', {userId: users[0].id}, function (err, tmpl) {
+          request.get(url + '/' + tmpl.id)
+                 .set('Authorization', 'Token ' + users[1].apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.exist;
+                   expect(res.statusCode).to.eql(404);
+                   expect(res.statusCode).to.eql(errors.notFound.code);
+                   expect(res.body).to.eql(errors.notFound.data);
+                   done();
+                 });
+        });
       });
     });
 
