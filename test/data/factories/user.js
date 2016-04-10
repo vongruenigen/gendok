@@ -28,7 +28,7 @@ module.exports = function (model) {
       return 'test_user_' + milliseconds + '@gendok.com';
     }),
 
-    passwordHash: faker.random.uuid()
+    password: 'testpassword'
   });
 
   return factory;
