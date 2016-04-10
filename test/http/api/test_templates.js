@@ -41,7 +41,7 @@ describe('gendok.http.api.templates', function () {
   describe('POST /api/templates/', function () {
     it('creates a template in the database', function (done) {
       factory.create('User', function (err, user) {
-        factory.build('Template', function (err, templ) {
+        factory.build('Template', {userId: user.id}, function (err, templ) {
           request.post(url)
                  .send(templ.toJSON())
                  .set('Content-Type', 'application/json')
@@ -89,7 +89,7 @@ describe('gendok.http.api.templates', function () {
 
     it('returns the created template as JSON object', function (done) {
       factory.create('User', function (err, user) {
-        factory.build('Template', function (err, templ) {
+        factory.build('Template', {userId: user.id}, function (err, templ) {
           request.post(url)
                  .send(templ.toJSON())
                  .set('Content-Type', 'application/json')
@@ -126,7 +126,6 @@ describe('gendok.http.api.templates', function () {
       factory.create('User', function (err, user) {
         factory.create('Template', {userId: user.id}, function (err, tmpl) {
           var attrs = {body: 'content'};
-
           request.put(url + '/' + tmpl.id)
                 .send(attrs)
                 .set('Content-Type', 'application/json')
@@ -209,7 +208,7 @@ describe('gendok.http.api.templates', function () {
 
     it('returns an unauthorized error without a valid api token', function (done) {
       factory.create('Template', function (err, tmpl) {
-        request.post(url)
+        request.put(url)
                .set('Authorization', 'Token blubiblub')
                .end(function (err, res) {
                  expect(err).to.exist;

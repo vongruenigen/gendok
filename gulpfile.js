@@ -161,7 +161,7 @@ gulp.task('test-env', function () {
 gulp.task('pre-cov', function () {
   return gulp.src('lib/**/**.js')
              .pipe(istanbul())
-             //.pipe(istanbul.hookRequire());
+             .pipe(istanbul.hookRequire());
 });
 
 var runTestsWithCov = function (opts) {

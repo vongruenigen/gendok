@@ -1,6 +1,6 @@
 'use strict';
 module.exports = {
-  up: function(queryInterface, db) {
+  up: function (queryInterface, db) {
     return queryInterface.createTable('Users', {
       id: {
         allowNull: false,
@@ -30,7 +30,8 @@ module.exports = {
       }
     });
   },
-  down: function(queryInterface, db) {
+
+  down: function (queryInterface, db) {
     return queryInterface.dropTable('Users');
   }
 };

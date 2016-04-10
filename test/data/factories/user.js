@@ -22,8 +22,13 @@ module.exports = function (model) {
   factory.define('User', model, {
     isAdmin: false,
     name: faker.name.findName(),
-    email: faker.internet.email(),
-    passwordHash: faker.random.uuid()
+    email: factory.seq(function () {
+      //TODO: Ugly email generator, later we dont need this, because of db clear.
+      var milliseconds = (new Date()).getTime();
+      return 'test_user_' + milliseconds + '@gendok.com';
+    }),
+
+    password: 'testpassword'
   });
 
   return factory;

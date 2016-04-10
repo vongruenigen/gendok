@@ -62,6 +62,7 @@
     "zombie": "^4.2.1"
   },
   "dependencies": {
+    "bcrypt": "0.8.5",
     "adm-zip": "0.4.7",
     "bluebird": "3.3.3",
     "body-parser": "1.15.0",
