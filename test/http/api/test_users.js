@@ -88,7 +88,7 @@ describe('gendok.http.api.users', function () {
 
                    var returnedAttrs = res.body;
 
-                   //expect(returnedAttrs.isAdmin).to.eql(user.isAdmin);
+                   expect(returnedAttrs.isAdmin).to.eql(user.isAdmin);
                    expect(returnedAttrs.name).to.eql(user.name);
                    expect(returnedAttrs.email).to.eql(user.email);
                    done();
