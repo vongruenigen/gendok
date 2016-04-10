@@ -183,6 +183,7 @@ describe('gendok.queue.worker.convert', function () {
             var counter = 0;
 
             entries.forEach(function (e, i) {
+              expect(e.getData()).to.exist;
               expect(e.entryName.endsWith(job.format)).to.be.true;
 
               helper.parsePdf(e.getData(), function (err, data) {

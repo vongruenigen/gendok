@@ -76,8 +76,7 @@ describe('gendok.logger', function () {
       var transp = new winston.transports.Console({label: label});
       var config = {transports: [transp]};
 
-      // TODO: Nasty!
-      logger._logger = null;
+      logger.set(null);
       expect(logger.get()).to.not.exist;
       logger.configure();
       expect(logger.get()).to.exist;
