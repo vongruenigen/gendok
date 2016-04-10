@@ -87,18 +87,22 @@ module.exports = {
     var data = {text: []};
     var proms = [];
 
+    var createProm = function (pdf, i) {
+      proms.push(pdf.getPage(i).then(function (page) {
+        return page.getTextContent();
+      }).then(function (text) {
+        text.items.forEach(function (item) {
+          data.text.push(item.str);
+        });
+      }).catch(function (e) {
+        fn(e, null);
+      }));
+    };
+
     pdfjs.getDocument(buf).then(function (pdf) {
       for (var i = 1; i <= pdf.pdfInfo.numPages; i++) {
-        proms.push(pdf.getPage(i).then(function (page) {
-          return page.getTextContent();
-        }).then(function (text) {
-          text.items.forEach(function (item) {
-            data.text.push(item.str);
-          });
-        }).catch(function (e) {
-          fn(e, null);
-        }));
-      };
+        createProm(pdf, i);
+      }
 
       Promise.all(proms).then(function () {
         fn(null, data);
