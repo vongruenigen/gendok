@@ -18,6 +18,7 @@ var helper = require('../../helper');
 var expect = require('chai').expect;
 var simple = require('simple-mock');
 var AdmZip = require('adm-zip');
+var fs = require('fs');
 
 describe('gendok.queue.worker.convert', function () {
   it('is a function', function () {
@@ -179,6 +180,12 @@ describe('gendok.queue.worker.convert', function () {
             entries.forEach(function (e, i) {
               expect(e.getData()).to.exist;
               expect(e.entryName.endsWith(job.format)).to.be.true;
+
+              // TODO We currently have no idea why this fixes our problem with
+              // the PDF parsing on our CI server, no more "bad XRef entry" errors!
+              if (process.env.CI) {
+                fs.writeFileSync('/dev/null', e.getData());
+              }
 
               helper.parsePdf(e.getData(), function (err, data) {
                 expect(err).to.not.exist;
