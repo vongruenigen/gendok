@@ -237,7 +237,7 @@ describe('gendok.http.api.users', function () {
 
     it('returns an unauthorized error without a valid api token', function (done) {
       factory.create('User', {isAdmin: true}, function (err, user) {
-        request.post(url)
+        request.put(url)
                .set('Authorization', 'Token blubiblub')
                .end(function (err, res) {
                  expect(err).to.exist;
@@ -258,8 +258,8 @@ describe('gendok.http.api.users', function () {
                .end(function (err, res) {
                  expect(err).to.not.exist;
                  expect(res.statusCode).to.eql(200);
-                 User.findById(user.id).then(function (t) {
-                   expect(t).to.not.exist;
+                 User.findById(user.id).then(function (user) {
+                   expect(user).to.not.exist;
                    done();
                  });
                });
@@ -302,6 +302,37 @@ describe('gendok.http.api.users', function () {
                  expect(res.body).to.eql(errors.unauthorized.data);
                  done();
                });
+      });
+    });
+
+    it('delete user template and job', function (done) {
+      var Template = db.getModel('Template');
+      var Job = db.getModel('Job');
+
+      factory.create('User', {isAdmin: true}, function (err, user) {
+        factory.create('Template', {userId: user.id}, function (err, template) {
+          factory.create('Job', {templateId: template.id}, function (err, job) {
+            request.delete(url + '/' + user.id)
+                    .set('Content-Type', 'application/json')
+                    .set('Authorization', 'Token ' + user.apiToken)
+                    .end(function (err, res) {
+                      expect(res.statusCode).to.eql(200);
+
+                      User.findById(user.id).then(function (dbUser) {
+                        expect(dbUser).to.not.exist;
+
+                        Template.findById(template.id).then(function (dbTemplate) {
+                           expect(dbTemplate).to.not.exist;
+
+                           Job.findById(job.id).then(function (dbJob) {
+                              expect(dbJob).to.not.exist;
+                              done();
+                            });
+                         });
+                      });
+                    });
+          });
+        });
       });
     });
   });
