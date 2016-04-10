@@ -24,10 +24,15 @@ describe('gendok.http.api.users', function () {
   var factory = helper.loadFactories(this);
   var server = helper.runHttpServer(this, [all, users]);
   var url = helper.getUrl('/api/users');
-  var User = null;
+
+  var User;
+  var Template;
+  var Job;
 
   beforeEach(function () {
     User = db.getModel('User');
+    Template = db.getModel('Template');
+    Job = db.getModel('Job');
   });
 
   it('is a function', function () {
@@ -205,6 +210,7 @@ describe('gendok.http.api.users', function () {
                 expect(err).to.exist;
                 expect(res.statusCode).to.eql(400);
                 expect(res.body).to.eql(errors.badRequest.data);
+
                 user.reload().then(function (dbUser) {
                   expect(dbUser.body).to.eql(user.body);
                   expect(dbUser.type).to.eql(user.type);
@@ -224,6 +230,7 @@ describe('gendok.http.api.users', function () {
                 expect(err).to.exist;
                 expect(res.statusCode).to.eql(404);
                 expect(res.body).to.eql(errors.notFound.data);
+
                 user.reload().then(function (dbUser) {
                   expect(dbUser.body).to.eql(user.body);
                   expect(dbUser.type).to.eql(user.type);
@@ -249,18 +256,21 @@ describe('gendok.http.api.users', function () {
 
   describe('DELETE /api/users/:id', function () {
     it('deletes a user in the database', function (done) {
-      factory.create('User', {isAdmin: true}, function (err, user) {
-        request.delete(url + '/' + user.id)
-               .set('Content-Type', 'application/json')
-               .set('Authorization', 'Token ' + user.apiToken)
-               .end(function (err, res) {
-                 expect(err).to.not.exist;
-                 expect(res.statusCode).to.eql(200);
-                 User.findById(user.id).then(function (user) {
-                   expect(user).to.not.exist;
-                   done();
+      factory.create('User', {isAdmin: true}, function (err, admin) {
+        factory.create('User', function (err, user) {
+          request.delete(url + '/' + user.id)
+                 .set('Content-Type', 'application/json')
+                 .set('Authorization', 'Token ' + admin.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.statusCode).to.eql(200);
+
+                   User.findById(user.id).then(function (user) {
+                     expect(user).to.not.exist;
+                     done();
+                   });
                  });
-               });
+        });
       });
     });
 
@@ -303,32 +313,45 @@ describe('gendok.http.api.users', function () {
       });
     });
 
+    describe('when the admin wants to delete itself', function () {
+      it('returns a 403 forbidden', function (done) {
+        factory.create('User', {isAdmin: true}, function (err, user) {
+          request.delete(url + '/' + user.id)
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.exist;
+
+                   expect(res.statusCode).to.eql(errors.forbidden.code);
+                   expect(res.body).to.eql(errors.forbidden.data);
+
+                   done();
+                 });
+        });
+      });
+    });
+
     it('delete user template and job', function (done) {
-      var Template = db.getModel('Template');
-      var Job = db.getModel('Job');
+      factory.create('User', {isAdmin: true}, function (err, admin) {
+        factory.create('User', function (err, user) {
+          factory.create('Template', {userId: user.id}, function (err, templ) {
+            factory.create('Job', {templateId: templ.id}, function (err, job) {
+              request.delete(url + '/' + user.id)
+                     .set('Authorization', 'Token ' + admin.apiToken)
+                     .end(function (err, res) {
+                       expect(res.statusCode).to.eql(200);
 
-      factory.create('User', {isAdmin: true}, function (err, user) {
-        factory.create('Template', {userId: user.id}, function (err, template) {
-          factory.create('Job', {templateId: template.id}, function (err, job) {
-            request.delete(url + '/' + user.id)
-                    .set('Content-Type', 'application/json')
-                    .set('Authorization', 'Token ' + user.apiToken)
-                    .end(function (err, res) {
-                      expect(res.statusCode).to.eql(200);
-
-                      User.findById(user.id).then(function (dbUser) {
-                        expect(dbUser).to.not.exist;
-
-                        Template.findById(template.id).then(function (dbTemplate) {
-                           expect(dbTemplate).to.not.exist;
-
-                           Job.findById(job.id).then(function (dbJob) {
-                              expect(dbJob).to.not.exist;
-                              done();
-                            });
-                         });
-                      });
-                    });
+                       User.findById(user.id).then(function (u) {
+                         expect(u).to.not.exist;
+                         return Template.findById(templ.id);
+                       }).then(function (t) {
+                         expect(t).to.not.exist;
+                         return Job.findById(job.id);
+                       }).then(function (j) {
+                         expect(j).to.not.exist;
+                         done();
+                       }).catch(done);
+                     });
+            });
           });
         });
       });
