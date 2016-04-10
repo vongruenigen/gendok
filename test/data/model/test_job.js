@@ -12,9 +12,11 @@
 var helper = require('../../helper');
 var db = require('../../..').data.db;
 var expect = require('chai').expect;
+var simple = require('simple-mock');
 
 describe('gendok.data.model.job', function () {
   var factory = helper.loadFactories(this);
+  var queue = helper.createQueue(this);
   var Job = null;
 
   beforeEach(function () {
@@ -32,6 +34,18 @@ describe('gendok.data.model.job', function () {
         expect(job).to.exist;
         done();
       });
+    });
+  });
+
+  describe('isBatch()', function () {
+    it('returns true if the payload is an array of object', function () {
+      var job = Job.build({payload: [{}, {}, {}]});
+      expect(job.isBatch()).to.be.true;
+    });
+
+    it('returns false if the payload is a single object', function () {
+      var job = Job.build({payload: {}});
+      expect(job.isBatch()).to.be.false;
     });
   });
 
@@ -91,6 +105,24 @@ describe('gendok.data.model.job', function () {
         });
       });
     });
+
+    describe('.format', function () {
+      it('may not be empty', function (done) {
+        var values = {format: ''};
+
+        factory.build('Job', values, function (err, job) {
+          expect(err).to.not.exist;
+          expect(job.format).to.eql(values.format);
+
+          job.validate().then(function (err) {
+            expect(err).to.exist;
+            expect(err.errors.length).to.eql(1);
+            expect(err.errors[0].path).to.eql('format');
+            done();
+          });
+        });
+      });
+    });
   });
 
   describe('instance methods', function () {
@@ -105,6 +137,57 @@ describe('gendok.data.model.job', function () {
         factory.build('Job', function (err, job) {
           var publicJob = job.toPublicObject();
           expect(publicJob.result).to.not.exist;
+          done();
+        });
+      });
+    });
+
+    describe('getContentType()', function () {
+      describe('when format is set to pdf', function () {
+        it('returns application/pdf', function () {
+          expect(Job.build({format: 'pdf'})
+                    .getContentType()).to.eql('application/pdf');
+        });
+      });
+
+      describe('when format is set to png', function () {
+        it('returns image/png', function () {
+          expect(Job.build({format: 'png'})
+                    .getContentType()).to.eql('image/png');
+        });
+      });
+
+      describe('when the payload contains an array', function () {
+        it('returns application/zip', function () {
+          expect(Job.build({payload: []})
+                    .getContentType()).to.eql('application/zip');
+        });
+      });
+    });
+
+    describe('schedule()', function () {
+      it('schedules a "convert" worker job on the given queue', function (done) {
+        factory.create('Job', function (err, job) {
+          expect(err).to.not.exist;
+
+          job.schedule(queue, function errorHandler(err, j) {
+            expect(err).to.not.exist;
+
+            expect(queue.testMode.jobs).to.be.length(1);
+            expect(queue.testMode.jobs[0].type).to.eql('convert');
+            expect(queue.testMode.jobs[0].data).to.eql({jobId: job.id});
+
+            done();
+          });
+        });
+      });
+
+      it('throws an error if the callback or queue is missing', function (done) {
+        var noop = function () { };
+
+        factory.create('Job', function (err, job) {
+          expect(function () { job.schedule({}, null); }).to.throw(Error);
+          expect(function () { job.schedule(null, noop); }).to.throw(Error);
           done();
         });
       });

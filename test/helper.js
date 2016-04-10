@@ -12,12 +12,13 @@
 var logger = require('..').logger;
 var HttpServer = require('..').http.server;
 var config = require('..').config;
+var util = require('..').util;
 var db = require('..').data.db;
 var crypto = require('crypto');
 var path = require('path');
 var factories = require('./data/factories');
 var factoryGirl = require('factory-girl');
-var PdfParser = require('pdf2json');
+var pdfjs = require('pdfjs-dist');
 var format = require('util').format;
 
 /**
@@ -83,30 +84,32 @@ module.exports = {
    * @param {Function} fn The callback to invoke after the parsing
    */
   parsePdf: function (buf, fn) {
-    var pdfParser = new PdfParser();
-    var pdfObject = {chars: []};
+    var data = {text: []};
+    var proms = [];
 
-    // Invoke the callback with an error if any occures
-    pdfParser.on('pdfParser_dataError', function (err) {
-      fn(err, null);
-    });
-
-    // Invoke the callback with the results as soon as they're available
-    pdfParser.on('pdfParser_dataReady', function (data) {
-      // Iterate over all pages, the including chars an each run, also
-      // see https://github.com/modesty/pdf2json#page-object-reference
-      data.formImage.Pages.forEach(function (p) {
-        p.Texts.forEach(function (t) {
-          t.R.forEach(function (r) {
-            pdfObject.chars.push(r.T);
-          });
+    var createProm = function (pdf, i) {
+      proms.push(pdf.getPage(i).then(function (page) {
+        return page.getTextContent();
+      }).then(function (text) {
+        text.items.forEach(function (item) {
+          data.text.push(item.str);
         });
+      }).catch(function (e) {
+        fn(e, null);
+      }));
+    };
+
+    pdfjs.getDocument(buf).then(function (pdf) {
+      for (var i = 1; i <= pdf.pdfInfo.numPages; i++) {
+        createProm(pdf, i);
+      }
+
+      Promise.all(proms).then(function () {
+        fn(null, data);
+      }).catch(function (err) {
+        fn(err, null);
       });
-
-      fn(null, pdfObject);
     });
-
-    pdfParser.parseBuffer(buf);
   },
 
   /**
@@ -140,15 +143,45 @@ module.exports = {
     var server = new HttpServer();
     server.registerModules(modules);
 
-    context.beforeEach(function (done) {
+    context.beforeAll(function (done) {
       server.start(done);
     });
 
-    context.afterEach(function (done) {
+    context.afterAll(function (done) {
       server.stop(done);
     });
 
     return server;
+  },
+
+  /**
+   * This helper creates a queue via util.createQueue() and sets up the required
+   * before, after and afterEach hooks to run it in test mode. It uses the given
+   * context to set up the hooks in.
+   *
+   * @param {Object} ctx The context to register the ooks in
+   * @return {Queue} A queue object running in test mode
+   */
+  createQueue: function (ctx) {
+    if (!ctx) {
+      throw new Error('context is missing');
+    }
+
+    var queue = util.createQueue();
+
+    ctx.beforeAll(function () {
+      queue.testMode.enter();
+    });
+
+    ctx.beforeEach(function () {
+      queue.testMode.clear();
+    });
+
+    ctx.afterAll(function () {
+      queue.testMode.exit();
+    });
+
+    return queue;
   },
 
   /**

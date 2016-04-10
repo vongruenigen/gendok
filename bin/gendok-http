@@ -16,7 +16,6 @@ var base = path.join(__dirname, '..');
 var gendok = require(base);
 var config = gendok.config;
 var Server = gendok.http.server;
-var config = {};
 
 if (!gendok) {
   console.error("Couldn't load gendok library!");
@@ -62,5 +61,5 @@ server.start(function (err) {
   }
 
   console.log('successfully started gendok server on %s:%s',
-              cfg.get('http_host'), cfg.get('http_port'));
+              config.get('http_host'), config.get('http_port'));
 });
