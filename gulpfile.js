@@ -187,7 +187,7 @@ gulp.task('test-debug', ['pre-test'], function () {
 
 gulp.task('test-jenkins', ['pre-test', 'pre-cov'], function () {
   // Set CI environment variable to signify that the jenkins task is running
-  provess.env.CI = true;
+  process.env.CI = true;
 
   runTestsWithCov(mochaJenkinsOpts);
 });
