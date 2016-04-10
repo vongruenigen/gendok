@@ -23,6 +23,7 @@ module.exports = function (model) {
     templateId: factory.assoc('Template', 'id'),
     payload: {},
     state: 'pending',
+    format: 'pdf',
     result: null
   });
 

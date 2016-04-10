@@ -11,12 +11,9 @@
 
 var db = require('../..').data.db;
 var model  = require('../..').data.model;
-var Config = require('../..').config;
 var expect = require('chai').expect;
 
 describe('gendok.data.db', function () {
-  var config = new Config();
-
   it('is an object', function () {
     expect(db).to.be.an('object');
   });
@@ -28,35 +25,31 @@ describe('gendok.data.db', function () {
 
   describe('connect()', function () {
     it('creates a new connection', function () {
-      var conn = db.connect(config);
+      var conn = db.connect();
 
       expect(conn).to.exist;
       expect(db.isConnected()).to.be.true;
     });
 
     it('ignores further calls after a connection has been established', function () {
-      var conn = db.connect(config);
-      var conn2 = db.connect(config);
+      var conn = db.connect();
+      var conn2 = db.connect();
 
       expect(conn2 === conn).to.be.true;
     });
 
-    it('throws an error if the config param is missing', function () {
-      expect(function () { db.connect(null); }).to.throw(Error);
-    });
-
     it('loads all models', function () {
-      var conn = db.connect(config);
+      var conn = db.connect();
 
       Object.keys(model).forEach(function (k) {
-        expect(conn[k]).to.exist;
+        expect(conn.models[k]).to.exist;
       });
     });
   });
 
   describe('disconnect()', function () {
     it('disconnects from the database', function () {
-      db.connect(config);
+      db.connect();
       db.disconnect();
 
       expect(db.getConnection()).to.not.exist;
@@ -65,23 +58,47 @@ describe('gendok.data.db', function () {
 
   describe('getConnection()', function () {
     it('returns the established connection', function () {
-      var conn = db.connect(config);
+      var conn = db.connect();
       expect(conn).to.eql(db.getConnection());
     });
   });
 
   describe('getModel()', function () {
     it('return all models', function () {
-      var conn = db.connect(config);
+      var conn = db.connect();
+
       Object.keys(model).forEach(function (k) {
         expect(db.getModel(k)).to.exist;
       });
     });
 
     it('throw an exception if empty string', function () {
-      var conn = db.connect(config);
+      var conn = db.connect();
       expect(function () {
         db.getModel('');
+      }).to.throw(Error);
+    });
+
+    it('throws an error if the db connection is not open', function () {
+      db.disconnect();
+
+      expect(function () {
+        db.getModel('');
+      }).to.throw(Error);
+    });
+  });
+
+  describe('getAllModels()', function () {
+    it('returns an object containing all models', function () {
+      var conn = db.connect();
+      expect(db.getAllModels()).to.eql(conn.models);
+    });
+
+    it('throws an error if the db connection is not open', function () {
+      db.disconnect();
+
+      expect(function () {
+        db.getAllModels();
       }).to.throw(Error);
     });
   });

@@ -18,14 +18,11 @@ var Template = require('../../..').data.model.Template;
 var expect = require('chai').expect;
 var helper = require('../../helper');
 var request = require('superagent');
-var format = require('util').format;
 
 describe('gendok.http.api.jobs', function () {
   var factory = helper.loadFactories(this);
   var server = helper.runHttpServer(this, [all, jobs]);
-  var config = server.getConfig();
-  var url = format('%s:%d/api/jobs',
-                  config.get('http_host'), config.get('http_port'));
+  var url = helper.getUrl('/api/jobs');
   var Template = null;
   var Job = null;
 
@@ -75,6 +72,24 @@ describe('gendok.http.api.jobs', function () {
                    .set('Authorization', 'Token ' + user.apiToken)
                    .end(function (err, res) {
                      expect(err).to.exist;
+                     expect(res.statusCode).to.eql(errors.notFound.code);
+                     expect(res.body).to.eql(errors.notFound.data);
+                     done();
+                   });
+          });
+        });
+      });
+    });
+
+    it('returns a 404 error if the job doesnt exist for the specified user', function (done) {
+      factory.createMany('User', 2, function (err, users) {
+        factory.create('Template', {userId: users[0].id}, function (err, tmpl) {
+          factory.create('Job', {templateId: tmpl.id}, function (err, job) {
+            request.get(jobUrl.replace(':id', job.id))
+                   .set('Authorization', 'Token ' + users[1].apiToken)
+                   .end(function (err, res) {
+                     expect(err).to.exist;
+                     expect(res.statusCode).to.eql(404);
                      expect(res.statusCode).to.eql(errors.notFound.code);
                      expect(res.body).to.eql(errors.notFound.data);
                      done();
@@ -160,6 +175,24 @@ describe('gendok.http.api.jobs', function () {
                    .end(function (err, res) {
                      expect(err).to.exist;
                      expect(res.statusCode).to.eql(404);
+                     done();
+                   });
+          });
+        });
+      });
+    });
+
+    it('returns a 404 error if the job doesnt exist for the specified user', function (done) {
+      factory.createMany('User', 2, function (err, users) {
+        factory.create('Template', {userId: users[0].id}, function (err, tmpl) {
+          factory.create('Job', {templateId: tmpl.id}, function (err, job) {
+            request.get(downloadUrl.replace(':id', job.id))
+                   .set('Authorization', 'Token ' + users[1].apiToken)
+                   .end(function (err, res) {
+                     expect(err).to.exist;
+                     expect(res.statusCode).to.eql(404);
+                     expect(res.statusCode).to.eql(errors.notFound.code);
+                     expect(res.body).to.eql(errors.notFound.data);
                      done();
                    });
           });

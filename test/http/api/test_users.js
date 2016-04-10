@@ -23,9 +23,7 @@ var format = require('util').format;
 describe('gendok.http.api.users', function () {
   var factory = helper.loadFactories(this);
   var server = helper.runHttpServer(this, [all, users]);
-  var config = server.getConfig();
-  var url = format('%s:%d/api/users',
-                  config.get('http_host'), config.get('http_port'));
+  var url = helper.getUrl('/api/users');
   var User = null;
 
   beforeEach(function () {
