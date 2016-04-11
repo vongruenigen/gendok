@@ -14,6 +14,7 @@ var util = require('util');
 var path = require('path');
 var expect = require('chai').expect;
 var logger = require('..').logger;
+var config = require('..').config;
 var env = require('..').env;
 var h = require('./helper');
 
@@ -63,22 +64,9 @@ describe('gendok.logger', function () {
   });
 
   describe('create()', function () {
-    describe('without a config', function () {
-      it('returns a configured winston.Logger instance', function () {
-        var l = logger.create();
-        expect(Object.keys(l.transports).length).to.be.above(0);
-      });
-    });
-
-    describe('with config', function () {
-      it('passes it directly to the winston.Logger constructor', function () {
-        var trans = new winston.transports.Console({label: 'gugus'});
-        var config = {transports: [trans]};
-        var created = logger.create(config);
-        var expected = new winston.Logger(config);
-
-        expect(created.transports).to.eql(expected.transports);
-      });
+    it('creates a new windston.Logger instance', function () {
+      var l = logger.create();
+      expect(l.transports).to.exist;
     });
   });
 
@@ -88,8 +76,7 @@ describe('gendok.logger', function () {
       var transp = new winston.transports.Console({label: label});
       var config = {transports: [transp]};
 
-      // TODO: Nasty!
-      logger._logger = null;
+      logger.set(null);
       expect(logger.get()).to.not.exist;
       logger.configure();
       expect(logger.get()).to.exist;

@@ -20,29 +20,16 @@ describe('gendok.queue.runner', function () {
     expect(Runner).to.be.a('function');
   });
 
-  var defaultConfig = config.getDefault();
   var runner = null;
 
   beforeEach(function (done) {
-    runner = new Runner(defaultConfig);
+    runner = new Runner();
     runner.start(done);
   });
 
   afterEach(function (done) {
     runner.stop(done);
     runner = null;
-  });
-
-  describe('constructor', function () {
-    it('stores the config', function () {
-      expect(runner.getConfig()).to.exist;
-    });
-  });
-
-  describe('getConfig()', function () {
-    it('returns the associated Config object', function () {
-      expect(runner.getConfig()).to.eql(defaultConfig);
-    });
   });
 
   describe('start()', function () {
@@ -58,17 +45,17 @@ describe('gendok.queue.runner', function () {
 
   describe('stop()', function () {
     it('invokes the callback immediately if the queue is not running', function (done) {
-      (new Runner(defaultConfig)).stop(done);
+      (new Runner()).stop(done);
     });
   });
 
   describe('isRunning()', function () {
     it('returns false if the server has not been started', function () {
-      expect((new Runner(defaultConfig)).isRunning()).to.eql(false);
+      expect((new Runner()).isRunning()).to.eql(false);
     });
 
     it('returns true after the queue has been started', function (done) {
-      var r = new Runner(defaultConfig);
+      var r = new Runner();
 
       r.start(function (err) {
         expect(err).to.not.exist;
@@ -99,7 +86,7 @@ describe('gendok.queue.runner', function () {
     });
 
     it('throws an error if the worker is not a function', function () {
-      var r = new Runner(defaultConfig);
+      var r = new Runner();
       var workerFn = 'blub';
 
       expect(function () {
@@ -108,7 +95,7 @@ describe('gendok.queue.runner', function () {
     });
 
     it('throws an error if key is empty or missing', function () {
-      var r = new Runner(defaultConfig);
+      var r = new Runner();
 
       expect(function () {
         r.registerWorker('', function () {});
