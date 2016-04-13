@@ -56,7 +56,7 @@ describe('gendok.data.model.user', function () {
 
   describe('validation', function () {
     describe('.password', function () {
-      it('error if length > 7', function (done) {
+      it('error if length < 7', function (done) {
         factory.create('User', function (err, usr) {
           expect(err).to.not.exist;
           usr.password = 'asdf';
@@ -69,9 +69,7 @@ describe('gendok.data.model.user', function () {
         });
       });
     });
-  });
 
-  describe('validation', function () {
     describe('.email', function () {
       it('email address must have a valid format', function (done) {
         factory.create('User', function (err, usr) {
