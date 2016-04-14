@@ -63,6 +63,7 @@ describe('gendok.http.api.users', function () {
     it('returns an error if an invalid user is posted', function (done) {
       factory.create('User', {isAdmin: true}, function (err, creator) {
         var values = {email: ''};
+
         factory.build('User', values, function (err, user) {
           request.post(url)
                  .send(user.toJSON())
@@ -70,9 +71,13 @@ describe('gendok.http.api.users', function () {
                  .set('Authorization', 'Token ' + creator.apiToken)
                  .end(function (err, res) {
                    expect(err).to.exist;
-                   expect(res.statusCode).to.eql(400);
-                   expect(res.body).to.eql(errors.badRequest.data);
-                   done();
+                   expect(res.statusCode).to.eql(errors.validation.code);
+
+                   User.create(user.toJSON()).catch(function (err) {
+                     var expectedError = errors.validation.data(err);
+                     expect(res.body).to.eql(expectedError);
+                     done();
+                   });
                  });
         });
       });
@@ -208,12 +213,11 @@ describe('gendok.http.api.users', function () {
               .set('Authorization', 'Token ' + user.apiToken)
               .end(function (err, res) {
                 expect(err).to.exist;
-                expect(res.statusCode).to.eql(400);
-                expect(res.body).to.eql(errors.badRequest.data);
+                expect(res.statusCode).to.eql(errors.validation.code);
 
-                user.reload().then(function (dbUser) {
-                  expect(dbUser.body).to.eql(user.body);
-                  expect(dbUser.type).to.eql(user.type);
+                user.update(attrs).catch(function (err) {
+                  var expectedError = errors.validation.data(err);
+                  expect(res.body).to.eql(expectedError);
                   done();
                 });
               });
