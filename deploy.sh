@@ -5,6 +5,8 @@ REPO_NAME="PSIT4-gendok"
 HTTP_EXECUTABLE="gendok-http"
 QUEUE_EXECUTABLE="gendok-queue"
 
+export PATH=$PATH:/usr/local/bin/
+
 if [ ! -d "$PULL_DIR/$REPO_NAME" ]; then
   echo "Git repo directory $PULL_DIR/$REPO_NAME has to exist.\n"
   exit 1
