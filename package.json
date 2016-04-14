@@ -92,6 +92,8 @@
     "minimist": "1.2.0",
     "morgan": "1.7.0",
     "mustache": "2.2.1",
+    "passport": "0.3.2",
+    "passport-local": "1.0.0",
     "pg": "4.5.1",
     "pg-hstore": "2.3.2",
     "phantom-html-to-pdf": "0.4.1",

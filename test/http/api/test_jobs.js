@@ -46,7 +46,7 @@ describe('gendok.http.api.jobs', function () {
         template.getUser().then(function (user) {
           factory.create('Job', {templateId: template.id}, function (err, job) {
             request.get(jobUrl.replace(':id', job.id))
-                   .set('Authorization', 'Token ' + user.apiToken)
+                   .set('Authorization', 'Bearer ' + user.apiToken)
                    .end(function (err, res) {
                      expect(err).to.not.exist;
                      expect(res.statusCode).to.eql(200);
@@ -69,7 +69,7 @@ describe('gendok.http.api.jobs', function () {
         template.getUser().then(function (user) {
           factory.create('Job', {templateId: template.id}, function (err, job) {
             request.get(jobUrl.replace(':id', '1234565'))
-                   .set('Authorization', 'Token ' + user.apiToken)
+                   .set('Authorization', 'Bearer ' + user.apiToken)
                    .end(function (err, res) {
                      expect(err).to.exist;
                      expect(res.statusCode).to.eql(errors.notFound.code);
@@ -86,7 +86,7 @@ describe('gendok.http.api.jobs', function () {
         factory.create('Template', {userId: users[0].id}, function (err, tmpl) {
           factory.create('Job', {templateId: tmpl.id}, function (err, job) {
             request.get(jobUrl.replace(':id', job.id))
-                   .set('Authorization', 'Token ' + users[1].apiToken)
+                   .set('Authorization', 'Bearer ' + users[1].apiToken)
                    .end(function (err, res) {
                      expect(err).to.exist;
                      expect(res.statusCode).to.eql(404);
@@ -125,7 +125,7 @@ describe('gendok.http.api.jobs', function () {
 
           factory.create('Job', attrs, function (err, job) {
             request.get(downloadUrl.replace(':id', job.id))
-                   .set('Authorization', 'Token ' + user.apiToken)
+                   .set('Authorization', 'Bearer ' + user.apiToken)
                    .buffer()
                    .end(function (err, res) {
                      expect(err).not.to.exist;
@@ -155,7 +155,7 @@ describe('gendok.http.api.jobs', function () {
         template.getUser().then(function (user) {
           factory.create('Job', {templateId: template.id}, function (err, job) {
             request.get(downloadUrl.replace(':id', job.id))
-                   .set('Authorization', 'Token ' + user.apiToken)
+                   .set('Authorization', 'Bearer ' + user.apiToken)
                    .end(function (err, res) {
                      expect(err).to.exist;
                      expect(res.statusCode).to.eql(errors.forbidden.code);
@@ -171,7 +171,7 @@ describe('gendok.http.api.jobs', function () {
         template.getUser().then(function (user) {
           factory.create('Job', {templateId: template.id}, function (err, job) {
             request.get(downloadUrl.replace(':id', '123456'))
-                   .set('Authorization', 'Token ' + user.apiToken)
+                   .set('Authorization', 'Bearer ' + user.apiToken)
                    .end(function (err, res) {
                      expect(err).to.exist;
                      expect(res.statusCode).to.eql(404);
@@ -187,7 +187,7 @@ describe('gendok.http.api.jobs', function () {
         factory.create('Template', {userId: users[0].id}, function (err, tmpl) {
           factory.create('Job', {templateId: tmpl.id}, function (err, job) {
             request.get(downloadUrl.replace(':id', job.id))
-                   .set('Authorization', 'Token ' + users[1].apiToken)
+                   .set('Authorization', 'Bearer ' + users[1].apiToken)
                    .end(function (err, res) {
                      expect(err).to.exist;
                      expect(res.statusCode).to.eql(404);
