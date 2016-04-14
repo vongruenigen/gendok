@@ -15,7 +15,9 @@
     "log_console": false,
     "log_timestamp": true,
     "log_json": false,
-    "log_level": "debug"
+    "log_level": "debug",
+    "jwt_ttl": "24h",
+    "jwt_secret": "abc123"
   },
 
   "test": {
@@ -34,7 +36,9 @@
     "log_console": false,
     "log_timestamp": true,
     "log_json": false,
-    "log_level": "debug"
+    "log_level": "debug",
+    "jwt_ttl": "24h",
+    "jwt_secret": "abc123"
   },
 
   "production": {
@@ -53,6 +57,8 @@
     "log_console": false,
     "log_timestamp": true,
     "log_json": false,
-    "log_level": "info"
+    "log_level": "info",
+    "jwt_ttl": "24h",
+    "jwt_secret": "MUST BE REPLACED!"
   }
 }
