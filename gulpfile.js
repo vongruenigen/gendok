@@ -66,7 +66,8 @@ var requiredJsPaths = [
   'bower_components/angular/angular.js',
   'bower_components/jquery/dist/jquery.js',
   'bower_components/bootstrap/dist/js/bootstrap.js',
-  'lib/http/web/assets/js/**/*.js',
+  'lib/http/web/assets/js/app.js',  // app.js has to be first because of the
+  'lib/http/web/assets/js/**/*.js', // gendok object required by all others
 ];
 
 // Helper function which prints the error if given and exits.
