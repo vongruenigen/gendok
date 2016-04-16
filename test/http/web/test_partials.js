@@ -21,7 +21,7 @@ describe('gendok.http.web.partials', function () {
     expect(partials).to.be.a('function');
   });
 
-  var server = helper.runHttpServer(this, [all, partials]);
+  var server = helper.runHttpServer(this, [partials, all]);
   var url = helper.getUrl('/partials');
 
   describe('GET /partials/:name', function () {

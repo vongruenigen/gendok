@@ -22,6 +22,7 @@ describe('gendok.http.web.home', function () {
     expect(web.home).to.be.a('function');
   });
 
+  var factory = helper.loadFactories(this);
   var browser = new Browser();
   var modules = [http.middleware.basic, web.home];
 
@@ -29,19 +30,14 @@ describe('gendok.http.web.home', function () {
   helper.runHttpServer(this, modules);
   Browser.localhost(config.get('http_host'), config.get('http_port'));
 
-  describe('#index', function () {
+  describe('/', function () {
     beforeEach(function (done) {
       browser.visit('/', done);
     });
 
-    it('contains the text "gendok"', function () {
+    it('contains the text "gendok"', function (done) {
       browser.assert.success();
       browser.assert.text('h1.title', 'gendok');
-    });
-
-    it('contains a welcome message from angular', function () {
-      browser.assert.success();
-      browser.assert.text('.angular-welcome', 'hello world from angular-js!');
     });
   });
 });
