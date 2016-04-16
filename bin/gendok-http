@@ -49,11 +49,8 @@ var server = new Server();
 
 server.registerModules([
   gendok.http.middleware.all,
-  gendok.http.web.home,
-  gendok.http.web.partials,
-  gendok.http.api.status,
-  gendok.http.api.templates,
-  gendok.http.api.jobs
+  gendok.http.api.all,
+  gendok.http.web.all
 ]);
 
 server.start(function (err) {
