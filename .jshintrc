@@ -9,7 +9,6 @@
     "describe", "it",
     "before", "beforeEach",
     "after", "afterEach",
-    "angular", "window",
-    "gendok"
+    "angular", "window"
   ]
 }
