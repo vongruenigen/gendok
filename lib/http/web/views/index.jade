@@ -27,7 +27,7 @@ html(ng-app='gendok')
             
           ul.nav.navbar-nav.navbar-right
             li(ng-if='!authService.isAuthenticated()')
-              a(href='/#/register') Want to sign up?
+              a.signup-link(href='/#/register') Want to sign up?
             li.dropdown(ng-if='authService.isAuthenticated()')
               a.dropdown-toggle(href='#', data-toggle='dropdown')
                 | Hello, {{authService.getUser().username}}!
@@ -37,5 +37,5 @@ html(ng-app='gendok')
                   a(href='#') My profile
                 li.divider
                 li
-                  a(href='#' ng-click='signoutUser()') Sign out
+                  a.signout-link(href='#' ng-click='signoutUser()') Sign out
     .container(ui-view)

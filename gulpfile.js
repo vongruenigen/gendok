@@ -23,6 +23,7 @@ var concat = require('gulp-concat');
 var cssnano = require('gulp-cssnano');
 var jscs = require('gulp-jscs');
 var sass = require('gulp-ruby-sass');
+var protractor = require('gulp-protractor').protractor;
 var autoprefixer = require('gulp-autoprefixer');
 var stylish = require('gulp-jscs-stylish');
 var spawn = require('child_process').spawn;
@@ -145,13 +146,18 @@ gulp.task('lint', function () {
 /**
  * Testing related tasks
  */
+
+
+// List of all files to test
+var testFiles = ['test/**/test_*.js', '!test/e2e/**/test_*.js'];
+
 gulp.task('pre-test', ['test-env', 'build', 'lint',
                        'redis-server', 'db-clean', 'db-migrate'], function () {
   console.log('Successfully prepared test run');
 });
 
 gulp.task('test', ['pre-test'], function () {
-  gulp.src(argv.only || argv.o || 'test/**/*.js')
+  gulp.src(testFiles)
       .pipe(mocha(mochaOpts))
       .on('error', function (e) { logger.error('error in test: %s', e); })
       .on('end', function () { process.exit(); });
@@ -168,7 +174,7 @@ gulp.task('pre-cov', function () {
 });
 
 var runTestsWithCov = function (opts) {
-  gulp.src('test/**/*.js')
+  gulp.src(testFiles)
       .pipe(mocha(opts))
       .pipe(istanbul.writeReports(istanbulOpts))
       .pipe(istanbul.enforceThresholds(istanbulThresholdOpts))
@@ -191,8 +197,22 @@ gulp.task('test-debug', ['pre-test'], function () {
 gulp.task('test-jenkins', ['pre-test', 'pre-cov'], function () {
   // Set CI environment variable to signify that the jenkins task is running
   process.env.CI = true;
-
   runTestsWithCov(mochaJenkinsOpts);
+});
+
+/**
+ * end-2-end testing related tasks
+ */
+gulp.task('test-e2e', ['test-env', 'build', 'selenium-update'], function () {
+  gulp.src('test/e2e/**/test_*.js')
+      .pipe(protractor({configFile: 'test/e2e/protractor.conf.js'}));
+});
+
+gulp.task('selenium-update', function (done) {
+  var webdriver = 'node_modules/protractor/bin/webdriver-manager';
+  spawn(webdriver, ['update'], {stdio: 'inherit'}).on('exit', function (c) {
+    done(c !== 0 ? new Error('error while updateing selenium') : null);
+  });
 });
 
 /**

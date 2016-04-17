@@ -2,7 +2,7 @@ div(ng-controller='signinController')
   form.form-signin(novalidate)
     h2.form-signin-heading Please sign in
 
-    .alert.alert-danger(ng-if='error') {{error}}
+    .alert.alert-danger(ng-show='error') {{error}}
 
     label.sr-only(for='username') Username
     input.form-control(
@@ -23,6 +23,6 @@ div(ng-controller='signinController')
       required
     )
 
-    button.btn.btn-lg.btn-primary.btn-block(
+    button.btn.btn-signin.btn-lg.btn-primary.btn-block(
       type='submit' ng-click='signin(username, password)'
     ) Sign in
