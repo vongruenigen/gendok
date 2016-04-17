@@ -40,7 +40,9 @@ module.exports = {
    */
   getUrl: function (p) {
     var host = format('%s:%d', config.get('http_host'), config.get('http_port'));
-    return path.join(host, p);
+    var url  = path.join(host, p);
+
+    return format('http://%s', url);
   },
 
   /**
@@ -143,11 +145,11 @@ module.exports = {
     var server = new HttpServer();
     server.registerModules(modules);
 
-    context.beforeAll(function (done) {
+    context.beforeEach(function (done) {
       server.start(done);
     });
 
-    context.afterAll(function (done) {
+    context.afterEach(function (done) {
       server.stop(done);
     });
 
