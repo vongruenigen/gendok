@@ -20,7 +20,7 @@ describe('gendok.queue.worker.email', function () {
     done();
   });
 
-  describe('returns an error if there are missing parameters', function () {
+  describe('returns an error if there are missing options', function () {
     it('"to" is missing', function (done) {
       var data = {
         subject: 'Blubb',
@@ -58,9 +58,11 @@ describe('gendok.queue.worker.email', function () {
     });
   });
 
-  it('should send an email with the specified options');
+  it('doesn\'t return an error when all parameters are set');
 
-  it('should not send an email if there is an error');
+  it('sends an email according to options');
 
-  it('should use the SMTP credentials specified in the config');
+  it('doesn\'t send an email if there is an error');
+
+  it('uses the SMTP credentials in the config');
 });
