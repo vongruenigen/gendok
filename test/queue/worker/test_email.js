@@ -57,4 +57,10 @@ describe('gendok.queue.worker.email', function () {
       });
     });
   });
+
+  it('should send an email with the specified options');
+
+  it('should not send an email if there is an error');
+
+  it('should use the SMTP credentials specified in the config');
 });
