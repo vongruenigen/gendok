@@ -94,17 +94,19 @@ describe('gendok.http.api.auth', function () {
                  .end(function (err, res) {
                    expect(err).to.not.exist;
 
-                   request.post(signOutUrl)
-                          .set('Authorization', 'Bearer ' + user.apiToken)
-                          .end(function (err, res) {
-                            expect(err).to.not.exist;
-                            expect(res.statusCode).to.eql(200);
+                   user.reload().then(function (user) {
+                     request.post(signOutUrl)
+                            .set('Authorization', 'Bearer ' + user.apiToken)
+                            .end(function (err, res) {
+                              expect(err).to.not.exist;
+                              expect(res.statusCode).to.eql(200);
 
-                            user.reload().then(function (u) {
-                              expect(u.apiToken).to.be.empty;
-                              done();
+                              user.reload().then(function (u) {
+                                expect(u.apiToken).to.be.empty;
+                                done();
+                              });
                             });
-                          });
+                   });
                  });
         });
       });
