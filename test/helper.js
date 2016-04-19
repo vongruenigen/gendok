@@ -111,6 +111,22 @@ module.exports = {
     var data = {text: []};
     var proms = [];
 
+    // Convert the node.js buffer to a ArrayBuffer for usage with pdf.js. This
+    // needs to be done in order to ensure that pdfjs can parse the PDF corr-
+    // ectly, otherwise we get nasty XRef header errors. This problem is based
+    // on the fact that pdf.js is a library developed for the browser and not
+    // server-side nodejs.
+    if (Object.prototype.toString.call(buf) !== '[object ArrayBuffer]') {
+      var ab = new ArrayBuffer(buf.length);
+      var view = new Uint8Array(ab);
+
+      for (var i = 0; i < buf.length; ++i) {
+        view[i] = buf[i];
+      }
+
+      buf = ab;
+    }
+
     var createProm = function (pdf, i) {
       proms.push(pdf.getPage(i).then(function (page) {
         return page.getTextContent();
