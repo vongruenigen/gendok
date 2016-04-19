@@ -18,7 +18,9 @@
     "smtp_port": 465,
     "smtp_username": "gendok",
     "smtp_password": "gendok",
-    "smtp_from": "notify@gendok.com"
+    "smtp_from": "notify@gendok.com",
+    "jwt_ttl": "24h",
+    "jwt_secret": "abc123"
   },
 
   "test": {
@@ -40,7 +42,9 @@
     "smtp_port": 465,
     "smtp_username": "gendok",
     "smtp_password": "gendok",
-    "smtp_from": "notify@gendok.com"
+    "smtp_from": "notify@gendok.com",
+    "jwt_ttl": "24h",
+    "jwt_secret": "abc123"
   },
 
   "production": {
@@ -62,6 +66,8 @@
     "smtp_port": 465,
     "smtp_username": "gendok",
     "smtp_password": "gendok",
-    "smtp_from": "notify@gendok.com"
+    "smtp_from": "notify@gendok.com",
+    "jwt_ttl": "24h",
+    "jwt_secret": "MUST BE REPLACED!"
   }
 }

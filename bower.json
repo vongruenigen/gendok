@@ -24,6 +24,8 @@
   ],
   "dependencies": {
     "bootstrap": "3.3.6",
-    "angular": "angularjs#1.5.0"
+    "angular": "angularjs#1.5.0",
+    "angular-ui-router": "^0.2.18",
+    "ngstorage": "ng-storage#^0.4.2"
   }
 }

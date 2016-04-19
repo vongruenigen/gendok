@@ -4,8 +4,7 @@ html(ng-app='gendok')
     title gendok
     script(src='/js/all.js')
     link(rel='stylesheet', href='/css/all.css')
-    block head
-  body
+  body(ng-controller='layoutController')
     .navbar.navbar-default
       .container
         .navbar-header
@@ -18,22 +17,25 @@ html(ng-app='gendok')
         .navbar-collapse.collapse
           ul.nav.navbar-nav
             li.active
-              a(href='#') Home
+              a(href='#/') Home
+            li(ng-if='authService.isAuthenticated()')
+              a(href='#/templates') Templates
+            li(ng-if='authService.isAuthenticated()')
+              a(href='#/jobs') Jobs
             li
-              a(href='#templates') Templates
-            li
-              a(href='#jobs') Jobs
+              a(href='#/about') About us
             
           ul.nav.navbar-nav.navbar-right
-            li.dropdown
+            li(ng-if='!authService.isAuthenticated()')
+              a.signup-link(href='/#/register') Want to sign up?
+            li.dropdown(ng-if='authService.isAuthenticated()')
               a.dropdown-toggle(href='#', data-toggle='dropdown')
-                | Hello, Mr. Gugus!
+                | Hello, {{authService.getUser().username}}!
                 span.caret
               ul.dropdown-menu(role='menu')
                 li
                   a(href='#') My profile
                 li.divider
                 li
-                  a(href='#') Logout
-    .container
-      block content
+                  a.signout-link(href='#' ng-click='signoutUser()') Sign out
+    .container(ui-view)

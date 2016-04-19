@@ -45,7 +45,7 @@ describe('gendok.http.api.templates', function () {
           request.post(url)
                  .send(templ.toJSON())
                  .set('Content-Type', 'application/json')
-                 .set('Authorization', 'Token ' + user.apiToken)
+                 .set('Authorization', 'Bearer ' + user.apiToken)
                  .end(function (err, res) {
                    expect(err).to.not.exist;
                    expect(res.statusCode).to.eql(201);
@@ -72,7 +72,7 @@ describe('gendok.http.api.templates', function () {
           request.post(url)
                  .send(templ.toJSON())
                  .set('Content-Type', 'application/json')
-                 .set('Authorization', 'Token ' + user.apiToken)
+                 .set('Authorization', 'Bearer ' + user.apiToken)
                  .end(function (err, res) {
                    expect(err).to.exist;
                    expect(res.statusCode).to.eql(errors.validation.code);
@@ -93,7 +93,7 @@ describe('gendok.http.api.templates', function () {
           request.post(url)
                  .send(templ.toJSON())
                  .set('Content-Type', 'application/json')
-                 .set('Authorization', 'Token ' + user.apiToken)
+                 .set('Authorization', 'Bearer ' + user.apiToken)
                  .end(function (err, res) {
                    expect(err).to.not.exist;
                    expect(res.statusCode).to.eql(201);
@@ -129,7 +129,7 @@ describe('gendok.http.api.templates', function () {
           request.put(url + '/' + tmpl.id)
                 .send(attrs)
                 .set('Content-Type', 'application/json')
-                .set('Authorization', 'Token ' + user.apiToken)
+                .set('Authorization', 'Bearer ' + user.apiToken)
                 .end(function (err, res) {
                   expect(err).to.not.exist;
                   expect(res.statusCode).to.eql(200);
@@ -151,7 +151,7 @@ describe('gendok.http.api.templates', function () {
           request.put(url + '/' + (tmpl.id))
                 .send(attrs)
                 .set('Content-Type', 'application/json')
-                .set('Authorization', 'Token ' + user.apiToken)
+                .set('Authorization', 'Bearer ' + user.apiToken)
                 .end(function (err, res) {
                   expect(err).to.exist;
                   expect(res.statusCode).to.eql(errors.validation.code);
@@ -172,7 +172,7 @@ describe('gendok.http.api.templates', function () {
           request.put(url + '/' + (tmpl.id + 1000))
                 .send({})
                 .set('Content-Type', 'application/json')
-                .set('Authorization', 'Token ' + user.apiToken)
+                .set('Authorization', 'Bearer ' + user.apiToken)
                 .end(function (err, res) {
                   expect(err).to.exist;
                   expect(res.statusCode).to.eql(404);
@@ -191,7 +191,7 @@ describe('gendok.http.api.templates', function () {
       factory.createMany('User', 2, function (err, users) {
         factory.create('Template', {userId: users[0].id}, function (err, tmpl) {
           request.put(url + '/' + tmpl.id)
-                 .set('Authorization', 'Token ' + users[1].apiToken)
+                 .set('Authorization', 'Bearer ' + users[1].apiToken)
                  .end(function (err, res) {
                    expect(err).to.exist;
                    expect(res.statusCode).to.eql(404);
@@ -226,7 +226,7 @@ describe('gendok.http.api.templates', function () {
         factory.create('Template', {userId: user.id}, function (err, templ) {
           request.delete(url + '/' + templ.id)
                  .set('Content-Type', 'application/json')
-                 .set('Authorization', 'Token ' + user.apiToken)
+                 .set('Authorization', 'Bearer ' + user.apiToken)
                  .end(function (err, res) {
                    expect(err).to.not.exist;
                    expect(res.statusCode).to.eql(200);
@@ -243,7 +243,7 @@ describe('gendok.http.api.templates', function () {
       factory.create('User', function (err, user) {
         factory.create('Template', {userId: user.id}, function (err, templ) {
           request.delete(url + '/123456789')
-                 .set('Authorization', 'Token ' + user.apiToken)
+                 .set('Authorization', 'Bearer ' + user.apiToken)
                  .end(function (err, res) {
                    expect(err).to.exist;
                    expect(res.statusCode).to.eql(errors.notFound.code);
@@ -258,7 +258,7 @@ describe('gendok.http.api.templates', function () {
       factory.createMany('User', 2, function (err, users) {
         factory.create('Template', {userId: users[0].id}, function (err, tmpl) {
           request.delete(url + '/' + tmpl.id)
-                 .set('Authorization', 'Token ' + users[1].apiToken)
+                 .set('Authorization', 'Bearer ' + users[1].apiToken)
                  .end(function (err, res) {
                    expect(err).to.exist;
                    expect(res.statusCode).to.eql(404);
@@ -274,7 +274,7 @@ describe('gendok.http.api.templates', function () {
       factory.create('User', function (err, user) {
         factory.create('Template', {userId: user.id}, function (err, templ) {
           request.delete(url + '/' + 'blub')
-                 .set('Authorization', 'Token ' + user.apiToken)
+                 .set('Authorization', 'Bearer ' + user.apiToken)
                  .end(function (err, res) {
                    expect(err).to.exist;
                    expect(res.statusCode).to.eql(errors.badRequest.code);
@@ -327,7 +327,7 @@ describe('gendok.http.api.templates', function () {
                    .send(data)
                    .buffer()
                    .set('Content-Type', 'application/json')
-                   .set('Authorization', 'Token ' + user.apiToken)
+                   .set('Authorization', 'Bearer ' + user.apiToken)
                    .end(function (err, res) {
                      expect(err).to.not.exist;
                      expect(res.statusCode).to.eql(200);
@@ -354,7 +354,7 @@ describe('gendok.http.api.templates', function () {
             request.post(renderUrl.replace(':id', template.id))
                    .send(data)
                    .set('Content-Type', 'application/json')
-                   .set('Authorization', 'Token ' + user.apiToken)
+                   .set('Authorization', 'Bearer ' + user.apiToken)
                    .end(function (err, res) {
                      expect(err).to.not.exist;
                      expect(res.statusCode).to.eql(201);
@@ -382,7 +382,7 @@ describe('gendok.http.api.templates', function () {
             request.post(renderUrl.replace(':id', template.id))
                    .send(data)
                    .set('Content-Type', 'application/json')
-                   .set('Authorization', 'Token ' + user.apiToken)
+                   .set('Authorization', 'Bearer ' + user.apiToken)
                    .end(function (err, res) {
                      expect(err).to.not.exist;
                      expect(res.statusCode).to.eql(201);
@@ -412,7 +412,7 @@ describe('gendok.http.api.templates', function () {
             request.post(renderUrl.replace(':id', template.id))
                    .send(payload)
                    .set('Content-Type', 'application/json')
-                   .set('Authorization', 'Token ' + user.apiToken)
+                   .set('Authorization', 'Bearer ' + user.apiToken)
                    .end();
           });
         });
@@ -427,7 +427,7 @@ describe('gendok.http.api.templates', function () {
           request.post(renderUrl.replace(':id', 'blub'))
                  .send(payload)
                  .set('Content-Type', 'application/json')
-                 .set('Authorization', 'Token ' + user.apiToken)
+                 .set('Authorization', 'Bearer ' + user.apiToken)
                  .end(function (err, res) {
                    expect(err).to.exist;
                    expect(res.statusCode).to.eql(errors.badRequest.code);
@@ -446,7 +446,7 @@ describe('gendok.http.api.templates', function () {
           request.post(renderUrl.replace(':id', '1234567890'))
                  .send(payload)
                  .set('Content-Type', 'application/json')
-                 .set('Authorization', 'Token ' + user.apiToken)
+                 .set('Authorization', 'Bearer ' + user.apiToken)
                  .end(function (err, res) {
                    expect(err).to.exist;
                    expect(res.statusCode).to.eql(errors.notFound.code);
@@ -461,7 +461,7 @@ describe('gendok.http.api.templates', function () {
       factory.createMany('User', 2, function (err, users) {
         factory.create('Template', {userId: users[0].id}, function (err, tmpl) {
           request.post(renderUrl.replace(':id', tmpl.id))
-                 .set('Authorization', 'Token ' + users[1].apiToken)
+                 .set('Authorization', 'Bearer ' + users[1].apiToken)
                  .end(function (err, res) {
                    expect(err).to.exist;
                    expect(res.statusCode).to.eql(404);
@@ -497,7 +497,7 @@ describe('gendok.http.api.templates', function () {
           });
 
           request.get(url)
-                 .set('Authorization', 'Token ' + user.apiToken)
+                 .set('Authorization', 'Bearer ' + user.apiToken)
                  .end(function (err, res) {
                    expect(err).to.not.exist;
                    expect(res.body).to.deep.equal(createdTemplates);
@@ -510,7 +510,7 @@ describe('gendok.http.api.templates', function () {
     it('returns an empty array if there aren\'t any templates for the given user', function (done) {
       factory.create('User', function (err, user) {
         request.get(url)
-               .set('Authorization', 'Token ' + user.apiToken)
+               .set('Authorization', 'Bearer ' + user.apiToken)
                .end(function (err, res) {
                  expect(err).to.not.exist;
                  expect(res.body).to.eql([]);
@@ -538,7 +538,7 @@ describe('gendok.http.api.templates', function () {
       factory.create('User', function (err, user) {
         factory.create('Template', {userId: user.id}, function (err, tmpl) {
           request.get(url + '/' + tmpl.id)
-                 .set('Authorization', 'Token ' + user.apiToken)
+                 .set('Authorization', 'Bearer ' + user.apiToken)
                  .end(function (err, res) {
                    expect(err).to.not.exist;
                    expect(res.body).to.deep.equal(tmpl.toPublicObject());
@@ -551,7 +551,7 @@ describe('gendok.http.api.templates', function () {
     it('returns a 404 if the specified template doesnt exist', function (done) {
       factory.create('User', function (err, user) {
         request.get(url + '/123456')
-               .set('Authorization', 'Token ' + user.apiToken)
+               .set('Authorization', 'Bearer ' + user.apiToken)
                .end(function (err, res) {
                  expect(err).to.exist;
                  expect(res.statusCode).to.eql(errors.notFound.code);
@@ -565,7 +565,7 @@ describe('gendok.http.api.templates', function () {
       factory.createMany('User', 2, function (err, users) {
         factory.create('Template', {userId: users[0].id}, function (err, tmpl) {
           request.get(url + '/' + tmpl.id)
-                 .set('Authorization', 'Token ' + users[1].apiToken)
+                 .set('Authorization', 'Bearer ' + users[1].apiToken)
                  .end(function (err, res) {
                    expect(err).to.exist;
                    expect(res.statusCode).to.eql(404);

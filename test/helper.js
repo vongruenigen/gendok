@@ -10,7 +10,8 @@
 'use strict';
 
 var logger = require('..').logger;
-var HttpServer = require('..').http.server;
+var gendok = require('..');
+var HttpServer = gendok.http.server;
 var config = require('..').config;
 var util = require('..').util;
 var db = require('..').data.db;
@@ -20,6 +21,7 @@ var factories = require('./data/factories');
 var factoryGirl = require('factory-girl');
 var pdfjs = require('pdfjs-dist');
 var format = require('util').format;
+var fs = require('fs');
 
 /**
  * Exports some utility functions
@@ -40,7 +42,9 @@ module.exports = {
    */
   getUrl: function (p) {
     var host = format('%s:%d', config.get('http_host'), config.get('http_port'));
-    return path.join(host, p);
+    var url  = path.join(host, p);
+
+    return format('http://%s', url);
   },
 
   /**
@@ -76,6 +80,26 @@ module.exports = {
   },
 
   /**
+   * Saves a screenshot of the current browser state to 'screenshot.png'.
+   *
+   * @param {Browser} browser The current browser object
+   * @param {Function} fn The callback to invoke after save
+   */
+  saveScreenshot: function (browser, fn) {
+    var writeScreenShot = function (data, filename) {
+      var stream = fs.createWriteStream(filename);
+      stream.write(new Buffer(data, 'base64'));
+      stream.end();
+      stream.on('finish', fn);
+    };
+
+    browser.takeScreenshot().then(function (png) {
+      writeScreenShot(png, 'screenshot.png');
+      fn();
+    });
+  },
+
+  /**
    * Helper function for parsing a PDF in a buffer given as the first parameter.
    * It then calls the supplied callback with an error (if any occured) and the
    * resulting object containing all the PDF content.
@@ -86,6 +110,22 @@ module.exports = {
   parsePdf: function (buf, fn) {
     var data = {text: []};
     var proms = [];
+
+    // Convert the node.js buffer to a ArrayBuffer for usage with pdf.js. This
+    // needs to be done in order to ensure that pdfjs can parse the PDF corr-
+    // ectly, otherwise we get nasty XRef header errors. This problem is based
+    // on the fact that pdf.js is a library developed for the browser and not
+    // server-side nodejs.
+    if (Object.prototype.toString.call(buf) !== '[object ArrayBuffer]') {
+      var ab = new ArrayBuffer(buf.length);
+      var view = new Uint8Array(ab);
+
+      for (var i = 0; i < buf.length; ++i) {
+        view[i] = buf[i];
+      }
+
+      buf = ab;
+    }
 
     var createProm = function (pdf, i) {
       proms.push(pdf.getPage(i).then(function (page) {
@@ -99,21 +139,25 @@ module.exports = {
       }));
     };
 
-    pdfjs.getDocument(buf).then(function (pdf) {
-      for (var i = 1; i <= pdf.pdfInfo.numPages; i++) {
-        createProm(pdf, i);
-      }
+    try {
+      pdfjs.getDocument(buf).then(function (pdf) {
+        for (var i = 1; i <= pdf.pdfInfo.numPages; i++) {
+          createProm(pdf, i);
+        }
 
-      Promise.all(proms).then(function () {
-        fn(null, data);
-      }).catch(function (err) {
-        fn(err, null);
+        Promise.all(proms).then(function () {
+          fn(null, data);
+        }).catch(function (err) {
+          fn(err, null);
+        });
       });
-    });
+    } catch (e) { fn(e); }
   },
 
   /**
-   * Starts a http server with the given modules.
+   * Starts a http server with the given modules. If no modules are given the
+   * server will simply register the "all" module for the web, api and middle-
+   * ware.
    *
    * Starting and stopping of the server is done within the beforeEach() and
    * afterEach() blocks of the supplied context. So the context always has to
@@ -140,14 +184,22 @@ module.exports = {
       throw new Error('context argument must be present');
     }
 
+    if (!modules) {
+      modules = [
+        gendok.http.middleware.all,
+        gendok.http.api.all,
+        gendok.http.web.all
+      ];
+    }
+
     var server = new HttpServer();
     server.registerModules(modules);
 
-    context.beforeAll(function (done) {
+    context.beforeEach(function (done) {
       server.start(done);
     });
 
-    context.afterAll(function (done) {
+    context.afterEach(function (done) {
       server.stop(done);
     });
 
@@ -209,12 +261,12 @@ module.exports = {
           factories[k](db.getModel(k));
         });
 
+        // Load the correct factory-girl adapter at the end
+        require('factory-girl-sequelize')();
+
         factoriesLoaded = true;
       }
     });
-
-    // Load the correct factory-girl adapter at the end
-    require('factory-girl-sequelize')();
 
     return factoryGirl;
   },
