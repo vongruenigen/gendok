@@ -54,9 +54,29 @@ describe('gendok.data.model.user', function () {
     });
   });
 
+  describe('isPassword()', function () {
+    describe('with a wrong password', function () {
+      it('returns false', function (done) {
+        factory.create('User', function (err, user) {
+          expect(user.isPassword('wrongpassword!')).to.be.false;
+          done();
+        });
+      });
+    });
+
+    describe('with correct password', function () {
+      it('returns true', function (done) {
+        factory.create('User', function (err, user) {
+          expect(user.isPassword(user.password)).to.be.true;
+          done();
+        });
+      });
+    });
+  });
+
   describe('validation', function () {
     describe('.password', function () {
-      it('error if length > 7', function (done) {
+      it('error if length < 7', function (done) {
         factory.create('User', function (err, usr) {
           expect(err).to.not.exist;
           usr.password = 'asdf';
@@ -69,9 +89,7 @@ describe('gendok.data.model.user', function () {
         });
       });
     });
-  });
 
-  describe('validation', function () {
     describe('.email', function () {
       it('email address must have a valid format', function (done) {
         factory.create('User', function (err, usr) {

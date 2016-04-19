@@ -46,7 +46,7 @@ describe('gendok.http.api.users', function () {
           request.post(url)
                  .send(user.toJSON())
                  .set('Content-Type', 'application/json')
-                 .set('Authorization', 'Token ' + creator.apiToken)
+                 .set('Authorization', 'Bearer ' + creator.apiToken)
                  .end(function (err, res) {
                    expect(err).to.not.exist;
                    expect(res.statusCode).to.eql(201);
@@ -68,7 +68,7 @@ describe('gendok.http.api.users', function () {
           request.post(url)
                  .send(user.toJSON())
                  .set('Content-Type', 'application/json')
-                 .set('Authorization', 'Token ' + creator.apiToken)
+                 .set('Authorization', 'Bearer ' + creator.apiToken)
                  .end(function (err, res) {
                    expect(err).to.exist;
                    expect(res.statusCode).to.eql(errors.validation.code);
@@ -89,7 +89,7 @@ describe('gendok.http.api.users', function () {
           request.post(url)
                  .send(user.toJSON())
                  .set('Content-Type', 'application/json')
-                 .set('Authorization', 'Token ' + creator.apiToken)
+                 .set('Authorization', 'Bearer ' + creator.apiToken)
                  .end(function (err, res) {
                    expect(err).to.not.exist;
                    expect(res.statusCode).to.eql(201);
@@ -119,7 +119,7 @@ describe('gendok.http.api.users', function () {
     it('returns an unauthorized error if the specified user is not an admin', function (done) {
       factory.create('User', function (err, user) {
         request.get(url + '/123456')
-               .set('Authorization', 'Token ' + user.apiToken)
+               .set('Authorization', 'Bearer ' + user.apiToken)
                .end(function (err, res) {
                  expect(err).to.exist;
                  expect(res.statusCode).to.eql(errors.unauthorized.code);
@@ -135,7 +135,7 @@ describe('gendok.http.api.users', function () {
       factory.create('User', {isAdmin: true}, function (err, creator) {
         factory.create('User', function (err, user) {
           request.get(url + '/' + user.id)
-                 .set('Authorization', 'Token ' + creator.apiToken)
+                 .set('Authorization', 'Bearer ' + creator.apiToken)
                  .end(function (err, res) {
                    expect(err).to.not.exist;
                    expect(res.statusCode).to.eql(200);
@@ -149,7 +149,7 @@ describe('gendok.http.api.users', function () {
     it('returns a 404 if the specified user does not exist', function (done) {
       factory.create('User', {isAdmin: true}, function (err, user) {
         request.get(url + '/123456')
-               .set('Authorization', 'Token ' + user.apiToken)
+               .set('Authorization', 'Bearer ' + user.apiToken)
                .end(function (err, res) {
                  expect(err).to.exist;
                  expect(res.statusCode).to.eql(errors.notFound.code);
@@ -173,7 +173,7 @@ describe('gendok.http.api.users', function () {
     it('returns an unauthorized error if the specified user is not an admin', function (done) {
       factory.create('User', function (err, user) {
         request.get(url + '/123456')
-               .set('Authorization', 'Token ' + user.apiToken)
+               .set('Authorization', 'Bearer ' + user.apiToken)
                .end(function (err, res) {
                  expect(err).to.exist;
                  expect(res.statusCode).to.eql(errors.unauthorized.code);
@@ -191,7 +191,7 @@ describe('gendok.http.api.users', function () {
         request.put(url + '/' + user.id)
               .send(attrs)
               .set('Content-Type', 'application/json')
-              .set('Authorization', 'Token ' + user.apiToken)
+              .set('Authorization', 'Bearer ' + user.apiToken)
               .end(function (err, res) {
                 expect(err).to.not.exist;
                 expect(res.statusCode).to.eql(200);
@@ -210,7 +210,7 @@ describe('gendok.http.api.users', function () {
         request.put(url + '/' + (user.id))
               .send(attrs)
               .set('Content-Type', 'application/json')
-              .set('Authorization', 'Token ' + user.apiToken)
+              .set('Authorization', 'Bearer ' + user.apiToken)
               .end(function (err, res) {
                 expect(err).to.exist;
                 expect(res.statusCode).to.eql(errors.validation.code);
@@ -229,7 +229,7 @@ describe('gendok.http.api.users', function () {
         request.put(url + '/' + (user.id + 1000))
               .send({})
               .set('Content-Type', 'application/json')
-              .set('Authorization', 'Token ' + user.apiToken)
+              .set('Authorization', 'Bearer ' + user.apiToken)
               .end(function (err, res) {
                 expect(err).to.exist;
                 expect(res.statusCode).to.eql(404);
@@ -264,7 +264,7 @@ describe('gendok.http.api.users', function () {
         factory.create('User', function (err, user) {
           request.delete(url + '/' + user.id)
                  .set('Content-Type', 'application/json')
-                 .set('Authorization', 'Token ' + admin.apiToken)
+                 .set('Authorization', 'Bearer ' + admin.apiToken)
                  .end(function (err, res) {
                    expect(err).to.not.exist;
                    expect(res.statusCode).to.eql(200);
@@ -281,7 +281,7 @@ describe('gendok.http.api.users', function () {
     it('returns a 404 if no user with the given id exists', function (done) {
       factory.create('User', {isAdmin: true}, function (err, user) {
         request.delete(url + '/123456789')
-               .set('Authorization', 'Token ' + user.apiToken)
+               .set('Authorization', 'Bearer ' + user.apiToken)
                .end(function (err, res) {
                  expect(err).to.exist;
                  expect(res.statusCode).to.eql(errors.notFound.code);
@@ -294,7 +294,7 @@ describe('gendok.http.api.users', function () {
     it('returns a 400 if invalid id is given', function (done) {
       factory.create('User', {isAdmin: true}, function (err, user) {
         request.delete(url + '/' + 'blub')
-               .set('Authorization', 'Token ' + user.apiToken)
+               .set('Authorization', 'Bearer ' + user.apiToken)
                .end(function (err, res) {
                  expect(err).to.exist;
                  expect(res.statusCode).to.eql(errors.badRequest.code);
@@ -321,7 +321,7 @@ describe('gendok.http.api.users', function () {
       it('returns a 403 forbidden', function (done) {
         factory.create('User', {isAdmin: true}, function (err, user) {
           request.delete(url + '/' + user.id)
-                 .set('Authorization', 'Token ' + user.apiToken)
+                 .set('Authorization', 'Bearer ' + user.apiToken)
                  .end(function (err, res) {
                    expect(err).to.exist;
 
@@ -340,7 +340,7 @@ describe('gendok.http.api.users', function () {
           factory.create('Template', {userId: user.id}, function (err, templ) {
             factory.create('Job', {templateId: templ.id}, function (err, job) {
               request.delete(url + '/' + user.id)
-                     .set('Authorization', 'Token ' + admin.apiToken)
+                     .set('Authorization', 'Bearer ' + admin.apiToken)
                      .end(function (err, res) {
                        expect(res.statusCode).to.eql(200);
 
