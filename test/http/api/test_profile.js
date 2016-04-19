@@ -39,7 +39,7 @@ describe('gendok.http.api.profile', function () {
     it('the profile (user) as a JSON object', function (done) {
       factory.create('User', function (err, user) {
         request.get(url)
-               .set('Authorization', 'Token ' + user.apiToken)
+               .set('Authorization', 'Bearer ' + user.apiToken)
                .end(function (err, res) {
                  expect(err).to.not.exist;
                  expect(res.statusCode).to.eql(200);
@@ -69,7 +69,7 @@ describe('gendok.http.api.profile', function () {
         request.put(url)
                .send(attrs)
                .set('Content-Type', 'application/json')
-               .set('Authorization', 'Token ' + user.apiToken)
+               .set('Authorization', 'Bearer ' + user.apiToken)
                .end(function (err, res) {
                  expect(err).to.not.exist;
                  expect(res.statusCode).to.eql(200);
@@ -89,7 +89,7 @@ describe('gendok.http.api.profile', function () {
         request.put(url)
                .send(attrs)
                .set('Content-Type', 'application/json')
-               .set('Authorization', 'Token ' + user.apiToken)
+               .set('Authorization', 'Bearer ' + user.apiToken)
                .end(function (err, res) {
                  expect(err).to.exist;
                  expect(res.statusCode).to.eql(errors.validation.code);
