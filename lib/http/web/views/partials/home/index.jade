@@ -1,0 +1,12 @@
+div(ng-controller='homeController')
+  .jumbotron
+    h1.title gendok
+    h4 Document generation as a service
+    p
+      a.btn.btn-primary.btn-lg(
+        href='#/signin', 
+        role='button'
+        ng-if='!authService.isAuthenticated()'
+      ) Signin &raquo;
+      p(ng-if='authService.isAuthenticated()')
+        | Welcome {{authService.getUser().username}}!
