@@ -123,17 +123,19 @@ module.exports = {
       }));
     };
 
-    pdfjs.getDocument(buf).then(function (pdf) {
-      for (var i = 1; i <= pdf.pdfInfo.numPages; i++) {
-        createProm(pdf, i);
-      }
+    try {
+      pdfjs.getDocument(buf).then(function (pdf) {
+        for (var i = 1; i <= pdf.pdfInfo.numPages; i++) {
+          createProm(pdf, i);
+        }
 
-      Promise.all(proms).then(function () {
-        fn(null, data);
-      }).catch(function (err) {
-        fn(err, null);
+        Promise.all(proms).then(function () {
+          fn(null, data);
+        }).catch(function (err) {
+          fn(err, null);
+        });
       });
-    });
+    } catch (e) { fn(e); }
   },
 
   /**
