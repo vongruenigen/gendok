@@ -38,7 +38,16 @@ var argv = require('minimist')(process.argv.slice(2));
  * Config variables
  */
 var mochaOpts = {reporter: 'spec'};
-var mochaJenkinsOpts = {reporter: 'mocha-jenkins-reporter'};
+
+var mochaJenkinsOpts = {
+  reporter: 'mocha-jenkins-reporter',
+  reporterOptions: {
+    junit_report_name: 'tests',
+    junit_report_path: 'reports/junit.xml',
+    junit_report_stack: 1
+  }
+};
+
 var istanbulOpts = {dir: './reports',
                     reporters: ['text-summary', 'html', 'clover']};
 var istanbulThresholdOpts = {thresholds: {global: 90}};

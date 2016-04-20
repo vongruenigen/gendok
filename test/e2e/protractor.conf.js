@@ -58,7 +58,12 @@ exports.config = {
   // Use mocha instead of jasmine for testing
   framework: 'mocha',
   mochaOpts: {
-    reporter: 'spec',
-    timeout: 5000
+    timeout: 5000,
+    reporter: 'mocha-jenkins-reporter',
+    reporterOptions: {
+      junit_report_name: 'tests',
+      junit_report_path: 'reports/junit.xml',
+      junit_report_stack: 1
+    }
   }
 };
