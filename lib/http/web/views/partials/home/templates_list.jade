@@ -2,13 +2,15 @@ div
   h2.alert.alert-danger(ng-if='error_message') {{error_message}}
   h2.alert.alert-success(ng-if='success_message') {{success_message}}
   h2 Templates
-  table
+  button(class="btn btn-default" ui-sref="template_create()") Create Template
+  table.table
     tr
       td ID
       td Name
+      td 
     tr(ng-repeat='template in templates')
       td
-        a(ui-sref="template({templateId: template.id})") {{template.id}}
+        a(ui-sref="template_view_update({templateId: template.id})") {{template.id}}
       td {{template.name}}
       td 
-        a(href="" ng-click="delete(template.id)") x
+        button(class="btn btn-default"  ng-click="delete(template.id)") Delete

@@ -1,15 +1,7 @@
 // variables
-$color: green;
+$color: rgb(68, 68, 68);
 $bold: true;
 
-p {
-  font-family: arial, sans-serif;
-  font-size: 1.2em;
-  color: $color;
-
-  @if $bold {
-    font-weight: 400;
-  } @else {
-    font-weight: 200;
-  }
+img.navbar-img {
+  width: 100px;
 }
