@@ -59,11 +59,6 @@ exports.config = {
   framework: 'mocha',
   mochaOpts: {
     timeout: 5000,
-    reporter: 'mocha-jenkins-reporter',
-    reporterOptions: {
-      junit_report_name: 'tests',
-      junit_report_path: 'reports/junit.xml',
-      junit_report_stack: 1
-    }
+    reporter: 'mocha-jenkins-reporter'
   }
 };
