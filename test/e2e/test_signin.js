@@ -12,26 +12,11 @@
 var expect = require('chai').expect;
 var gendok = require('../../');
 var helper = require('../helper');
-
-var httpSignin = function (user, fn) {
-  var signinUrl = helper.getUrl('/#/signin');
-  browser.get(signinUrl);
-
-  var signinButton   = $('.btn-signin');
-  var errorParagraph = $('.alert');
-  var usernameField  = $('#username');
-  var passwordField  = $('#password');
-
-  usernameField.sendKeys(user.email);
-  passwordField.sendKeys(user.password);
-  signinButton.click();
-
-  fn();
-};
+var stateHelper = require('./helpers/state_helper');
+var authHelper = require('./helpers/auth_helper');
 
 describe('user signin / signout', function () {
   var factory = helper.loadFactories(this);
-  var url = helper.getUrl('/#/signin');
   helper.runHttpServer(this);
 
   describe('#/signin', function () {
@@ -39,14 +24,29 @@ describe('user signin / signout', function () {
     var errorParagraph = $('.alert');
     var usernameField  = $('#username');
     var passwordField  = $('#password');
+    var signoutLink    = $('[ng-click="signoutUser()"]');
+    var dropdownToggle = $('li a.dropdown-toggle');
+    var signupLink     = $('a.signup-link');
 
-    beforeEach(function () {
-      browser.get(url);
+    var user = null; // set in beforeEach
+
+    beforeEach(function (done) {
+      authHelper.signout(function () {
+        factory.create('User', function (err, u) {
+          user = u;
+          done(err);
+        });
+      });
     });
 
     describe('form', function () {
       describe('when no username or password is given', function () {
         it('shows an error message', function () {
+          stateHelper.go('signin');
+
+          usernameField.clear();
+          passwordField.clear();
+
           signinButton.click();
 
           var text = errorParagraph.getInnerHtml();
@@ -56,77 +56,81 @@ describe('user signin / signout', function () {
 
       describe('when an invalid username or password is given', function () {
         it('shows an error message', function () {
+          stateHelper.go('signin');
           var username = 'invalid@gendok.com';
           var password = 'gugusabc123';
 
+          usernameField.clear();
           usernameField.sendKeys(username);
+
+          passwordField.clear();
           passwordField.sendKeys(password);
+
           signinButton.click();
 
-          errorParagraph.getInnerHtml().then(function (t) {
-            expect(t).to.eql('invalid username and/or password');
-          });
+          expect(errorParagraph.getInnerHtml()).to.eventually.eql(
+            'invalid username and/or password'
+          );
         });
       });
 
       describe('when a valid username is given', function () {
-        it('replaces the signup link with dropdown items');
+        it('replaces the signup link with dropdown items', function () {
+          expect(signupLink.isPresent()).to.eventually.be.true;
+
+          stateHelper.go('signin');
+
+          usernameField.clear();
+          usernameField.sendKeys(user.email);
+
+          passwordField.clear();
+          passwordField.sendKeys(user.password);
+
+          signinButton.click();
+
+          expect(signupLink.isPresent()).to.eventually.be.false;
+          expect(dropdownToggle.isPresent()).to.eventually.be.true;
+          expect(dropdownToggle.isDisplayed()).to.eventually.be.true;
+        });
       });
 
-      describe('when the user is already logged in', function () {
-        it('redirects to home', function (done) {
-          factory.create('User', function (err, user) {
-            expect(err).to.not.exist;
+      describe('when the user is already signed in', function () {
+        it('redirects to home', function () {
+          stateHelper.go('signin');
 
-            usernameField.sendKeys(user.email);
-            passwordField.sendKeys(user.password);
-            signinButton.click();
+          usernameField.clear();
+          usernameField.sendKeys(user.email);
 
-            // Get the current state name of the ui-router
-            var currentStateName = browser.executeAsyncScript(function (fn) {
-              var el = document.querySelector('html');
-              var injector = angular.element(el).injector();
-              var service = injector.get('$state');
-              fn(service.current.name);
-            });
+          passwordField.clear();
+          passwordField.sendKeys(user.password);
 
-            currentStateName.then(function (t) {
-              expect(t).to.eql('home');
-              done();
-            });
-          });
+          signinButton.click();
+
+          expect(stateHelper.current()).to.eventually.eql('home');
+          browser.get('#/signin');
+          expect(stateHelper.current()).to.eventually.eql('home');
         });
       });
     });
 
     describe('signout link', function () {
-      describe('when the user is not logged in', function () {
-        it('is not visible');
-      });
-
       describe('when the user is logged in', function () {
-        it('logs it out after clicking it', function (done) {
-          factory.create('User', function (err, user) {
-            httpSignin(user, done);
+        it('logs it out after clicking it', function () {
+          stateHelper.go('signin');
 
-            element(by.css('a.signout-link')).click();
+          usernameField.clear();
+          usernameField.sendKeys(user.email);
 
-            // Get the current state name of the ui-router
-            var currentStateName = browser.executeAsyncScript(function (fn) {
-              var el = document.querySelector('html');
-              var injector = angular.element(el).injector();
-              var service = injector.get('$state');
-              fn(service.current.name);
-            });
+          passwordField.clear();
+          passwordField.sendKeys(user.password);
 
-            currentStateName.then(function (t) {
-              var signupLink = element(by.css('a.signup-lin'));
+          signinButton.click();
 
-              expect(t).to.eql('home');
-              expect(signupLink.isPresent()).to.be.eventually.true;
-              done();
-            });
-          });
+          dropdownToggle.click();
+          signoutLink.click();
+
+          expect(authHelper.isAuthenticated()).to.eventually.be.false;
+          expect(browser.getCurrentUrl()).to.eventually.include('#/home');
         });
       });
     });

@@ -99,6 +99,47 @@ describe('gendok.util', function () {
     });
   });
 
+  describe('createMailer()', function () {
+    var mailer = null;
+
+    it('is a function', function (done) {
+      expect(util.extend).to.be.a('function');
+      done();
+    });
+
+    it('creates a new mailer transport with the given options', function (done) {
+      var smtpConfig = {
+        host: 'localhost',
+        port: 465,
+        secure: true,   // use SSL
+        auth: {
+          user: 'gendok',
+          pass: 'gendok'
+        }
+      };
+
+      mailer = util.createMailer(smtpConfig);
+      expect(mailer).to.exist;
+      done();
+    });
+
+    it('remembers the first created transport', function (done) {
+      var smtpConfig = {
+        host: 'localhost',
+        port: 465,
+        secure: true,   // use SSL
+        auth: {
+          user: 'gendok',
+          pass: 'gendok'
+        }
+      };
+
+      mailer = util.createMailer(smtpConfig);
+      expect(mailer).to.eql(util._mailerObject);
+      done();
+    });
+  });
+
   describe('isArray()', function () {
     it('returns true if the object is an array', function () {
       var blub = ['ab', 2, 3, {}];
