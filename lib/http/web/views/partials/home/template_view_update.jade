@@ -3,6 +3,8 @@ div
   h2.alert.alert-success(ng-if='success_message') {{success_message}}
   h2 Template: {{template.name}}
   button(class="btn btn-default" ng-click="edit()" ng-if='!editable') edit
+  button(class="btn btn-default" ng-click="render(template)") render
+  {{dudu}}
   ul.list-group(ng-if='!editable')
     li.list-group-item Type: {{template.type}}
     li.list-group-item Body: {{template.body}}
