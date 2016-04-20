@@ -1,0 +1,19 @@
+div
+  h2.alert.alert-danger(ng-if='error_message') {{error_message}}
+  h2.alert.alert-success(ng-if='success_message') {{success_message}}
+  h2 Template: {{template.name}}
+  button(class="btn btn-default" ng-click="edit()" ng-if='!editable') edit
+  ul(ng-if='!editable')
+    li Type: {{template.type}}
+    li Body: {{template.body}}
+  form(ng-if='editable')
+    p Name: 
+      input(type="text" ng-model="template.name" )
+    p Type:
+      select(ng-model="template.type" )
+        option mustache
+        option html
+    p Body:
+      input(type="text" ng-model="template.body")
+    input(type="submit" class="btn btn-default" ng-click="update(template)" value="Save")
+    input(type="submit" class="btn btn-default" ng-click="reset()" value="cancel")
