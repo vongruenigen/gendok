@@ -119,6 +119,29 @@ describe('gendok.http.api.templates', function () {
                done();
              });
     });
+
+    it('returns an error if the paper format attributes are empty', function (done) {
+      factory.create('User', function (err, user) {
+        var values = {
+          paperFormat: '',
+          paperMargin: '',
+          headerHeight: '',
+          footerHeight: ''
+        };
+
+        factory.build('Template', values, function (err, templ) {
+          request.post(url)
+                 .send(templ.toJSON())
+                 .set('Content-Type', 'application/json')
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.exist;
+                   expect(res.statusCode).to.eql(errors.validation.code);
+                   done();
+                 });
+        });
+      });
+    });
   });
 
   describe('PUT /api/templates/:id', function () {
