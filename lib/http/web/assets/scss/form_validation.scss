@@ -1,0 +1,17 @@
+form > div.error {
+  input {
+    border: 1px solid red;
+  }
+
+  select {
+    border: 1px solid red;
+  }
+
+  textarea {
+    border: 1px solid red;
+  }
+
+  span.validation_error_message {
+    color: red;
+  }
+}

@@ -2,20 +2,28 @@ div
   h2.alert.alert-danger(ng-if='error_message') {{error_message}}
   h2.alert.alert-success(ng-if='success_message') {{success_message}}
   h2 Template: {{template.name}}
-  button(class="btn btn-default" ng-click="edit()" ng-if='!editable') edit
-  button(class="btn btn-default" ng-click="render(template)") render
-  {{dudu}}
+  button(class="btn btn-info" ng-click="edit()" ng-if='!editable') edit
+  button(class="btn btn-default" ng-click="render(template)" ng-if='!editable') preview
   ul.list-group(ng-if='!editable')
     li.list-group-item Type: {{template.type}}
-    li.list-group-item Body: {{template.body}}
+    li.list-group-item Body: 
+      pre {{template.body}}
+        
   form(ng-if='editable')
-    p Name: 
+    div.form-group(ng-class="{'error': validation_errors.name}")
+      label.form-control-label Name:
       input.form-control(type="text" ng-model="template.name" )
-    p Type:
+      span.validation_error_message(ng-if='validation_errors.name') {{validation_errors.name[0]}}
+    div.form-group(ng-class="{'error': validation_errors.type}")
+      label.form-control-label Type:
       select.form-control(ng-model="template.type" )
         option mustache
         option html
-    p Body:
+      span.validation_error_message(ng-if='validation_errors.type') {{validation_errors.type[0]}}
+    div.form-group(ng-class="{'error': validation_errors.body}")
+      label.form-control-label Body:
       textarea.form-control(type="text" rows="10" ng-model="template.body")
-    input(type="submit" class="btn btn-default" ng-click="update(template)" value="Save")
-    input(type="submit" class="btn btn-default" ng-click="reset()" value="cancel")
+      span.validation_error_message(ng-if='validation_errors.body') {{validation_errors.body[0]}}
+    div.form-group
+      input(type="submit" class="btn btn-success" ng-click="update(template)" value="Save")
+      input(type="submit" class="btn btn-danger" ng-click="reset()" value="cancel")
