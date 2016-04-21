@@ -203,7 +203,7 @@ gulp.task('test-jenkins', ['pre-test', 'pre-cov'], function () {
 /**
  * end-2-end testing related tasks
  */
-gulp.task('test-e2e', ['test-env', 'build', 'selenium-update'], function () {
+gulp.task('test-e2e', ['pre-test', 'build', 'selenium-update'], function () {
   gulp.src('test/e2e/**/test_*.js')
       .pipe(protractor({configFile: 'test/e2e/protractor.conf.js'}));
 });
