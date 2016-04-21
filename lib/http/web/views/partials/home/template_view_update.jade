@@ -2,12 +2,41 @@ div
   h2.alert.alert-danger(ng-if='errorMessage') {{error_message}}
   h2.alert.alert-success(ng-if='successMessage') {{success_message}}
   h2 Template: {{template.name}}
-  button(class="btn btn-info" ng-click="edit()" ng-if='!editable') edit
-  button(class="btn btn-default" ng-click="render(template)" ng-if='!editable') preview
-  ul.list-group(ng-if='!editable')
+  button(class="btn btn-info" ng-click="edit()" ng-if='!editable && !renderingOptions') edit
+  button(class="btn btn-default" ng-click="openRenderingOptions()" ng-if='!editable && !renderingOptions') preview
+  ul.list-group(ng-if='!editable && !renderingOptions')
     li.list-group-item Type: {{template.type}}
     li.list-group-item Body: 
       pre {{template.body}}
+      
+  form(ng-if='renderingOptions')
+    div.form-group(ng-class="{'error': validationErrors.paperFormat}")
+      label.form-control-label Payload:
+      textarea.form-control(ng-model="payload" )
+    div.form-group(ng-class="{'error': validationErrors.paperFormat}")
+      label.form-control-label Paper Format:
+      select.form-control(ng-model="template.paperFormat" )
+        option a5
+        option a4
+        option a3
+    div.form-group(ng-class="{'error': validationErrors.paperMargin}")
+      label.form-control-label Paper Margin:
+      div.input-group
+        input.form-control(type="number" ng-model="template.paperMargin" )
+        div.input-group-addon px
+    div.form-group(ng-class="{'error': validationErrors.headerHeight}")
+      label.form-control-label Header Height:
+      div.input-group
+        input.form-control(type="number" ng-model="template.headerHeight" )
+        div.input-group-addon px
+    div.form-group(ng-class="{'error': validationErrors.footerHeight}")
+      label.form-control-label Footer Height:
+      div.input-group
+        input.form-control(type="number" ng-model="template.footerHeight" )
+        div.input-group-addon px
+    div.form-group
+      input(type="submit" class="btn btn-success" ng-click="render(template)" value="generate preview")
+      input(type="submit" class="btn btn-danger" ng-click="reset()" value="cancel")
         
   form(ng-if='editable')
     div.form-group(ng-class="{'error': validationErrors.name}")
