@@ -81,21 +81,16 @@ module.exports = {
 
   /**
    * Saves a screenshot of the current browser state to 'screenshot.png'.
-   *
-   * @param {Browser} browser The current browser object
-   * @param {Function} fn The callback to invoke after save
    */
-  saveScreenshot: function (browser, fn) {
+  saveScreenshot: function () {
     var writeScreenShot = function (data, filename) {
       var stream = fs.createWriteStream(filename);
       stream.write(new Buffer(data, 'base64'));
       stream.end();
-      stream.on('finish', fn);
     };
 
     browser.takeScreenshot().then(function (png) {
       writeScreenShot(png, 'screenshot.png');
-      fn();
     });
   },
 
@@ -111,6 +106,22 @@ module.exports = {
     var data = {text: []};
     var proms = [];
 
+    // Convert the node.js buffer to a ArrayBuffer for usage with pdf.js. This
+    // needs to be done in order to ensure that pdfjs can parse the PDF corr-
+    // ectly, otherwise we get nasty XRef header errors. This problem is based
+    // on the fact that pdf.js is a library developed for the browser and not
+    // server-side nodejs.
+    if (Object.prototype.toString.call(buf) !== '[object ArrayBuffer]') {
+      var ab = new ArrayBuffer(buf.length);
+      var view = new Uint8Array(ab);
+
+      for (var i = 0; i < buf.length; ++i) {
+        view[i] = buf[i];
+      }
+
+      buf = ab;
+    }
+
     var createProm = function (pdf, i) {
       proms.push(pdf.getPage(i).then(function (page) {
         return page.getTextContent();
@@ -123,17 +134,19 @@ module.exports = {
       }));
     };
 
-    pdfjs.getDocument(buf).then(function (pdf) {
-      for (var i = 1; i <= pdf.pdfInfo.numPages; i++) {
-        createProm(pdf, i);
-      }
+    try {
+      pdfjs.getDocument(buf).then(function (pdf) {
+        for (var i = 1; i <= pdf.pdfInfo.numPages; i++) {
+          createProm(pdf, i);
+        }
 
-      Promise.all(proms).then(function () {
-        fn(null, data);
-      }).catch(function (err) {
-        fn(err, null);
+        Promise.all(proms).then(function () {
+          fn(null, data);
+        }).catch(function (err) {
+          fn(err, null);
+        });
       });
-    });
+    } catch (e) { fn(e); }
   },
 
   /**

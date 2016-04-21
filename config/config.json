@@ -14,6 +14,11 @@
     "log_timestamp": true,
     "log_json": false,
     "log_level": "debug",
+    "smtp_host": "localhost",
+    "smtp_port": 465,
+    "smtp_username": "gendok",
+    "smtp_password": "gendok",
+    "smtp_from": "notify@gendok.com",
     "jwt_ttl": "24h",
     "jwt_secret": "abc123"
   },
@@ -33,6 +38,11 @@
     "log_timestamp": true,
     "log_json": false,
     "log_level": "debug",
+    "smtp_host": "localhost",
+    "smtp_port": 465,
+    "smtp_username": "gendok",
+    "smtp_password": "gendok",
+    "smtp_from": "notify@gendok.com",
     "jwt_ttl": "24h",
     "jwt_secret": "abc123"
   },
@@ -52,6 +62,11 @@
     "log_timestamp": true,
     "log_json": false,
     "log_level": "info",
+    "smtp_host": "localhost",
+    "smtp_port": 465,
+    "smtp_username": "gendok",
+    "smtp_password": "gendok",
+    "smtp_from": "notify@gendok.com",
     "jwt_ttl": "24h",
     "jwt_secret": "MUST BE REPLACED!"
   }

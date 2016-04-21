@@ -99,6 +99,47 @@ describe('gendok.util', function () {
     });
   });
 
+  describe('createMailer()', function () {
+    var mailer = null;
+
+    it('is a function', function (done) {
+      expect(util.extend).to.be.a('function');
+      done();
+    });
+
+    it('creates a new mailer transport with the given options', function (done) {
+      var smtpConfig = {
+        host: 'localhost',
+        port: 465,
+        secure: true,   // use SSL
+        auth: {
+          user: 'gendok',
+          pass: 'gendok'
+        }
+      };
+
+      mailer = util.createMailer(smtpConfig);
+      expect(mailer).to.exist;
+      done();
+    });
+
+    it('remembers the first created transport', function (done) {
+      var smtpConfig = {
+        host: 'localhost',
+        port: 465,
+        secure: true,   // use SSL
+        auth: {
+          user: 'gendok',
+          pass: 'gendok'
+        }
+      };
+
+      mailer = util.createMailer(smtpConfig);
+      expect(mailer).to.eql(util._mailerObject);
+      done();
+    });
+  });
+
   describe('isArray()', function () {
     it('returns true if the object is an array', function () {
       var blub = ['ab', 2, 3, {}];
@@ -147,6 +188,19 @@ describe('gendok.util', function () {
       var res = util.extend();
       expect(res).to.be.an('object');
       expect(Object.keys(res).length).to.eql(0);
+      done();
+    });
+
+    it('ignores undefined attributes if the third parameter is set', function (done) {
+      var obj1 = {
+        a: true,
+        b: 'abc'
+      };
+      var obj2 = {
+        c: undefined
+      };
+      var res = util.extend(obj1, obj2, true);
+      expect(Object.keys(res).length).to.eql(2);
       done();
     });
   });
