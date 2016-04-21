@@ -142,6 +142,28 @@ describe('gendok.http.api.templates', function () {
         });
       });
     });
+
+    it('doesn\'t return an error if the paper format attributes are missing', function (done) {
+      factory.create('User', function (err, user) {
+        factory.build('Template', function (err, templ) {
+          var obj = templ.toPublicObject();
+          delete obj.paperFormat;
+          delete obj.paperMargin;
+          delete obj.headerHeight;
+          delete obj.footerHeight;
+
+          request.post(url)
+                 .send(obj)
+                 .set('Content-Type', 'application/json')
+                 .set('Authorization', 'Token ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.statusCode).to.eql(201);
+                   done();
+                 });
+        });
+      });
+    });
   });
 
   describe('PUT /api/templates/:id', function () {
