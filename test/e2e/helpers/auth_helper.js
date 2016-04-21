@@ -17,7 +17,7 @@ var state = require('./state_helper');
  * @type {Object}
  */
 module.exports = {
-  signin: function (user, password, fn) {
+  signin: function (user, fn) {
     this.isAuthenticated().then(function (isAuth) {
       if (!isAuth) {
         var signinButton   = $('.btn-signin');
@@ -27,8 +27,11 @@ module.exports = {
 
         state.go('signin');
 
+        usernameField.clear();
         usernameField.sendKeys(user.email);
-        usernameField.sendKeys(user.email);
+
+        passwordField.clear();
+        passwordField.sendKeys(user.password);
         signinButton.click();
         fn();
       }
