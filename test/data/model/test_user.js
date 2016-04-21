@@ -36,13 +36,6 @@ describe('gendok.data.model.user', function () {
     });
   });
 
-  describe('defaults', function () {
-    it('automatically generates an apiToken', function () {
-      var u = User.build();
-      expect(u.apiToken).to.not.be.empty;
-    });
-  });
-
   describe('setter functions', function () {
     describe('.password', function () {
       it('updates salt and passwordHash', function () {
