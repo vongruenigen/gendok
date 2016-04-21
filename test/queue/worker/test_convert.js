@@ -17,7 +17,7 @@ var Compiler = gendok.compiler.compiler;
 var helper = require('../../helper');
 var expect = require('chai').expect;
 var simple = require('simple-mock');
-var AdmZip = require('adm-zip');
+var JsZip = require('jszip');
 var fs = require('fs');
 
 describe('gendok.queue.worker.convert', function () {
@@ -173,32 +173,31 @@ describe('gendok.queue.worker.convert', function () {
 
           // Compare contents contents of the zip to the expected output
           j.reload().then(function (j) {
-            var zip = new AdmZip(j.result);
-            var entries = zip.getEntries();
-            var counter = 0;
+            var zip = new JsZip();
 
-            entries.forEach(function (e, i) {
-              expect(e.getData()).to.exist;
-              expect(e.entryName.endsWith(job.format)).to.be.true;
+            zip.loadAsync(j.result).then(function (zip) {
+              var proms = [];
 
-              // TODO We currently have no idea why this fixes our problem with
-              // the PDF parsing on our CI server, no more "bad XRef entry" errors!
-              if (process.env.CI) {
-                fs.writeFileSync('/dev/null', e.getData());
-              }
+              zip.forEach(function (path, file) {
+                proms.push(new Promise(function (resolve, reject) {
+                  file.async('nodebuffer').then(function (fileData) {
+                    helper.parsePdf(fileData, function (err, data) {
+                      expect(err).to.not.exist;
 
-              helper.parsePdf(e.getData(), function (err, data) {
-                expect(err).to.not.exist;
+                      expect(jobAttrs.payload.some(function (p) {
+                        return data.text.indexOf(p.data) !== -1;
+                      })).to.be.true;
 
-                expect(jobAttrs.payload.some(function (p) {
-                  return data.text.indexOf(p.data) !== -1;
-                })).to.be.true;
-
-                if (jobAttrs.payload.length === ++counter) {
-                  done();
-                }
+                      resolve();
+                    });
+                  });
+                }));
               });
-            });
+
+              Promise.all(proms).then(function () {
+                done();
+              }).catch(done);
+            }, done);
           }).catch(done);
         });
       });

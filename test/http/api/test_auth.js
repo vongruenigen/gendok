@@ -113,20 +113,17 @@ describe('gendok.http.api.auth', function () {
     });
 
     describe('when the user has not logged in before', function () {
-      it('returns a 200', function (done) {
+      it('returns a 400', function (done) {
         factory.create('User', function (err, user) {
           expect(err).to.not.exist;
 
           request.post(signOutUrl)
-                  .set('Authorization', 'Bearer ' + user.apiToken)
+                  .set('Authorization', 'Bearer abc123')
                   .end(function (err, res) {
-                    expect(err).to.not.exist;
-                    expect(res.statusCode).to.eql(200);
-
-                    user.reload().then(function (u) {
-                      expect(u.apiToken).to.be.empty;
-                      done();
-                    });
+                    expect(err).to.exist;
+                    expect(res.statusCode).to.eql(errors.badRequest.code);
+                    expect(res.body).to.eql(errors.badRequest.data);
+                    done();
                   });
         });
       });

@@ -139,6 +139,307 @@ describe('gendok.data.model.template', function () {
         });
       });
     });
+
+    describe('.paperFormat', function () {
+      it('may not be empty', function (done) {
+        factory.create('User', function (err, user) {
+          var values = {
+            userId: user.id,
+            type: 'html',
+            body: '<p>Ich bin Inhalt!</p>',
+            paperFormat: '',
+            paperMargin: '3px',
+            headerHeight: '2cm',
+            footerHeight: '1cm'
+          };
+
+          var template = Template.build(values);
+          template.validate().then(function (err) {
+            expect(err).to.exist;
+            expect(err.errors.length).to.eql(2);
+            expect(err.errors[0].path).to.eql('paperFormat');
+            done();
+          });
+        });
+      });
+
+      it('uses a default value when missing', function (done) {
+        factory.create('User', function (err, user) {
+          var values = {
+            userId: user.id,
+            type: 'html',
+            body: '<p>Ich bin Inhalt!</p>',
+            paperMargin: '3px',
+            headerHeight: '2cm',
+            footerHeight: '1cm'
+          };
+
+          var template = Template.build(values);
+          template.validate().then(function (err) {
+            expect(err).to.not.exist;
+            expect(template.paperFormat).to.eql('A4');
+            done();
+          });
+        });
+      });
+
+      it('may be any value between A3 and A5', function (done) {
+        factory.create('User', function (err, user) {
+          var values = {
+            userId: user.id,
+            type: 'html',
+            body: '<p>Ich bin Inhalt!</p>',
+            paperFormat: 'A3',
+            paperMargin: '3px',
+            headerHeight: '2cm',
+            footerHeight: '1cm'
+          };
+
+          Template.build(values).validate().then(function (err) {
+            expect(err).to.not.exist;
+
+            values.paperFormat = 'A4';
+            Template.build(values).validate().then(function (err) {
+              expect(err).to.not.exist;
+
+              values.paperFormat = 'A5';
+              Template.build(values).validate().then(function (err) {
+                expect(err).to.not.exist;
+
+                values.paperFormat = 'A2';
+                Template.build(values).validate().then(function (err) {
+                  expect(err).to.exist;
+                  expect(err.errors.length).to.eql(1);
+                  done();
+                });
+              });
+            });
+          });
+        });
+      });
+    });
+
+    describe('.paperMargin', function () {
+      it('may not be empty', function (done) {
+        factory.create('User', function (err, user) {
+          var values = {
+            userId: user.id,
+            type: 'html',
+            body: '<p>Ich bin Inhalt!</p>',
+            paperFormat: 'A4',
+            paperMargin: '',
+            headerHeight: '2cm',
+            footerHeight: '1cm'
+          };
+
+          var template = Template.build(values);
+          template.validate().then(function (err) {
+            expect(err).to.exist;
+            expect(err.errors.length).to.eql(2);
+            expect(err.errors[0].path).to.eql('paperMargin');
+            done();
+          });
+        });
+      });
+
+      it('uses a default value when missing', function (done) {
+        factory.create('User', function (err, user) {
+          var values = {
+            userId: user.id,
+            type: 'html',
+            body: '<p>Ich bin Inhalt!</p>',
+            paperFormat: 'A4',
+            headerHeight: '2cm',
+            footerHeight: '1cm'
+          };
+
+          var template = Template.build(values);
+          template.validate().then(function (err) {
+            expect(err).to.not.exist;
+            expect(template.paperMargin).to.eql('0px');
+            done();
+          });
+        });
+      });
+
+      it('may be a px or cm value', function (done) {
+        factory.create('User', function (err, user) {
+          var values = {
+            userId: user.id,
+            type: 'html',
+            body: '<p>Ich bin Inhalt!</p>',
+            paperFormat: 'A3',
+            paperMargin: '3px',
+            headerHeight: '2cm',
+            footerHeight: '1cm'
+          };
+
+          Template.build(values).validate().then(function (err) {
+            expect(err).to.not.exist;
+
+            values.paperMargin = '1cm';
+            Template.build(values).validate().then(function (err) {
+              expect(err).to.not.exist;
+
+              values.paperMargin = '1pt';
+              Template.build(values).validate().then(function (err) {
+                expect(err).to.exist;
+                expect(err.errors.length).to.eql(1);
+                done();
+              });
+            });
+          });
+        });
+      });
+    });
+
+    describe('.headerHeight', function () {
+      it('may not be empty', function (done) {
+        factory.create('User', function (err, user) {
+          var values = {
+            userId: user.id,
+            type: 'html',
+            body: '<p>Ich bin Inhalt!</p>',
+            paperFormat: 'A4',
+            paperMargin: '1cm',
+            headerHeight: '',
+            footerHeight: '1cm'
+          };
+
+          var template = Template.build(values);
+          template.validate().then(function (err) {
+            expect(err).to.exist;
+            expect(err.errors.length).to.eql(2);
+            expect(err.errors[0].path).to.eql('headerHeight');
+            done();
+          });
+        });
+      });
+
+      it('uses a default value when missing', function (done) {
+        factory.create('User', function (err, user) {
+          var values = {
+            userId: user.id,
+            type: 'html',
+            body: '<p>Ich bin Inhalt!</p>',
+            paperFormat: 'A4',
+            paperMargin: '1cm',
+            footerHeight: '1cm'
+          };
+
+          var template = Template.build(values);
+          template.validate().then(function (err) {
+            expect(err).to.not.exist;
+            expect(template.headerHeight).to.eql('0px');
+            done();
+          });
+        });
+      });
+
+      it('may be a px or cm value', function (done) {
+        factory.create('User', function (err, user) {
+          var values = {
+            userId: user.id,
+            type: 'html',
+            body: '<p>Ich bin Inhalt!</p>',
+            paperFormat: 'A3',
+            paperMargin: '3px',
+            headerHeight: '2cm',
+            footerHeight: '1cm'
+          };
+
+          Template.build(values).validate().then(function (err) {
+            expect(err).to.not.exist;
+
+            values.headerHeight = '10px';
+            Template.build(values).validate().then(function (err) {
+              expect(err).to.not.exist;
+
+              values.headerHeight = '1pt';
+              Template.build(values).validate().then(function (err) {
+                expect(err).to.exist;
+                expect(err.errors.length).to.eql(1);
+                done();
+              });
+            });
+          });
+        });
+      });
+    });
+
+    describe('.footerHeight', function () {
+      it('may not be empty', function (done) {
+        factory.create('User', function (err, user) {
+          var values = {
+            userId: user.id,
+            type: 'html',
+            body: '<p>Ich bin Inhalt!</p>',
+            paperFormat: 'A4',
+            paperMargin: '1cm',
+            headerHeight: '1cm',
+            footerHeight: ''
+          };
+
+          var template = Template.build(values);
+          template.validate().then(function (err) {
+            expect(err).to.exist;
+            expect(err.errors.length).to.eql(2);
+            expect(err.errors[0].path).to.eql('footerHeight');
+            done();
+          });
+        });
+      });
+
+      it('uses a default value when missing', function (done) {
+        factory.create('User', function (err, user) {
+          var values = {
+            userId: user.id,
+            type: 'html',
+            body: '<p>Ich bin Inhalt!</p>',
+            paperFormat: 'A4',
+            paperMargin: '1cm',
+            headerHeight: '1cm'
+          };
+
+          var template = Template.build(values);
+          template.validate().then(function (err) {
+            expect(err).to.not.exist;
+            expect(template.footerHeight).to.eql('0px');
+            done();
+          });
+        });
+      });
+
+      it('may be a px or cm value', function (done) {
+        factory.create('User', function (err, user) {
+          var values = {
+            userId: user.id,
+            type: 'html',
+            body: '<p>Ich bin Inhalt!</p>',
+            paperFormat: 'A3',
+            paperMargin: '3px',
+            headerHeight: '2cm',
+            footerHeight: '1cm'
+          };
+
+          Template.build(values).validate().then(function (err) {
+            expect(err).to.not.exist;
+
+            values.footerHeight = '10px';
+            Template.build(values).validate().then(function (err) {
+              expect(err).to.not.exist;
+
+              values.footerHeight = '1pt';
+              Template.build(values).validate().then(function (err) {
+                expect(err).to.exist;
+                expect(err.errors.length).to.eql(1);
+                done();
+              });
+            });
+          });
+        });
+      });
+    });
   });
 
   describe('instance methods', function () {

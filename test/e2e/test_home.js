@@ -14,12 +14,11 @@ var gendok = require('../../');
 var helper = require('../helper');
 
 describe('gendok.http.web.home', function () {
-  var url = helper.getUrl('/');
   helper.runHttpServer(this);
 
-  describe('/', function (done) {
+  describe('#/home', function (done) {
     it('contains the text "gendok"', function () {
-      browser.get(url);
+      browser.get('#/home');
       expect($('h1.title').getText()).to.eventually.include('gendok');
     });
   });
