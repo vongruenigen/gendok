@@ -133,7 +133,7 @@ describe('gendok.http.api.templates', function () {
           request.post(url)
                  .send(templ.toJSON())
                  .set('Content-Type', 'application/json')
-                 .set('Authorization', 'Token ' + user.apiToken)
+                 .set('Authorization', 'Bearer ' + user.apiToken)
                  .end(function (err, res) {
                    expect(err).to.exist;
                    expect(res.statusCode).to.eql(errors.validation.code);
@@ -155,7 +155,7 @@ describe('gendok.http.api.templates', function () {
           request.post(url)
                  .send(obj)
                  .set('Content-Type', 'application/json')
-                 .set('Authorization', 'Token ' + user.apiToken)
+                 .set('Authorization', 'Bearer ' + user.apiToken)
                  .end(function (err, res) {
                    expect(err).to.not.exist;
                    expect(res.statusCode).to.eql(201);
