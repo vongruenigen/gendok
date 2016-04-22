@@ -16,10 +16,6 @@ div
       label.form-control-label E-Mail:
       input.form-control(type="text" ng-model="profile.email" )
       span.validation_error_message(ng-if='validation_errors.email') {{validation_errors.email[0]}}
-    div.form-group(ng-class="{'error': validation_errors.password}")
-      label.form-control-label Password:
-      input.form-control(type="password" ng-model="profile.password" )
-      span.validation_error_message(ng-if='validation_errors.password') {{validation_errors.password[0]}}
     div.form-group
       input(type="submit" class="btn btn-success" ng-click="update(profile)" value="save")
       =' '
