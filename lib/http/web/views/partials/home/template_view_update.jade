@@ -1,41 +1,24 @@
 div
-  h2.alert.alert-danger(ng-if='errorMessage') {{error_message}}
-  h2.alert.alert-success(ng-if='successMessage') {{success_message}}
+  h2.alert.alert-danger(ng-if='errorMessage') {{errorMessage}}
+  h2.alert.alert-success(ng-if='successMessage') {{successMessage}}
   h2 Template: {{template.name}}
-  button(class="btn btn-info" ng-click="edit()" ng-if='!editable && !renderingOptions') edit
-  button(class="btn btn-default" ng-click="openRenderingOptions()" ng-if='!editable && !renderingOptions') preview
-  ul.list-group(ng-if='!editable && !renderingOptions')
+  button(class="btn btn-info" ng-click="edit()" ng-if='!editable && !payloadOptions') edit
+  button(class="btn btn-default" ng-click="openPayloadOptions()" ng-if='!editable && !payloadOptions') preview
+  ul.list-group(ng-if='!editable && !payloadOptions')
     li.list-group-item Type: {{template.type}}
+    li.list-group-item Paper Format: {{template.paperFormat}}
+    li.list-group-item Margin: {{template.paperMargin}}
+    li.list-group-item Header Height: {{template.headerHeight}}
+    li.list-group-item Footer Height: {{template.footerHeight}}
     li.list-group-item Body: 
       pre {{template.body}}
-      
-  form(ng-if='renderingOptions')
+  
+  form(ng-if='payloadOptions')
     div.form-group(ng-class="{'error': validationErrors.paperFormat}")
       label.form-control-label Payload:
-      textarea.form-control(ng-model="payload" )
-    div.form-group(ng-class="{'error': validationErrors.paperFormat}")
-      label.form-control-label Paper Format:
-      select.form-control(ng-model="template.paperFormat" )
-        option a5
-        option a4
-        option a3
-    div.form-group(ng-class="{'error': validationErrors.paperMargin}")
-      label.form-control-label Paper Margin:
-      div.input-group
-        input.form-control(type="number" ng-model="template.paperMargin" )
-        div.input-group-addon px
-    div.form-group(ng-class="{'error': validationErrors.headerHeight}")
-      label.form-control-label Header Height:
-      div.input-group
-        input.form-control(type="number" ng-model="template.headerHeight" )
-        div.input-group-addon px
-    div.form-group(ng-class="{'error': validationErrors.footerHeight}")
-      label.form-control-label Footer Height:
-      div.input-group
-        input.form-control(type="number" ng-model="template.footerHeight" )
-        div.input-group-addon px
+      textarea.form-control(type="text" rows="10" ng-model="payload")
     div.form-group
-      input(type="submit" class="btn btn-success" ng-click="render(template)" value="generate preview")
+      input(type="submit" class="btn btn-success" ng-click="render(template, payload)" value="generate preview")
       input(type="submit" class="btn btn-danger" ng-click="reset()" value="cancel")
         
   form(ng-if='editable')
@@ -45,10 +28,34 @@ div
       span.validation_error_message(ng-if='validationErrors.name') {{validationErrors.name[0]}}
     div.form-group(ng-class="{'error': validationErrors.type}")
       label.form-control-label Type:
-      select.form-control(ng-model="template.type" )
+      select.form-control(ng-model="template.type")
         option mustache
         option html
       span.validation_error_message(ng-if='validationErrors.type') {{validationErrors.type[0]}}
+    div.form-group(ng-class="{'error': validationErrors.paperFormat}")
+      label.form-control-label Paper Format:
+      select.form-control(ng-model="template.paperFormat" )
+        option A5
+        option A4
+        option A3
+    div.form-group(ng-class="{'error': validationErrors.paperMargin}")
+      label.form-control-label Paper Margin:
+      div.input-group
+        input.form-control(type="text" ng-model="template.paperMargin" )
+        div.input-group-addon px
+    span.validation_error_message(ng-if='validationErrors.paperMargin') {{validationErrors.paperMargin[0]}}
+    div.form-group(ng-class="{'error': validationErrors.headerHeight}")
+      label.form-control-label Header Height:
+      div.input-group
+        input.form-control(type="text" ng-model="template.headerHeight" )
+        div.input-group-addon px
+      span.validation_error_message(ng-if='validationErrors.headerHeight') {{validationErrors.headerHeight[0]}}
+    div.form-group(ng-class="{'error': validationErrors.footerHeight}")
+      label.form-control-label Footer Height:
+      div.input-group
+        input.form-control(type="text" ng-model="template.footerHeight" )
+        div.input-group-addon px
+      span.validation_error_message(ng-if='validationErrors.footerHeight') {{validationErrors.footerHeight[0]}}
     div.form-group(ng-class="{'error': validationErrors.body}")
       label.form-control-label Body:
       textarea.form-control(type="text" rows="10" ng-model="template.body")
