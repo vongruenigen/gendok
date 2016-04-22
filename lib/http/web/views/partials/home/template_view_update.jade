@@ -67,5 +67,5 @@ div(ng-init="getTemplate()")
       textarea.form-control(type="text" rows="10" ng-model="template.body")
       span.validation_error_message(ng-if='validationErrors.body') {{validationErrors.body[0]}}
     div.form-group
-      input(type="submit" class="btn btn-success" ng-click="update(template)" value="Save")
+      input(type="submit" class="btn btn-success" ng-click="update()" value="Save")
       input(type="submit" class="btn btn-danger" ng-click="reset()" value="cancel")
