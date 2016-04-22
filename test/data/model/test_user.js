@@ -51,6 +51,21 @@ describe('gendok.data.model.user', function () {
         var expectedHash = bcrypt.hashSync(password, user.salt);
         expect(user.passwordHash).to.eql(expectedHash);
       });
+
+      it('updates the password in the database', function (done) {
+        factory.create('User', function (err, user) {
+          var newPassword = 'new-testpassword';
+
+          expect(user.isPassword('testpassword')).to.be.true;
+
+          user.update({password: newPassword}).then(function () {
+            user.reload().then(function (u) {
+              expect(u.isPassword(newPassword)).to.be.true;
+              done();
+            });
+          });
+        });
+      });
     });
   });
 
