@@ -19,3 +19,15 @@ form > div.error {
 .btn {
   margin: 4px 2px;
 }
+
+form div.inline-inputs {
+  width: 100%;
+
+  input {
+    width: 50% !important;
+  }
+
+  select {
+    width: 50% !important;
+  }
+}
