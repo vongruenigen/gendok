@@ -48,7 +48,13 @@ module.exports = {
 
       dropdownToggle.click();
       signoutLink.click();
-      fn();
+
+      // Signout takes some time, so wait until it's done.
+      browser.driver.wait(function () {
+        return stateHelper.current().then(function (s) {
+          return s === 'home';
+        });
+      }, 5000).then(function () { fn(); });
     });
   },
 
