@@ -5,7 +5,6 @@ div
   ul.list-group(ng-if='!editable')
     li.list-group-item Name: {{profile.name}}
     li.list-group-item E-Mail: {{profile.email}}
-    li.list-group-item Admin: {{profile.isAdmin}}
 
   form(ng-if='editable')
     div.form-group(ng-class="{'error': validation_errors.name}")
@@ -20,6 +19,10 @@ div
       label.form-control-label Password:
       input.form-control(type="password" ng-model="profile.password" )
       span.validation_error_message(ng-if='validation_errors.password') {{validation_errors.password[0]}}
+    div.form-group(ng-class="{'error': validation_errors.passwordConfirmation}")
+      label.form-control-label Confirm password:
+      input.form-control(type="password" ng-model="profile.passwordConfirmation" )
+      span.validation_error_message(ng-if='validation_errors.passwordConfirmation') {{validation_errors.passwordConfirmation[0]}}
     div.form-group
       input(type="submit" class="btn btn-success" ng-click="update(profile)" value="save")
       =' '
