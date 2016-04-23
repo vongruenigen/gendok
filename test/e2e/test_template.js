@@ -28,7 +28,8 @@ describe('templates', function () {
   var type = element(by.model('template.type'));
   var body = element(by.model('template.body'));
   var list = element.all(by.repeater('template in templates'));
-  var saveButton = $('[ng-click="create(template)"]');
+  var saveButton = $('[ng-click="create()"]');
+  var errorMessage = $('.alert');
 
   beforeEach(function (done) {
     Template = gendok.data.db.getModel('Template');
@@ -47,7 +48,7 @@ describe('templates', function () {
     });
   });
 
-  describe('create', function () {
+  describe('#/templates/create', function () {
     describe('when a valid input is given', function () {
       it('creates a template', function () {
         stateHelper.go('templateCreate');
@@ -63,6 +64,21 @@ describe('templates', function () {
         saveButton.click();
 
         expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
+      });
+    });
+
+    describe('when invalid values are given', function () {
+      it('displays errors', function () {
+        stateHelper.go('templateCreate');
+        saveButton.click();
+
+        expect(errorMessage.getInnerHtml()).to.eventually.eql(
+          'An error occured while saving the template.'
+        );
+
+        expect(body.getCssValue('border-bottom-color')).to.eventually.eql(
+          'rgba(255, 0, 0, 1)' // === 'red'
+        );
       });
     });
   });
