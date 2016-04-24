@@ -28,7 +28,6 @@ describe('templates', function () {
   var name = element(by.model('template.name'));
   var type = element(by.model('template.type'));
   var body = element(by.model('template.body'));
-  var payload = element(by.model('payload'));
   var paperFormat = element(by.model('template.paperFormat'));
   var paperMargin = element(by.model('template.paperMargin'));
   var headerHeight = element(by.model('template.headerHeight'));
@@ -37,9 +36,7 @@ describe('templates', function () {
   var saveButton = $('[ng-click="create()"]');
   var updateButton = $('[ng-click="update()"]');
   var editButton = $('[ng-click="edit()"]');
-  var previewButton = $('[ng-click="openPayloadOptions()"]');
-  var renderButton = $('[ng-click="render(template, payload)"]');
-  var deleteButton = $('[ng-click="delte()"]');
+  var deleteButton = $('[ng-click="delte()"]')
   var errorMessage = $('.alert-danger');
   var successMessage = $('.alert-success');
 
@@ -84,7 +81,7 @@ describe('templates', function () {
 
         browser.waitForAngular().then(function () {
           expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
-          expect(Template.count()).to.eventually.eql(1);
+          expect(Template.count()).to.eventually.eql(2);
         });
       });
     });
@@ -121,7 +118,7 @@ describe('templates', function () {
         updateButton.click();
 
         browser.waitForAngular().then(function () {
-          expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
+         expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
           expect(successMessage.getInnerHtml()).to.eventually.eql(
            'Template new ' + tmpl.name + ' successfully updated!'
           );
@@ -144,7 +141,7 @@ describe('templates', function () {
         updateButton.click();
 
         browser.waitForAngular().then(function () {
-          expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
+         expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
           expect(errorMessage.getInnerHtml()).to.eventually.eql(
            'An error occured while updating the template.'
           );
@@ -187,37 +184,9 @@ describe('templates', function () {
     });
   });
 
-  describe('POST #/templates/{id}/render', function () {
-    describe('when a invalid payload is given', function () {
-      it('display an error', function () {
-        stateHelper.go('templateViewUpdate', {templateId: tmplCreate.id});
-        previewButton.click();
-        browser.waitForAngular();
-        payload.sendKeys('not json');
-        renderButton.click();
-
-        expect(errorMessage.getInnerHtml()).to.eventually.eql('The payload isn\'t valid json.');
-      });
-    });
-
-    describe('when a valid payload is given', function () {
-      it('irgendwas', function () {
-        stateHelper.go('templateViewUpdate', {templateId: tmplCreate.id});
-        previewButton.click();
-        browser.waitForAngular();
-        payload.sendKeys('{}');
-        renderButton.click();
-
-        browser.sleep(10000);
-        browser.waitForAngular();
-        expect(browser.driver.getCurrentUrl()).to.eventually.eql('nfsndfskjnc');
-      });
-    });
-  });
-
   describe('DELETE #/templates', function () {
-    describe('when a valid id is given', function () {
-      it('deletes a template', function () {
+    describe('Accept delete confirmation', function () {
+      it('deletes the template', function () {
 
         stateHelper.go('templatesList');
 
@@ -236,10 +205,26 @@ describe('templates', function () {
       });
     });
 
-    describe('when invalid id is given', function () {
-      it('displays errors', function () {
+    describe('Abort delete confirmation', function () {
+      it('deletes not the template', function () {
+
         stateHelper.go('templatesList');
+
+        var link = list.first().all(by.css('button'));
+        link.click();
+
+        browser.switchTo().alert().dismiss();
+
+        browser.waitForAngular().then(function () {
+          expect(stateHelper.current()).to.eventually.eql('templatesList');
+          var success = element(by.css('.successMessage'));
+          var error = element(by.css('.errorMessage'));
+          expect(success.isPresent()).to.eventually.eql(false);
+          expect(error.isPresent()).to.eventually.eql(false);
+          expect(Template.count()).to.eventually.eql(1);
+        });
       });
     });
   });
+
 });
