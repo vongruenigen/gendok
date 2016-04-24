@@ -35,13 +35,17 @@ describe('templates', function () {
   var footerHeight = element(by.model('template.footerHeight'));
   var list = element.all(by.repeater('template in templates'));
   var saveButton = $('[ng-click="create()"]');
+  var updateButton = $('[ng-click="update()"]');
   var editButton = $('[ng-click="edit()"]');
   var previewButton = $('[ng-click="openPayloadOptions()"]');
   var renderButton = $('[ng-click="render(template, payload)"]');
+  var deleteButton = $('[ng-click="delte()"]');
   var errorMessage = $('.alert-danger');
+  var successMessage = $('.alert-success');
 
   beforeEach(function (done) {
     Template = gendok.data.db.getModel('Template');
+    expect(Template.truncate()).to.eventually.be.truthy;
 
     authHelper.signout(function () {
       factory.create('User', function (err, u) {
@@ -65,7 +69,6 @@ describe('templates', function () {
   describe('#/templates/create', function () {
     describe('when a valid input is given', function () {
       it('creates a template', function () {
-        expect(Template.truncate()).to.eventually.be.truthy;
 
         stateHelper.go('templateCreate');
 
@@ -102,39 +105,53 @@ describe('templates', function () {
     });
   });
 
-  // describe('POST #/templates/{id}', function () {
-  //   describe('when valid inputs are given', function () {
-  //     it('updates a template', function () {
-  //       stateHelper.go('templateViewUpdate', {templateId: tmplCreate.id});
-  //       editButton.click();
-  //
-  //       name.clear();
-  //       name.sendKeys('new ' + tmpl.name);
-  //
-  //       body.clear();
-  //       body.sendKeys(tmpl.body);
-  //
-  //       saveButton.click();
-  //       browser.waitForAngular();
-  //       browser.pause();
-  //       browser.waitForAngular().then(function () {
-  //        expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
-  //
-  //         TODO: implement successmessage
-  //         expect(successMessage.getInnerHtml()).to.eventually.eql(
-  //          'Template new' + tmpl.name + ' successfully updated!'
-  //         );
-  //       });
-  //     });
-  //   });
+  describe('PUT #/templates/{id}', function () {
+    describe('when valid inputs are given', function () {
+      it('updates a template', function () {
+        stateHelper.go('templateViewUpdate', {templateId: tmplCreate.id});
 
-  //   describe('when invalid values are given', function () {
-  //     it('displays errors', function () {
-  //
-  //       TODO: implement this test
-  //     });
-  //   });
-  // });
+        editButton.click();
+
+        name.clear();
+        name.sendKeys('new ' + tmpl.name);
+
+        body.clear();
+        body.sendKeys(tmpl.body);
+
+        updateButton.click();
+
+        browser.waitForAngular().then(function () {
+          expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
+          expect(successMessage.getInnerHtml()).to.eventually.eql(
+           'Template new ' + tmpl.name + ' successfully updated!'
+          );
+        });
+      });
+    });
+
+    describe('when invalid values are given', function () {
+      it('displays errors', function () {
+        stateHelper.go('templateViewUpdate', {templateId: tmplCreate.id});
+
+        editButton.click();
+
+        name.clear();
+        name.sendKeys('');
+
+        body.clear();
+        body.sendKeys('');
+
+        updateButton.click();
+
+        browser.waitForAngular().then(function () {
+          expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
+          expect(errorMessage.getInnerHtml()).to.eventually.eql(
+           'An error occured while updating the template.'
+          );
+        });
+      });
+    });
+  });
 
   describe('GET #/templates/{id}', function () {
     describe('when a valid id is given', function () {
@@ -194,6 +211,34 @@ describe('templates', function () {
         browser.sleep(10000);
         browser.waitForAngular();
         expect(browser.driver.getCurrentUrl()).to.eventually.eql('nfsndfskjnc');
+      });
+    });
+  });
+
+  describe('DELETE #/templates', function () {
+    describe('when a valid id is given', function () {
+      it('deletes a template', function () {
+
+        stateHelper.go('templatesList');
+
+        var link = list.first().all(by.css('button'));
+        link.click();
+
+        browser.switchTo().alert().accept();
+
+        browser.waitForAngular().then(function () {
+          expect(stateHelper.current()).to.eventually.eql('templatesList');
+          expect(successMessage.getInnerHtml()).to.eventually.eql(
+           'The template was successfully deleted!'
+          );
+          expect(Template.count()).to.eventually.eql(0);
+        });
+      });
+    });
+
+    describe('when invalid id is given', function () {
+      it('displays errors', function () {
+        stateHelper.go('templatesList');
       });
     });
   });
