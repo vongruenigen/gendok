@@ -1,13 +1,25 @@
+// error messages
+h2.alert {
+  font-size: 14px;
+}
+
+// validation error messages
 form > div.error {
-  input {
+  label + input {
     border: 1px solid red;
   }
 
-  select {
+  div.inline-inputs {
+    input {
+      border: 1px solid red;
+    }
+  }
+
+  label + select {
     border: 1px solid red;
   }
 
-  textarea {
+  label + textarea {
     border: 1px solid red;
   }
 
@@ -20,6 +32,7 @@ form > div.error {
   margin: 4px 2px;
 }
 
+// unput structure
 form div.inline-inputs {
   width: 100%;
 
