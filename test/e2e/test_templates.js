@@ -117,7 +117,7 @@ describe('templates', function () {
         updateButton.click();
 
         browser.waitForAngular().then(function () {
-         expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
+          expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
           expect(successMessage.getInnerHtml()).to.eventually.eql(
            'Template new ' + tmpl.name + ' successfully updated!'
           );
@@ -140,7 +140,7 @@ describe('templates', function () {
         updateButton.click();
 
         browser.waitForAngular().then(function () {
-         expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
+          expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
           expect(errorMessage.getInnerHtml()).to.eventually.eql(
            'An error occured while updating the template.'
           );
