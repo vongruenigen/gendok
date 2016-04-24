@@ -51,6 +51,8 @@ describe('templates', function () {
   describe('#/templates/create', function () {
     describe('when a valid input is given', function () {
       it('creates a template', function () {
+        expect(Template.truncate()).to.eventually.be.truthy;
+
         stateHelper.go('templateCreate');
 
         name.clear();
@@ -63,7 +65,10 @@ describe('templates', function () {
 
         saveButton.click();
 
-        expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
+        browser.waitForAngular().then(function () {
+          expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
+          expect(Template.count()).to.eventually.eql(1);
+        });
       });
     });
 
