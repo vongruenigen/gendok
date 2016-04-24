@@ -16,17 +16,25 @@
  */
 module.exports = {
   go: function (state) {
-    return browser.executeAsyncScript(function () {
+    var self = this;
+
+    browser.executeAsyncScript(function () {
       var callback = arguments[arguments.length - 1];
       var state = arguments[0];
       var injector = angular.element(document.body).injector();
       var $state = injector.get('$state');
       $state.go(state).then(callback);
     }, state);
+
+    // Wait until the state transition has been done
+    browser.driver.wait(function () {
+      return self.current().then(function (s) {
+        return s === state;
+      });
+    }, 5000);
   },
 
   current: function () {
-    browser.driver.sleep(200);
     return browser.executeAsyncScript(function () {
       var callback = arguments[arguments.length - 1];
       var injector = angular.element(document.body).injector();
