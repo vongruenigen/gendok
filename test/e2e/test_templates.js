@@ -28,6 +28,7 @@ describe('templates', function () {
   var name = element(by.model('template.name'));
   var type = element(by.model('template.type'));
   var body = element(by.model('template.body'));
+  var payload = element(by.model('payload'));
   var paperFormat = element(by.model('template.paperFormat'));
   var paperMargin = element(by.model('template.paperMargin'));
   var headerHeight = element(by.model('template.headerHeight'));
@@ -35,7 +36,9 @@ describe('templates', function () {
   var list = element.all(by.repeater('template in templates'));
   var saveButton = $('[ng-click="create()"]');
   var editButton = $('[ng-click="edit()"]');
-  var errorMessage = $('.alert');
+  var previewButton = $('[ng-click="openPayloadOptions()"]');
+  var renderButton = $('[ng-click="render(template, payload)"]');
+  var errorMessage = $('.alert-danger');
 
   beforeEach(function (done) {
     Template = gendok.data.db.getModel('Template');
@@ -163,6 +166,34 @@ describe('templates', function () {
         browser.waitForAngular();
 
         expect(stateHelper.current()).to.eventually.eql('notFound');
+      });
+    });
+  });
+
+  describe('POST #/templates/{id}/render', function () {
+    describe('when a invalid payload is given', function () {
+      it('display an error', function () {
+        stateHelper.go('templateViewUpdate', {templateId: tmplCreate.id});
+        previewButton.click();
+        browser.waitForAngular();
+        payload.sendKeys('not json');
+        renderButton.click();
+
+        expect(errorMessage.getInnerHtml()).to.eventually.eql('The payload isn\'t valid json.');
+      });
+    });
+
+    describe('when a valid payload is given', function () {
+      it('irgendwas', function () {
+        stateHelper.go('templateViewUpdate', {templateId: tmplCreate.id});
+        previewButton.click();
+        browser.waitForAngular();
+        payload.sendKeys('{}');
+        renderButton.click();
+
+        browser.sleep(10000);
+        browser.waitForAngular();
+        expect(browser.driver.getCurrentUrl()).to.eventually.eql('nfsndfskjnc');
       });
     });
   });
