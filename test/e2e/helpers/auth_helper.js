@@ -9,7 +9,7 @@
 
 'use strict';
 
-var state = require('./state_helper');
+var stateHelper = require('./state_helper');
 
 /**
  * Authentication helper for our e2e tests.
@@ -17,7 +17,7 @@ var state = require('./state_helper');
  * @type {Object}
  */
 module.exports = {
-  signin: function (user, password, fn) {
+  signin: function (user, fn) {
     this.isAuthenticated().then(function (isAuth) {
       if (!isAuth) {
         var signinButton   = $('.btn-signin');
@@ -25,12 +25,22 @@ module.exports = {
         var usernameField  = $('#username');
         var passwordField  = $('#password');
 
-        state.go('signin');
+        stateHelper.go('signin');
 
+        usernameField.clear();
         usernameField.sendKeys(user.email);
-        usernameField.sendKeys(user.email);
+
+        passwordField.clear();
+        passwordField.sendKeys(user.password);
         signinButton.click();
-        fn();
+
+        // Login takes some time, so wait until it's done. For the test app's
+        // login, we know it's done when it redirects to home.
+        browser.driver.wait(function () {
+          return stateHelper.current().then(function (s) {
+            return s === 'home';
+          });
+        }, 5000).then(function () { fn(); });
       }
     });
   },
@@ -44,11 +54,17 @@ module.exports = {
       var signoutLink = $('[ng-click="signoutUser()"]');
       var dropdownToggle = $('li a.dropdown-toggle');
 
-      state.go('home');
+      stateHelper.go('home');
 
       dropdownToggle.click();
       signoutLink.click();
-      fn();
+
+      // Signout takes some time, so wait until it's done.
+      browser.driver.wait(function () {
+        return stateHelper.current().then(function (s) {
+          return s === 'home';
+        });
+      }, 5000).then(function () { fn(); });
     });
   },
 

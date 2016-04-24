@@ -24,7 +24,7 @@ html(ng-app='gendok')
               a(href='#/jobs') Jobs
             li
               a(href='#/about') About us
-            
+
           ul.nav.navbar-nav.navbar-right
             li(ng-if='!authService.isAuthenticated()')
               a.signup-link(href='/#/register') Want to sign up?
@@ -34,7 +34,7 @@ html(ng-app='gendok')
                 span.caret
               ul.dropdown-menu(role='menu')
                 li
-                  a(href='#') My profile
+                  a(href='#/profile') My profile
                 li.divider
                 li
                   a.signout-link(href='#' ng-click='signoutUser()') Sign out

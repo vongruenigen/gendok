@@ -24,6 +24,7 @@ module.exports = function (model) {
     isAdmin: false,
     name: faker.name.findName(),
     password: 'testpassword',
+    passwordConfirmation: 'testpassword',
     email: factory.seq(function () {
       //TODO: Ugly email generator, later we dont need this, because of db clear.
       var milliseconds = (new Date()).getTime();

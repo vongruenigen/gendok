@@ -39,10 +39,32 @@ describe('gendok.data.model.user', function () {
   describe('setter functions', function () {
     describe('.password', function () {
       it('updates salt and passwordHash', function () {
-        var password = 'asdfghjkkl';
-        var user = User.build({password: password});
-        var expectedHash = bcrypt.hashSync(password, user.salt);
+        var attrs = {
+          password: 'asdfghjkkl',
+          passwordConfirmation: 'asdfghjkkl'
+        };
+
+        var user = User.build(attrs);
+        var expectedHash = bcrypt.hashSync(attrs.password, user.salt);
         expect(user.passwordHash).to.eql(expectedHash);
+      });
+
+      it('updates the password in the database', function (done) {
+        factory.create('User', function (err, user) {
+          var attrs = {
+            password: 'new-testpassword',
+            passwordConfirmation: 'new-testpassword'
+          };
+
+          expect(user.isPassword('testpassword')).to.be.true;
+
+          user.update(attrs).then(function () {
+            user.reload().then(function (u) {
+              expect(u.isPassword(attrs.password)).to.be.true;
+              done();
+            });
+          });
+        });
       });
     });
   });
@@ -69,10 +91,39 @@ describe('gendok.data.model.user', function () {
 
   describe('validation', function () {
     describe('.password', function () {
+      it('error if password differs to the confirmation', function (done) {
+        factory.create('User', function (err, usr) {
+          expect(err).to.not.exist;
+          usr.password = 'abc123456';
+          usr.passwordConfirmation = 'abc123457';
+          usr.validate().then(function (err) {
+            expect(err).to.exist;
+            expect(err.errors.length).to.eql(1);
+            expect(err.errors[0].path).to.eql('password');
+            done();
+          });
+        });
+      });
+
+      it('error if password comfirmation is set when password is empty', function (done) {
+        factory.create('User', function (err, usr) {
+          expect(err).to.not.exist;
+          usr.password = '';
+          usr.passwordConfirmation = 'abc123456';
+          usr.validate().then(function (err) {
+            expect(err).to.exist;
+            expect(err.errors.length).to.eql(3);
+            expect(err.errors[0].path).to.eql('passwordConfirmation');
+            done();
+          });
+        });
+      });
+
       it('error if length < 7', function (done) {
         factory.create('User', function (err, usr) {
           expect(err).to.not.exist;
           usr.password = 'asdf';
+          usr.passwordConfirmation = 'asdf';
           usr.validate().then(function (err) {
             expect(err).to.exist;
             expect(err.errors.length).to.eql(1);
