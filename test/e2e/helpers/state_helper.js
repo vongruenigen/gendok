@@ -15,16 +15,17 @@
  * @type {Object}
  */
 module.exports = {
-  go: function (state) {
+  go: function (state, toParams) {
     var self = this;
 
     browser.executeAsyncScript(function () {
       var callback = arguments[arguments.length - 1];
       var state = arguments[0];
+      var stateParams = arguments[1];
       var injector = angular.element(document.body).injector();
       var $state = injector.get('$state');
-      $state.go(state).then(callback);
-    }, state);
+      $state.go(state, stateParams).then(callback);
+    }, state, toParams);
 
     // Wait until the state transition has been done
     browser.driver.wait(function () {
