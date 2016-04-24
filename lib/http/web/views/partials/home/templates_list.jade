@@ -7,10 +7,16 @@ div(ng-init="getAlltemplates()")
     tr
       td ID
       td Name
+      td Type
+      td Created at
+      td Updated at
       td 
     tr(ng-repeat='template in templates')
       td
         a(ui-sref="templateViewUpdate({templateId: template.id})") {{template.id}}
       td {{template.name}}
+      td {{template.type}}
+      td {{template.createdAt}}
+      td {{template.UpdatedAt}}
       td 
         button(class="btn btn-default"  ng-click="delete(template.id)") Delete
