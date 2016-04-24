@@ -33,6 +33,9 @@ describe('templates', function () {
   var headerHeight = element(by.model('template.headerHeight'));
   var footerHeight = element(by.model('template.footerHeight'));
   var list = element.all(by.repeater('template in templates'));
+  var templateDetail = $('.template-detail-list');
+  var editPayloadForm = $('.edit-payload-form');
+  var editTemplateForm = $('.edit-template-form');
   var saveButton = $('[ng-click="create()"]');
   var updateButton = $('[ng-click="update()"]');
   var editButton = $('[ng-click="edit()"]');
@@ -119,6 +122,8 @@ describe('templates', function () {
 
         browser.waitForAngular().then(function () {
          expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
+         expect(templateDetail.isPresent()).to.eventually.eql(true);
+         expect(editTemplateForm.isPresent()).to.eventually.eql(false);
           expect(successMessage.getInnerHtml()).to.eventually.eql(
            'Template new ' + tmpl.name + ' successfully updated!'
           );
@@ -142,6 +147,8 @@ describe('templates', function () {
 
         browser.waitForAngular().then(function () {
          expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
+         expect(templateDetail.isPresent()).to.eventually.eql(false);
+         expect(editTemplateForm.isPresent()).to.eventually.eql(true);
           expect(errorMessage.getInnerHtml()).to.eventually.eql(
            'An error occured while updating the template.'
           );
@@ -219,7 +226,7 @@ describe('templates', function () {
           expect(stateHelper.current()).to.eventually.eql('templatesList');
           var success = element(by.css('.successMessage'));
           var error = element(by.css('.errorMessage'));
-          expect(success.isPresent()).to.eventually.eql(false);
+          expect(success.isPresent()).to.eventually.eql(false)
           expect(error.isPresent()).to.eventually.eql(false);
           expect(Template.count()).to.eventually.eql(1);
         });
