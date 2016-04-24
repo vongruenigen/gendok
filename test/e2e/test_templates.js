@@ -23,6 +23,7 @@ describe('templates', function () {
   var Template = null;
   var user = null;
   var tmpl = null;
+  var tmplCreate = null;
 
   var name = element(by.model('template.name'));
   var type = element(by.model('template.type'));
@@ -33,6 +34,7 @@ describe('templates', function () {
   var footerHeight = element(by.model('template.footerHeight'));
   var list = element.all(by.repeater('template in templates'));
   var saveButton = $('[ng-click="create()"]');
+  var editButton = $('[ng-click="edit()"]');
   var errorMessage = $('.alert');
 
   beforeEach(function (done) {
@@ -46,7 +48,12 @@ describe('templates', function () {
         factory.build('Template', function (err, t) {
           expect(err).to.not.exist;
           tmpl = t;
-          authHelper.signin(user, done);
+          factory.create('Template', {userId: user.id}, function (err, t) {
+            expect(err).to.not.exist;
+            tmplCreate = t;
+
+            authHelper.signin(user, done);
+          });
         });
       });
     });
@@ -91,6 +98,40 @@ describe('templates', function () {
       });
     });
   });
+
+  // describe('POST #/templates/{id}', function () {
+  //   describe('when valid inputs are given', function () {
+  //     it('updates a template', function () {
+  //       stateHelper.go('templateViewUpdate', {templateId: tmplCreate.id});
+  //       editButton.click();
+  //
+  //       name.clear();
+  //       name.sendKeys('new ' + tmpl.name);
+  //
+  //       body.clear();
+  //       body.sendKeys(tmpl.body);
+  //
+  //       saveButton.click();
+  //       browser.waitForAngular();
+  //       browser.pause();
+  //       browser.waitForAngular().then(function () {
+  //        expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
+  //
+  //         TODO: implement successmessage
+  //         expect(successMessage.getInnerHtml()).to.eventually.eql(
+  //          'Template new' + tmpl.name + ' successfully updated!'
+  //         );
+  //       });
+  //     });
+  //   });
+
+  //   describe('when invalid values are given', function () {
+  //     it('displays errors', function () {
+  //
+  //       TODO: implement this test
+  //     });
+  //   });
+  // });
 
   describe('GET #/templates/{id}', function () {
     describe('when a valid id is given', function () {
