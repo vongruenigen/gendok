@@ -27,6 +27,10 @@ describe('templates', function () {
   var name = element(by.model('template.name'));
   var type = element(by.model('template.type'));
   var body = element(by.model('template.body'));
+  var paperFormat = element(by.model('template.paperFormat'));
+  var paperMargin = element(by.model('template.paperMargin'));
+  var headerHeight = element(by.model('template.headerHeight'));
+  var footerHeight = element(by.model('template.footerHeight'));
   var list = element.all(by.repeater('template in templates'));
   var saveButton = $('[ng-click="create()"]');
   var errorMessage = $('.alert');
@@ -84,6 +88,40 @@ describe('templates', function () {
         expect(body.getCssValue('border-bottom-color')).to.eventually.eql(
           'rgba(255, 0, 0, 1)' // === 'red'
         );
+      });
+    });
+  });
+
+  describe('GET #/templates/{id}', function () {
+    describe('when a valid id is given', function () {
+      it('displays the template', function () {
+        tmpl.save(function () {
+          stateHelper.go('templatesList');
+
+          var link = list.first().all(by.css('a'));
+          link.click();
+
+          browser.waitForAngular();
+
+          expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
+          expect(name.getInnerHtml()).to.eventually.eql(tmpl.name);
+          expect(type.getInnerHtml()).to.eventually.eql(tmpl.type);
+          expect(body.getInnerHtml()).to.eventually.eql(tmpl.body);
+          expect(paperFormat.getInnerHtml()).to.eventually.eql(tmpl.paperFormat);
+          expect(paperMargin.getInnerHtml()).to.eventually.eql(tmpl.paperMargin);
+          expect(headerHeight.getInnerHtml()).to.eventually.eql(tmpl.headerHeight);
+          expect(footerHeight.getInnerHtml()).to.eventually.eql(tmpl.footerHeight);
+        });
+      });
+    });
+
+    describe('when an invalid id is given', function () {
+      it('displays the 404 page', function () {
+        browser.get('#templates/98329');
+
+        browser.waitForAngular();
+
+        expect(stateHelper.current()).to.eventually.eql('notFound');
       });
     });
   });
