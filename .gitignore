@@ -5,6 +5,7 @@ pids
 *.pid
 *.seed
 
+*.rdb 
 .cover*
 reports
 debug

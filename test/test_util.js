@@ -190,5 +190,18 @@ describe('gendok.util', function () {
       expect(Object.keys(res).length).to.eql(0);
       done();
     });
+
+    it('ignores undefined attributes if the third parameter is set', function (done) {
+      var obj1 = {
+        a: true,
+        b: 'abc'
+      };
+      var obj2 = {
+        c: undefined
+      };
+      var res = util.extend(obj1, obj2, true);
+      expect(Object.keys(res).length).to.eql(2);
+      done();
+    });
   });
 });

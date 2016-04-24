@@ -38,7 +38,9 @@ var argv = require('minimist')(process.argv.slice(2));
  * Config variables
  */
 var mochaOpts = {reporter: 'spec'};
+
 var mochaJenkinsOpts = {reporter: 'mocha-jenkins-reporter'};
+
 var istanbulOpts = {dir: './reports',
                     reporters: ['text-summary', 'html', 'clover']};
 var istanbulThresholdOpts = {thresholds: {global: 90}};
@@ -147,7 +149,6 @@ gulp.task('lint', function () {
  * Testing related tasks
  */
 
-
 // List of all files to test
 var testFiles = ['test/**/test_*.js', '!test/e2e/**/test_*.js'];
 
@@ -164,6 +165,10 @@ gulp.task('test', ['pre-test'], function () {
 });
 
 gulp.task('test-env', function () {
+  process.env.JUNIT_REPORT_NAME  = 'gendok-tests';
+  process.env.JUNIT_REPORT_PATH  = 'reports/junit.xml';
+  process.env.JUNIT_REPORT_STACK = 1;
+
   env.set('test');
 });
 
