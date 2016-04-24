@@ -39,7 +39,8 @@ describe('templates', function () {
   var saveButton = $('[ng-click="create()"]');
   var updateButton = $('[ng-click="update()"]');
   var editButton = $('[ng-click="edit()"]');
-  var deleteButton = $('[ng-click="delte()"]')
+  var deleteButton = $('[ng-click="delte()"]');
+  var cancelButton = $('[ng-click="clear()"]');
   var errorMessage = $('.alert-danger');
   var successMessage = $('.alert-success');
 
@@ -121,9 +122,9 @@ describe('templates', function () {
         updateButton.click();
 
         browser.waitForAngular().then(function () {
-         expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
-         expect(templateDetail.isPresent()).to.eventually.eql(true);
-         expect(editTemplateForm.isPresent()).to.eventually.eql(false);
+          expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
+          expect(templateDetail.isPresent()).to.eventually.eql(true);
+          expect(editTemplateForm.isPresent()).to.eventually.eql(false);
           expect(successMessage.getInnerHtml()).to.eventually.eql(
            'Template new ' + tmpl.name + ' successfully updated!'
           );
@@ -146,12 +147,20 @@ describe('templates', function () {
         updateButton.click();
 
         browser.waitForAngular().then(function () {
-         expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
-         expect(templateDetail.isPresent()).to.eventually.eql(false);
-         expect(editTemplateForm.isPresent()).to.eventually.eql(true);
+          expect(stateHelper.current()).to.eventually.eql('templateViewUpdate');
+          expect(templateDetail.isPresent()).to.eventually.eql(false);
+          expect(editTemplateForm.isPresent()).to.eventually.eql(true);
           expect(errorMessage.getInnerHtml()).to.eventually.eql(
            'An error occured while updating the template.'
           );
+        });
+
+        cancelButton.click();
+
+        browser.waitForAngular().then(function () {
+          expect(errorMessage.isPresent()).to.eventually.eql(false);
+          expect(templateDetail.isPresent()).to.eventually.eql(true);
+          expect(editTemplateForm.isPresent()).to.eventually.eql(false);
         });
       });
     });
@@ -226,7 +235,7 @@ describe('templates', function () {
           expect(stateHelper.current()).to.eventually.eql('templatesList');
           var success = element(by.css('.successMessage'));
           var error = element(by.css('.errorMessage'));
-          expect(success.isPresent()).to.eventually.eql(false)
+          expect(success.isPresent()).to.eventually.eql(false);
           expect(error.isPresent()).to.eventually.eql(false);
           expect(Template.count()).to.eventually.eql(1);
         });
@@ -234,4 +243,31 @@ describe('templates', function () {
     });
   });
 
+  describe('POST #/templates/{id}/render', function () {
+    describe('when a invalid payload is given', function () {
+      it('display an error', function () {
+        stateHelper.go('templateViewUpdate', {templateId: tmplCreate.id});
+        previewButton.click();
+        browser.waitForAngular();
+        payload.sendKeys('not json');
+        renderButton.click();
+
+        expect(errorMessage.getInnerHtml()).to.eventually.eql('The payload isn\'t valid json.');
+      });
+    });
+
+    describe('when a valid payload is given', function () {
+      it('irgendwas', function () {
+        stateHelper.go('templateViewUpdate', {templateId: tmplCreate.id});
+        previewButton.click();
+        browser.waitForAngular();
+        payload.sendKeys('{}');
+        renderButton.click();
+
+        browser.sleep(10000);
+        browser.waitForAngular();
+        expect(browser.driver.getCurrentUrl()).to.eventually.eql('nfsndfskjnc');
+      });
+    });
+  });
 });
