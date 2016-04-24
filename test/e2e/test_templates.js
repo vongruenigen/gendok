@@ -28,6 +28,7 @@ describe('templates', function () {
   var name = element(by.model('template.name'));
   var type = element(by.model('template.type'));
   var body = element(by.model('template.body'));
+  var payload = element(by.model('payload'));
   var paperFormat = element(by.model('template.paperFormat'));
   var paperMargin = element(by.model('template.paperMargin'));
   var headerHeight = element(by.model('template.headerHeight'));
@@ -39,8 +40,9 @@ describe('templates', function () {
   var saveButton = $('[ng-click="create()"]');
   var updateButton = $('[ng-click="update()"]');
   var editButton = $('[ng-click="edit()"]');
-  var deleteButton = $('[ng-click="delte()"]');
-  var cancelButton = $('[ng-click="clear()"]');
+  var cancelButton = $('[ng-click="reset()"]');
+  var previewButton = $('[ng-click="openPayloadOptions()"]');
+  var renderButton = $('[ng-click="render(template, payload)"]');
   var errorMessage = $('.alert-danger');
   var successMessage = $('.alert-success');
 
@@ -249,15 +251,26 @@ describe('templates', function () {
         stateHelper.go('templateViewUpdate', {templateId: tmplCreate.id});
         previewButton.click();
         browser.waitForAngular();
+
+        expect(editPayloadForm.isPresent()).to.eventually.eql(true);
+
         payload.sendKeys('not json');
         renderButton.click();
 
         expect(errorMessage.getInnerHtml()).to.eventually.eql('The payload isn\'t valid json.');
+
+        cancelButton.click();
+
+        browser.waitForAngular().then(function () {
+          expect(errorMessage.isPresent()).to.eventually.eql(false);
+          expect(templateDetail.isPresent()).to.eventually.eql(true);
+          expect(editPayloadForm.isPresent()).to.eventually.eql(false);
+        });
       });
     });
 
-    describe('when a valid payload is given', function () {
-      it('irgendwas', function () {
+    /*describe('when a valid payload is given', function () {
+      it('display the rendered pdf', function () {
         stateHelper.go('templateViewUpdate', {templateId: tmplCreate.id});
         previewButton.click();
         browser.waitForAngular();
@@ -266,8 +279,8 @@ describe('templates', function () {
 
         browser.sleep(10000);
         browser.waitForAngular();
-        expect(browser.driver.getCurrentUrl()).to.eventually.eql('nfsndfskjnc');
+        expect(browser.driver.getCurrentUrl()).to.eventually.eql('url');
       });
-    });
+    });*/
   });
 });
