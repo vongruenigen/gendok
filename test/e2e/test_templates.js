@@ -96,10 +96,7 @@ describe('templates', function () {
     describe('when a valid id is given', function () {
       it('displays the template', function () {
         tmpl.save(function () {
-          stateHelper.go('templatesList');
-
-          var link = list.first().all(by.css('a'));
-          link.click();
+          stateHelper.go('templatesList', {templateId: tmpl.id});
 
           browser.waitForAngular();
 
@@ -118,10 +115,32 @@ describe('templates', function () {
     describe('when an invalid id is given', function () {
       it('displays the 404 page', function () {
         browser.get('#templates/98329');
-
         browser.waitForAngular();
-
         expect(stateHelper.current()).to.eventually.eql('notFound');
+      });
+    });
+  });
+
+  describe('GET #/templates', function () {
+    describe('when a user is signed in', function () {
+      it('displays the template list', function () {
+        tmpl.save(function () {
+          stateHelper.go('templatesList');
+
+          expect(list.count()).toEqual(1);
+          expect(list.first().first().getInnerHtml()).to.eventually.eql(tmpl.id);
+        });
+      });
+    });
+
+    describe('when no user is signed in', function () {
+      it('displays the sign in page', function () {
+        authHelper.signout(function () {
+          browser.get('#templates');
+          browser.waitForAngular();
+
+          expect(stateHelper.current()).to.eventually.eql('signin');
+        });
       });
     });
   });
