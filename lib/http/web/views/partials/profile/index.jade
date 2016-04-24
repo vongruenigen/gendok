@@ -1,28 +1,28 @@
 div
-  h2.alert.alert-danger(ng-if='error_message') {{error_message}}
-  h2.alert.alert-success(ng-if='success_message') {{success_message}}
+  h2.alert.alert-danger(ng-if='errorMessage') {{errorMessage}}
+  h2.alert.alert-success(ng-if='successMessage') {{successMessage}}
   h2 Profile
   ul.list-group(ng-if='!editable')
     li.list-group-item Name: {{profile.name}}
     li.list-group-item E-Mail: {{profile.email}}
 
   form(ng-if='editable')
-    div.form-group(ng-class="{'error': validation_errors.name}")
+    div.form-group(ng-class="{'error': validationErrors.name}")
       label.form-control-label Name:
       input.form-control(type="text" ng-model="profile.name" )
-      span.validation_error_message(ng-if='validation_errors.name') {{validation_errors.name[0]}}
-    div.form-group(ng-class="{'error': validation_errors.email}")
+      span.validation_error_message(ng-if='validationErrors.name') {{validationErrors.name[0]}}
+    div.form-group(ng-class="{'error': validationErrors.email}")
       label.form-control-label E-Mail:
       input.form-control(type="text" ng-model="profile.email" )
-      span.validation_error_message(ng-if='validation_errors.email') {{validation_errors.email[0]}}
-    div.form-group(ng-class="{'error': validation_errors.password}")
+      span.validation_error_message(ng-if='validationErrors.email') {{validationErrors.email[0]}}
+    div.form-group(ng-class="{'error': validationErrors.password}")
       label.form-control-label Password:
       input.form-control(type="password" ng-model="profile.password" )
-      span.validation_error_message(ng-if='validation_errors.password') {{validation_errors.password[0]}}
-    div.form-group(ng-class="{'error': validation_errors.passwordConfirmation}")
+      span.validation_error_message(ng-if='validationErrors.password') {{validationErrors.password[0]}}
+    div.form-group(ng-class="{'error': validationErrors.passwordConfirmation}")
       label.form-control-label Confirm password:
       input.form-control(type="password" ng-model="profile.passwordConfirmation" )
-      span.validation_error_message(ng-if='validation_errors.passwordConfirmation') {{validation_errors.passwordConfirmation[0]}}
+      span.validation_error_message(ng-if='validationErrors.passwordConfirmation') {{validationErrors.passwordConfirmation[0]}}
     div.form-group
       input(type="submit" class="btn btn-success" ng-click="update(profile)" value="save")
       =' '
