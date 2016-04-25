@@ -202,6 +202,40 @@ module.exports = {
   },
 
   /**
+   * Starts a queue runner with the given workers registered. It registers all
+   * currently implemented workers by default.
+   *
+   * @param {Object} ctx The context to register hooks on
+   */
+  runQueueRunner: function (ctx) {
+    if (!ctx) {
+      throw new Error('context argument must be present');
+    }
+
+    var runner = new gendok.queue.runner();
+    var workersRegistered = false;
+
+    ctx.beforeAll(function (done) {
+      runner.start(function () {
+        if (!workersRegistered) {
+          Object.keys(gendok.queue.worker).forEach(function (w) {
+            var worker = gendok.queue.worker[w];
+            runner.registerWorker(w, worker);
+          });
+
+          workersRegistered = true;
+        }
+
+        done();
+      });
+    });
+
+    ctx.afterAll(function (done) {
+      runner.stop(done);
+    });
+  },
+
+  /**
    * This helper creates a queue via util.createQueue() and sets up the required
    * before, after and afterEach hooks to run it in test mode. It uses the given
    * context to set up the hooks in.
