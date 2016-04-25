@@ -48,7 +48,9 @@ describe('templates', function () {
 
   beforeEach(function (done) {
     Template = gendok.data.db.getModel('Template');
+    Job = gendok.data.db.getModel('Job');
     expect(Template.truncate()).to.eventually.be.truthy;
+    expect(Job.truncate()).to.eventually.be.truthy;
 
     authHelper.signout(function () {
       factory.create('User', function (err, u) {
@@ -269,7 +271,7 @@ describe('templates', function () {
       });
     });
 
-    /*describe('when a valid payload is given', function () {
+    describe('when a valid payload is given', function () {
       it('display the rendered pdf', function () {
         stateHelper.go('templateViewUpdate', {templateId: tmplCreate.id});
         previewButton.click();
@@ -278,9 +280,42 @@ describe('templates', function () {
         renderButton.click();
 
         browser.sleep(10000);
-        browser.waitForAngular();
-        expect(browser.driver.getCurrentUrl()).to.eventually.eql('url');
+        browser.waitForAngular().then(function () {
+          expect(browser.driver.getCurrentUrl()).toMatch(/\/url/);
+        });
       });
-    });*/
+
+      it('should check the new window url', function () {
+        stateHelper.go('templateViewUpdate', {templateId: tmplCreate.id});
+        previewButton.click();
+        browser.waitForAngular();
+        payload.sendKeys('{}');
+        renderButton.click();
+
+        browser.waitForAngular().then(function () {
+          browser.getAllWindowHandles().then(function (handles) {
+            var newWindowHandle = handles[1];
+            browser.switchTo().window(newWindowHandle).then(function () {
+              expect(browser.driver.getCurrentUrl()).to.eventually.eql('url to check');
+
+              /*browser.driver.close().then(function () {
+                browser.switchTo().window(handles[0]);
+                cancelButton.click();
+
+                stateHelper.go('templateCreate');
+
+                name.clear();
+                name.sendKeys(tmpl.name);
+
+                type.$(format('[value="%s"]', tmpl.type)).click();
+
+                body.clear();
+                body.sendKeys(tmpl.body);
+              });*/
+            });
+          });
+        });
+      });
+    });
   });
 });
