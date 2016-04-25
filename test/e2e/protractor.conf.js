@@ -58,7 +58,7 @@ exports.config = {
   // Use mocha instead of jasmine for testing
   framework: 'mocha',
   mochaOpts: {
-    timeout: 5000,
+    timeout: 10000,
     reporter: 'mocha-jenkins-reporter'
   }
 };

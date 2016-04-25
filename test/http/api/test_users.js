@@ -244,6 +244,53 @@ describe('gendok.http.api.users', function () {
       });
     });
 
+    it('updates the password in the database', function (done) {
+      factory.create('User', {isAdmin: true}, function (err, user) {
+        var attrs = {
+          password: 'abc123456',
+          passwordConfirmation: 'abc123456'
+        };
+
+        request.put(url + '/' + (user.id))
+               .send(attrs)
+               .set('Content-Type', 'application/json')
+               .set('Authorization', 'Bearer ' + user.apiToken)
+               .end(function (err, res) {
+                 expect(err).to.not.exist;
+                 expect(res.statusCode).to.eql(200);
+
+                 user.reload().then(function (dbUser) {
+                   expect(dbUser.isPassword(attrs.password)).to.be.true;
+                   done();
+                 });
+               });
+      });
+    });
+
+    it('it returns an error if the passwords do not match', function (done) {
+      factory.create('User', {isAdmin: true}, function (err, user) {
+        var attrs = {
+          password: 'abc123456',
+          passwordConfirmation: 'abc123457'
+        };
+
+        request.put(url + '/' + (user.id))
+               .send(attrs)
+               .set('Content-Type', 'application/json')
+               .set('Authorization', 'Bearer ' + user.apiToken)
+               .end(function (err, res) {
+                 expect(err).to.exist;
+                 expect(res.statusCode).to.eql(errors.validation.code);
+
+                 user.update(attrs).catch(function (err) {
+                   var expectedError = errors.validation.data(err);
+                   expect(res.body).to.eql(expectedError);
+                   done();
+                 });
+               });
+      });
+    });
+
     it('returns an unauthorized error without a valid api token', function (done) {
       factory.create('User', {isAdmin: true}, function (err, user) {
         request.put(url)
