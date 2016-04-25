@@ -106,8 +106,9 @@ describe('user signin / signout', function () {
 
           signinButton.click();
 
-          expect(stateHelper.current()).to.eventually.eql('home');
           browser.get('#/signin');
+          browser.sleep(1000);
+
           expect(stateHelper.current()).to.eventually.eql('home');
         });
       });
