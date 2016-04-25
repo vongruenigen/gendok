@@ -1,0 +1,46 @@
+// error messages
+h2.alert {
+  font-size: 14px;
+}
+
+// validation error messages
+form > div.error {
+  label + input {
+    border: 1px solid red;
+  }
+
+  div.inline-inputs {
+    input {
+      border: 1px solid red;
+    }
+  }
+
+  label + select {
+    border: 1px solid red;
+  }
+
+  label + textarea {
+    border: 1px solid red;
+  }
+
+  span.validation_error_message {
+    color: red;
+  }
+}
+
+.btn {
+  margin: 4px 2px;
+}
+
+// unput structure
+form div.inline-inputs {
+  width: 100%;
+
+  input {
+    width: 50% !important;
+  }
+
+  select {
+    width: 50% !important;
+  }
+}
