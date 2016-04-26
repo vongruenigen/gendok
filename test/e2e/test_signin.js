@@ -107,7 +107,7 @@ describe('user signin / signout', function () {
           signinButton.click();
 
           browser.get('#/signin');
-          browser.sleep(1000);
+          browser.driver.sleep(1000);
 
           expect(stateHelper.current()).to.eventually.eql('home');
         });
