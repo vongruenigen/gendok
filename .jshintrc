@@ -9,6 +9,8 @@
     "describe", "it",
     "before", "beforeEach",
     "after", "afterEach",
-    "angular", "window"
+    "angular", "window",
+    "browser", "$", "by",
+    "element", "document"
   ]
 }

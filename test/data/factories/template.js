@@ -23,8 +23,13 @@ module.exports = function (model) {
     userId: factory.assoc('User', 'id'),
     additionalCss: '',
     type: 'html',
+    name: faker.name.findName() + '-template',
     body: '<html><head><title>hello world></title></head><body>' +
-          '<h1>Hello from gendok</h1></body</html>'
+          '<h1>Hello from gendok</h1></body</html>',
+    paperFormat: 'A3',
+    paperMargin: '10px',
+    headerHeight: '0px',
+    footerHeight: '4cm'
   });
 
   return factory;

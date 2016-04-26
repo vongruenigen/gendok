@@ -5,6 +5,7 @@ pids
 *.pid
 *.seed
 
+*.rdb 
 .cover*
 reports
 debug
@@ -21,5 +22,8 @@ public/fonts/**/*
 .tmp
 *.sass-cache
 lib/http/web/assets/css/**/*.css
-!**/*.gitkeep
+
 *.pdf
+screenshot.png
+
+!**/*.gitkeep

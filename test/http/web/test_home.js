@@ -9,39 +9,30 @@
 
 'use strict';
 
-var Browser = require('zombie');
+var gendokHttp = require('../../..').http;
+var home = gendokHttp.web.home;
+var all = gendokHttp.middleware.all;
 var expect = require('chai').expect;
-var config = require('../../..').config;
-var http = require('../../../').http;
 var helper = require('../../helper');
-var HttpServer = http.server;
-var web = http.web;
+var request = require('superagent');
 
-describe('gendok.http.web.home', function () {
+describe('gendok.http.web.partials', function () {
   it('is a function', function () {
-    expect(web.home).to.be.a('function');
+    expect(home).to.be.a('function');
   });
 
-  var browser = new Browser();
-  var modules = [http.middleware.basic, web.home];
+  helper.runHttpServer(this);
+  var url = helper.getUrl('/');
 
-  // Register http server hooks
-  helper.runHttpServer(this, modules);
-  Browser.localhost(config.get('http_host'), config.get('http_port'));
-
-  describe('#index', function () {
-    beforeEach(function (done) {
-      browser.visit('/', done);
-    });
-
-    it('contains the text "gendok"', function () {
-      browser.assert.success();
-      browser.assert.text('h1.title', 'gendok');
-    });
-
-    it('contains a welcome message from angular', function () {
-      browser.assert.success();
-      browser.assert.text('.angular-welcome', 'hello world from angular-js!');
+  describe('GET /whatever', function () {
+    it('returns the index view as HTML', function (done) {
+      request.get(url + '/whatever')
+             .end(function (err, res) {
+               expect(err).to.not.exist;
+               expect(res.get('Content-Type')).to.include('text/html');
+               expect(res.get('Content-Length')).to.be.above(0);
+               done();
+             });
     });
   });
 });

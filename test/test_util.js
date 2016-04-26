@@ -10,11 +10,12 @@
 'use strict';
 
 var util = require('../').util;
-var Config = require('../').config;
+var config = require('../').config;
 var env = require('../').env;
 var expect = require('chai').expect;
 var os = require('os');
 var fs = require('fs');
+var jwt = require('jsonwebtoken');
 
 describe('gendok.util', function () {
   it('is an object', function () {
@@ -52,6 +53,29 @@ describe('gendok.util', function () {
     });
   });
 
+  describe('generateJwt()', function () {
+    it('creates a valid jwt with the given id', function () {
+      expect(util.generateJwt).to.be.a('function');
+
+      var id = 1234;
+      var token = util.generateJwt(id);
+      var expectedToken = jwt.sign({id: id}, config.get('jwt_secret'),
+                                   {expiresIn: config.get('jwt_ttl')});
+
+      expect(token).to.eql(expectedToken);
+    });
+  });
+
+  describe('verifyJwt()', function () {
+    it('validates a given jwt', function () {
+      var token = util.generateJwt(1234);
+      var wrongToken = 'blub';
+
+      expect(util.verifyJwt(token)).to.be.true;
+      expect(util.verifyJwt(wrongToken)).to.be.false;
+    });
+  });
+
   describe('addCssToHtml()', function () {
     it('adds the given css within the <head> element', function () {
       var htmlTmpl = '<html><head>%%</head><body><h1>gendok</h1></body></html>';
@@ -64,16 +88,55 @@ describe('gendok.util', function () {
   });
 
   describe('createQueue()', function () {
-    var config = Config.getDefault();
-
-    it('creates a new queue with the given config', function () {
-      var queue = util.createQueue(config);
+    it('creates a new queue', function () {
+      var queue = util.createQueue();
       expect(queue).to.exist;
     });
 
     it('sets the prefix to gendok_$ENV', function () {
-      var queue = util.createQueue(config);
+      var queue = util.createQueue();
       expect(queue.client.prefix).to.eql('gendok_' + env.get());
+    });
+  });
+
+  describe('createMailer()', function () {
+    var mailer = null;
+
+    it('is a function', function (done) {
+      expect(util.extend).to.be.a('function');
+      done();
+    });
+
+    it('creates a new mailer transport with the given options', function (done) {
+      var smtpConfig = {
+        host: 'localhost',
+        port: 465,
+        secure: true,   // use SSL
+        auth: {
+          user: 'gendok',
+          pass: 'gendok'
+        }
+      };
+
+      mailer = util.createMailer(smtpConfig);
+      expect(mailer).to.exist;
+      done();
+    });
+
+    it('remembers the first created transport', function (done) {
+      var smtpConfig = {
+        host: 'localhost',
+        port: 465,
+        secure: true,   // use SSL
+        auth: {
+          user: 'gendok',
+          pass: 'gendok'
+        }
+      };
+
+      mailer = util.createMailer(smtpConfig);
+      expect(mailer).to.eql(util._mailerObject);
+      done();
     });
   });
 
@@ -125,6 +188,19 @@ describe('gendok.util', function () {
       var res = util.extend();
       expect(res).to.be.an('object');
       expect(Object.keys(res).length).to.eql(0);
+      done();
+    });
+
+    it('ignores undefined attributes if the third parameter is set', function (done) {
+      var obj1 = {
+        a: true,
+        b: 'abc'
+      };
+      var obj2 = {
+        c: undefined
+      };
+      var res = util.extend(obj1, obj2, true);
+      expect(Object.keys(res).length).to.eql(2);
       done();
     });
   });

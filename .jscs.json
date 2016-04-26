@@ -47,6 +47,7 @@
   "requireDotNotation": true,
   "requireSpacesInForStatement": true,
   "requireSpaceBetweenArguments": true,
+  "requireDollarBeforejQueryAssignment": false,
   "requireCurlyBraces": [
     "do"
   ],
