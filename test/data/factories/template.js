@@ -26,6 +26,8 @@ module.exports = function (model) {
     name: faker.name.findName() + '-template',
     body: '<html><head><title>hello world></title></head><body>' +
           '<h1>Hello from gendok</h1></body</html>',
+    createdAt: '2016-04-21 17:50:39.451+02',
+    updatedAt: '2016-04-24 18:27:14.039+02',
     paperFormat: 'A3',
     paperMargin: '10px',
     headerHeight: '0px',
