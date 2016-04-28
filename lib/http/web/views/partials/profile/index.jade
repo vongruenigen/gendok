@@ -13,7 +13,7 @@ section.wrapper#profile
         td {{profile.email}}
         
     form.form-table(ng-if='editable')
-      button.btn.btn_green(ng-click="update()") save
+      button.btn.btn_green(ng-click="update(profile)") save
       button.btn.btn_red(ng-click="reset()") cancel
       table.list
         tr(ng-class="{'error': validationErrors.name}")

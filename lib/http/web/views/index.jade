@@ -25,10 +25,10 @@ html(ng-app='gendok')
               a(href='#/about') About us
           ul.right
             li(ng-if='!authService.isAuthenticated()')
-              a(href='/#/register') Want to sign up?
+              a.signup-link(href='/#/register') Want to sign up?
             li(ng-if='authService.isAuthenticated()')
-              a(href='/#/profile') My profile
+              a.profile-link(href='/#/profile') My profile
             li(ng-if='authService.isAuthenticated()')
-              a.signout-button(href='#' ng-click='signoutUser()') Sign out
+              a(href='#' ng-click='signoutUser()') Sign out
 
     div(ui-view)

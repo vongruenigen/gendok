@@ -25,12 +25,12 @@ describe('user signin / signout', function () {
     var usernameField  = $('#username');
     var passwordField  = $('#password');
     var signoutLink    = $('[ng-click="signoutUser()"]');
-    var dropdownToggle = $('li a.dropdown-toggle');
     var signupLink     = $('a.signup-link');
+    var profileLink    = $('a.profile-link');
 
     var user = null; // set in beforeEach
 
-    /*beforeEach(function (done) {
+    beforeEach(function (done) {
       authHelper.signout(function () {
         factory.create('User', function (err, u) {
           user = u;
@@ -75,7 +75,7 @@ describe('user signin / signout', function () {
       });
 
       describe('when a valid username is given', function () {
-        it('replaces the signup link with dropdown items', function () {
+        it('replaces the signup link with signout and profile link', function () {
           expect(signupLink.isPresent()).to.eventually.be.true;
 
           stateHelper.go('signin');
@@ -89,8 +89,8 @@ describe('user signin / signout', function () {
           signinButton.click();
 
           expect(signupLink.isPresent()).to.eventually.be.false;
-          expect(dropdownToggle.isPresent()).to.eventually.be.true;
-          expect(dropdownToggle.isDisplayed()).to.eventually.be.true;
+          expect(signoutLink.isPresent()).to.eventually.be.true;
+          expect(profileLink.isPresent()).to.eventually.be.true;
         });
       });
 
@@ -127,13 +127,12 @@ describe('user signin / signout', function () {
 
           signinButton.click();
 
-          dropdownToggle.click();
           signoutLink.click();
 
           expect(authHelper.isAuthenticated()).to.eventually.be.false;
           expect(browser.getCurrentUrl()).to.eventually.include('#/home');
         });
       });
-    });*/
+    });
   });
 });
