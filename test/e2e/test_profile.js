@@ -30,7 +30,7 @@ describe('profile edit', function () {
   var saveButton = $('[ng-click="update(profile)"]');
   var errorMessage = $('.alert');
 
-  beforeEach(function (done) {
+  /*beforeEach(function (done) {
     authHelper.signout(function () {
       factory.create('User', function (err, u) {
         expect(err).to.not.exist;
@@ -211,5 +211,5 @@ describe('profile edit', function () {
         });
       });
     });
-  });
+  });*/
 });

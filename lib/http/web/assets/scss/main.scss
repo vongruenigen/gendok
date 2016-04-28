@@ -1,10 +1,13 @@
 /* ///////////////////////////////// VARIABLES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
 $dark_grey: rgb(73, 73, 73);
-$light_grey: rgb(219, 219, 219);
-$red: rgb(210, 75, 75);
-$red_hover: rgb(191, 45, 45);
+$grey: rgb(230, 230, 230);
+$light_grey: rgb(244, 244, 244);
+$red: rgb(217, 93, 93);
+$red_hover: rgb(200, 80, 80);
+$green: #89d669;
+$green_hover: #73be55;
 $turquoise: #15d0a6;
-$turquoise_hover: #18e6b7;
+$turquoise_hover: #14bb96;
 $pastel_blue: #5a8190;
 
 $wrapper_centered_width: 1300px;
@@ -91,7 +94,7 @@ $height_navigation: 70px;
 
     form {
       text-align: center;
-      
+
       input {
         width: calc(90% - 14px);
       }
@@ -144,9 +147,56 @@ $height_navigation: 70px;
   }
 }
 
-/* ///////////////////////////////// TEMPLATE DETAIL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
-#template_details {
+/* ///////////////////////////////// FORM TABLE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+.form-table tr {
+  td {
+    padding: 3px 10px !important;
 
+    div.inline-inputs {
+      width: 100%;
+
+      input {
+        width: calc(50% - 12px) !important;
+      }
+
+      select {
+        width: calc(50% - 10px) !important;
+      }
+    }
+
+    input {
+      padding: 10px 10px;
+      border: 1px solid $light_grey;
+    }
+
+    select {
+      appearance: none;
+      padding: 11px 10px;
+      border: none;
+      background-color: $light_grey;
+    }
+
+    &:first-of-type {
+      width: 140px;
+    }
+  }
+
+  &:last-of-type td {
+    padding: 12px 10px;
+  }
+}
+
+/* ///////////////////////////////// PROFILE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+#profile {
+  .form-table tr {
+    td:first-of-type {
+      width: 150px !important;
+    }
+
+    &:last-of-type td {
+      vertical-align: middle !important;
+    }
+  }
 }
 
 /* ///////////////////////////////// FOOTER \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */

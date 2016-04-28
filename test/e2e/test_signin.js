@@ -30,7 +30,7 @@ describe('user signin / signout', function () {
 
     var user = null; // set in beforeEach
 
-    beforeEach(function (done) {
+    /*beforeEach(function (done) {
       authHelper.signout(function () {
         factory.create('User', function (err, u) {
           user = u;
@@ -134,6 +134,6 @@ describe('user signin / signout', function () {
           expect(browser.getCurrentUrl()).to.eventually.include('#/home');
         });
       });
-    });
+    });*/
   });
 });

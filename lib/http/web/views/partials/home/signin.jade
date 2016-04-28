@@ -5,7 +5,7 @@ section.wrapper#signin(ng-controller='signinController')
       img(src='img/lock.svg')
     form.form-signin(novalidate)
 
-      .alert.alert-danger(ng-show='error') {{error}}
+      p.alert.alert-danger(ng-show='error') {{error}}
       div.form-group
         label(for='username') Username:
         input(
@@ -27,7 +27,7 @@ section.wrapper#signin(ng-controller='signinController')
           required
         )
 
-      button.btn.btn_turquoise(
+      button.btn.btn_turquoise.btn-signin(
         type='submit' ng-click='signin(username, password)'
       ) Sign in
       

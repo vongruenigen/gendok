@@ -1,9 +1,9 @@
-section.wrapper#template_list(ng-init="getAlltemplates()") 
+section.wrapper(ng-init="getAlltemplates()") 
   section.wrapper_centered
     h2.alert.alert-danger(ng-if='errorMessage') {{errorMessage}}
     h2.alert.alert-success(ng-if='successMessage') {{successMessage}}
     h1 Templates
-    button(class="btn btn-default" ui-sref="templateCreate()") Create Template
+    button.btn(ui-sref="templateCreate()") Create Template
     table.table
       tr
         td ID

@@ -3,11 +3,13 @@
 /* ///////////////////////////////// VARIABLES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
 $dark_grey: rgb(73, 73, 73);
 $grey: rgb(230, 230, 230);
-$light_grey: rgb(246, 247, 246);
-$red: rgb(210, 75, 75);
-$red_hover: rgb(191, 45, 45);
+$light_grey: rgb(244, 244, 244);
+$red: rgb(217, 93, 93);
+$red_hover: rgb(200, 80, 80);
+$green: #89d669;
+$green_hover: #73be55;
 $turquoise: #15d0a6;
-$turquoise_hover: #18e6b7;
+$turquoise_hover: #14bb96;
 $pastel_blue: #5a8190;
 
 /* ///////////////////////////////// RESET \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
@@ -47,21 +49,21 @@ body {
 }
 
 /* ///////////////////////////////// FONTS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
-h1 {
+@mixin font($font-size, $font-weight) {
   font-family: 'Lato', sans-serif;
-  font-weight: 400;
-  font-size: 2.2em;
+  font-size: $font-size;
+  font-weight: $font-weight;
+}
+
+h1 {
+  @include font(2.2em, 300);
   line-height: 2.4em;
-  font-weight: 300;
   color: black;
 }
 
 span.subtitle {
-  font-family: 'Lato', sans-serif;
-  font-weight: 400;
-  font-size: 1.2em;
+  @include font(1.2em, 400);
   line-height: 1.4em;
-  font-weight: 300;
   color: black;
   display: block;
 }
@@ -75,33 +77,26 @@ span.bold {
 }
 
 h2 {
-  font-family: 'Lato', sans-serif;
-  font-weight: 400;
-  font-size: 1.7em;
+  @include font(1.7em, 300);
   line-height: 2.2em;
-  font-weight: 300;
   color: black;
 }
 
-a {
-  font-family: 'Lato', sans-serif;
-  font-weight: 300;
-  font-size: 1.1em;
-  text-decoration: none;
-  color: $turquoise;
+p {
+  @include font(1.1em, 300);
 }
 
-p {
-  font-family: 'Lato', sans-serif;
-  font-weight: 300;
-  font-size: 1.1em;
+a {
+  @extend p;
+  text-decoration: none;
+  color: $turquoise;
 }
 
 /* ///////////////////////////////// TABLE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
 table.table {
   width: 100%;
   border-spacing: 0px;
-  margin-top: 20px;
+  margin-top: 15px;
 
   tr {
     td {
@@ -143,23 +138,18 @@ table.list {
   border-radius: 4px;
   border: 1px solid $grey;
   border-spacing: 0px;
+  margin-top: 15px;
 
   tr {
     td {
       list-style-type: none;
-      padding: 15px 10px;
       border-bottom: 1px solid $grey;
       text-align: left;
       vertical-align: middle;
+      padding: 15px 10px;
 
       &:first-of-type {
-        width: 150px;
-      }
-
-      input {
-        padding: 1px;
-        border: none;
-        background-color: $light_grey;
+        width: 140px;
       }
     }
 
@@ -186,6 +176,7 @@ pre {
   background-color: rgb(254, 254, 254);
   border: 1px solid $grey;
   padding: 10px 15px;
+  margin: 2px;
   border-radius: 6px;
   cursor: pointer;
 
@@ -220,6 +211,16 @@ pre {
   }
 }
 
+.btn_green {
+  border: none;
+  color: white;
+  background-color: $green;
+
+  &:hover {
+    background-color: $green_hover;
+  }
+}
+
 /* ///////////////////////////////// FORMS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
 label {
   font-family: 'Lato', sans-serif;
@@ -229,29 +230,27 @@ label {
 }
 
 input {
-  width: calc(100% - 14px);
+  @include font(1em, 300);
+  width: calc(100% - 22px);
   margin: 1px auto;
   padding: 10px 7px;
   border-radius: 3px !important;
   border: 1px solid rgb(200, 200, 200);
-  font-family: 'Lato', sans-serif;
-  font-weight: 300;
-  font-size: 1em;
 }
 
 select {
-  font-family: 'Lato', sans-serif;
-  font-weight: 300;
-  font-size: 1em;
+  @include font(1em, 300);
+  background: transparent;
+  border: none;
   width: 100%;
   padding: 5px;
 }
 
 textarea {
+  @include font(1em, 300);
   resize: vertical;
-  width: calc(100% - 10px);
-  background-color: $light_grey;
-  border: 1px solid $grey;
+  width: calc(100% - 12px);
+  border: 1px solid $light_grey;
   padding: 5px;
   border-radius: 4px;
 }
@@ -264,12 +263,14 @@ div.form-group {
 form div.inline-inputs {
   width: 100%;
 
-  input {
-    width: calc(50% - 1px) !important;
+  select {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
 
-  select {
-    width: calc(50% - 1px) !important;
+  input {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
   }
 }
 
@@ -298,8 +299,12 @@ h2.alert {
 }
 
 // validation error messages
-form > div.error {
-  label + input {
+form tr.error {
+  input {
+    border: 1px solid red !important;
+  }
+
+  select {
     border: 1px solid red;
   }
 
@@ -307,13 +312,13 @@ form > div.error {
     input {
       border: 1px solid red;
     }
+
+    select {
+      border: none !important;
+    }
   }
 
-  label + select {
-    border: 1px solid red;
-  }
-
-  label + textarea {
+  textarea {
     border: 1px solid red;
   }
 
