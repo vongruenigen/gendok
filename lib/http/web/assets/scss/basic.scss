@@ -1,0 +1,323 @@
+@import url('http://fonts.googleapis.com/css?family=Lato:100,300,400');
+
+/* ///////////////////////////////// VARIABLES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+$dark_grey: rgb(73, 73, 73);
+$grey: rgb(230, 230, 230);
+$light_grey: rgb(246, 247, 246);
+$red: rgb(210, 75, 75);
+$red_hover: rgb(191, 45, 45);
+$turquoise: #15d0a6;
+$turquoise_hover: #18e6b7;
+$pastel_blue: #5a8190;
+
+/* ///////////////////////////////// RESET \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* ///////////////////////////////// GENERAL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+html {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-size: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* ///////////////////////////////// FONTS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+h1 {
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+  font-size: 2.2em;
+  line-height: 2.4em;
+  font-weight: 300;
+  color: black;
+}
+
+span.subtitle {
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+  font-size: 1.2em;
+  line-height: 1.4em;
+  font-weight: 300;
+  color: black;
+  display: block;
+}
+
+span.turquoise {
+  color: $turquoise !important;
+}
+
+span.bold {
+  font-weight: 400;
+}
+
+h2 {
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+  font-size: 1.7em;
+  line-height: 2.2em;
+  font-weight: 300;
+  color: black;
+}
+
+a {
+  font-family: 'Lato', sans-serif;
+  font-weight: 300;
+  font-size: 1.1em;
+  text-decoration: none;
+  color: $turquoise;
+}
+
+p {
+  font-family: 'Lato', sans-serif;
+  font-weight: 300;
+  font-size: 1.1em;
+}
+
+/* ///////////////////////////////// TABLE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+table.table {
+  width: 100%;
+  border-spacing: 0px;
+  margin-top: 20px;
+
+  tr {
+    td {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 1.1em;
+      border-top: 1px solid $grey;
+      padding: 15px 10px;
+
+      a {
+        color: $turquoise;
+      }
+
+      .btn {
+        padding-top: 5px;
+        padding-bottom: 5px;
+      }
+    }
+
+    &:first-of-type td {
+      padding: 10px 10px;
+      font-weight: 400;
+    }
+
+    &:last-of-type td {
+      border-bottom: 1px solid $grey;
+    }
+
+    &:nth-of-type(2n) {
+      background-color: $light_grey;
+    }
+  }
+}
+
+/* ///////////////////////////////// TABLE LIST \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+table.list {
+  @extend p;
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid $grey;
+  border-spacing: 0px;
+
+  tr {
+    td {
+      list-style-type: none;
+      padding: 15px 10px;
+      border-bottom: 1px solid $grey;
+      text-align: left;
+      vertical-align: middle;
+
+      &:first-of-type {
+        width: 150px;
+      }
+
+      input {
+        padding: 1px;
+        border: none;
+        background-color: $light_grey;
+      }
+    }
+
+    &:last-of-type td {
+      border-bottom: none;
+      vertical-align: top;
+    }
+  }
+}
+
+/* ///////////////////////////////// CODE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+pre {
+  background-color: $light_grey;
+  border: 1px solid $grey;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+/* ///////////////////////////////// BUTTONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+.btn {
+  @extend p;
+  text-decoration: none;
+  color: $dark_grey;
+  background-color: rgb(254, 254, 254);
+  border: 1px solid $grey;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $grey;
+    transition: all 0.2s ease;
+  }
+}
+
+.btn_square {
+  border-radius: 0px;
+}
+
+.btn_turquoise {
+  border: none;
+  color: white;
+  background-color: $turquoise;
+  border-color: $turquoise;
+
+  &:hover {
+    background-color: $turquoise_hover;
+  }
+}
+
+.btn_red {
+  border: none;
+  color: white;
+  background-color: $red;
+
+  &:hover {
+    background-color: $red_hover;
+  }
+}
+
+/* ///////////////////////////////// FORMS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+label {
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+  font-size: 1em;
+  line-height: 1.5em;
+}
+
+input {
+  width: calc(100% - 14px);
+  margin: 1px auto;
+  padding: 10px 7px;
+  border-radius: 3px !important;
+  border: 1px solid rgb(200, 200, 200);
+  font-family: 'Lato', sans-serif;
+  font-weight: 300;
+  font-size: 1em;
+}
+
+select {
+  font-family: 'Lato', sans-serif;
+  font-weight: 300;
+  font-size: 1em;
+  width: 100%;
+  padding: 5px;
+}
+
+textarea {
+  resize: vertical;
+  width: calc(100% - 10px);
+  background-color: $light_grey;
+  border: 1px solid $grey;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+div.form-group {
+  margin: 10px auto;
+}
+
+// input structure
+form div.inline-inputs {
+  width: 100%;
+
+  input {
+    width: calc(50% - 1px) !important;
+  }
+
+  select {
+    width: calc(50% - 1px) !important;
+  }
+}
+
+/* ///////////////////////////////// MESSAGES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+// error/success message
+h2.alert {
+  display: inline-block;
+  width: calc(100% - 40px);
+  padding: 10px 20px;
+  border: 1px solid;
+  border-radius: 3px;
+  font-size: 1em;
+  font-weight: 400;
+}
+
+.alert-success {
+  background-color: #DDEFD5;
+  color: #318b33;
+  border-color: #B2DBA1 !important;
+}
+
+.alert-danger {
+  background-color: #F0D9D9;
+  color: #A94442;
+  border-color: #DCA7A7 !important;
+}
+
+// validation error messages
+form > div.error {
+  label + input {
+    border: 1px solid red;
+  }
+
+  div.inline-inputs {
+    input {
+      border: 1px solid red;
+    }
+  }
+
+  label + select {
+    border: 1px solid red;
+  }
+
+  label + textarea {
+    border: 1px solid red;
+  }
+
+  span.validation_error_message {
+    color: red;
+  }
+}

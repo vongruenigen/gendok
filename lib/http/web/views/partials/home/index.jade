@@ -1,12 +1,32 @@
-div(ng-controller='homeController')
-  .jumbotron
-    h1.title gendok
-    h4 Document generation as a service
+section.wrapper#home(ng-controller='homeController')
+  section.wrapper_centered
+    div
+      h1.title Welcome to 
+        span.turquoise gendok
+      span.subtitle Document generation as a service
+      p
+        a.btn.btn_turquoise.btn_square(
+          href='#/signin', 
+          ng-if='!authService.isAuthenticated()'
+        ) Signin &raquo;
+        span.subtitle(ng-if='authService.isAuthenticated()') Welcome 
+          span.bold {{authService.getUser().username}}!
+          
+section.wrapper
+  section.wrapper_centered
+    h2 Description
     p
-      a.btn.btn-primary.btn-lg(
-        href='#/signin', 
-        role='button'
-        ng-if='!authService.isAuthenticated()'
-      ) Signin &raquo;
-      p(ng-if='authService.isAuthenticated()')
-        | Welcome {{authService.getUser().username}}!
+      | gendok is a node.js application used to render documents based on templates 
+      | and content data provided by the user. For example, one could use gendok to 
+      | generate customer bills which then can be retrieved as one or multiple PDF 
+      | files. It places an emphasis on using existing web standards, so users can 
+      | start using it right away, without having to learn any new languages or 
+      | complicated APIs. It makes heavy use of HTML, CSS and well-known templating 
+      | engines like Jade or Mustache. 
+      br
+      br
+      | gendok is intended to run as Software as a Service (SaaS) providing 
+      | an extensive REST API as well as a graphical user interface (GUI).
+      br
+      br
+    a(href='https://github.engineering.zhaw.ch/vongrdir/PSIT4-gendok/wiki' target='blank') &raquo; gendok on GitHub

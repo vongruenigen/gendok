@@ -50,6 +50,7 @@ var publicFontsPath = path.join(publicPath, 'fonts');
 var publicCssPath = path.join(publicPath, 'css');
 var publicJsPath = path.join(publicPath, 'js');
 var publicImgPath = path.join(publicPath, 'img');
+var publicImgCssPath = path.join(publicPath, 'css/img');
 
 var allJsFilename = 'all.js';
 var allCssFilename = 'all.css';
@@ -296,7 +297,9 @@ gulp.task('build-fonts', function () {
 
 gulp.task('build-img', function () {
   var imagesPath = path.join(__dirname, 'lib/http/web/assets/img/**/*');
+  var imagesPathCss = path.join(__dirname, 'lib/http/web/assets/css/img/*');
   gulp.src(imagesPath).pipe(gulp.dest(publicImgPath));
+  gulp.src(imagesPathCss).pipe(gulp.dest(publicImgCssPath));
 });
 
 gulp.task('check-bower-components', function (done) {
