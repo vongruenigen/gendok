@@ -16,6 +16,7 @@ section.wrapper#template_create(ng-init="setDefaultTemplate()")
             select(ng-model="template.type")
               option mustache
               option html
+              option markdown
             span.validation_error_message(ng-if='validationErrors.type') {{validationErrors.type[0]}}
         tr
           td Paper Format:
