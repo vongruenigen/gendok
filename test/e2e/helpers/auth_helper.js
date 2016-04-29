@@ -52,11 +52,9 @@ module.exports = {
       }
 
       var signoutLink = $('[ng-click="signoutUser()"]');
-      var dropdownToggle = $('li a.dropdown-toggle');
 
       stateHelper.go('home');
 
-      dropdownToggle.click();
       signoutLink.click();
 
       // Signout takes some time, so wait until it's done.

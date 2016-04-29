@@ -1,31 +1,38 @@
-div
-  h2.alert.alert-danger(ng-if='errorMessage') {{errorMessage}}
-  h2.alert.alert-success(ng-if='successMessage') {{successMessage}}
-  h2 Profile
-  ul.list-group(ng-if='!editable')
-    li.list-group-item Name: {{profile.name}}
-    li.list-group-item E-Mail: {{profile.email}}
-
-  form(ng-if='editable')
-    div.form-group(ng-class="{'error': validationErrors.name}")
-      label.form-control-label Name:
-      input.form-control(type="text" ng-model="profile.name" )
-      span.validation_error_message(ng-if='validationErrors.name') {{validationErrors.name[0]}}
-    div.form-group(ng-class="{'error': validationErrors.email}")
-      label.form-control-label E-Mail:
-      input.form-control(type="text" ng-model="profile.email" )
-      span.validation_error_message(ng-if='validationErrors.email') {{validationErrors.email[0]}}
-    div.form-group(ng-class="{'error': validationErrors.password}")
-      label.form-control-label Password:
-      input.form-control(type="password" ng-model="profile.password" )
-      span.validation_error_message(ng-if='validationErrors.password') {{validationErrors.password[0]}}
-    div.form-group(ng-class="{'error': validationErrors.passwordConfirmation}")
-      label.form-control-label Confirm password:
-      input.form-control(type="password" ng-model="profile.passwordConfirmation" )
-      span.validation_error_message(ng-if='validationErrors.passwordConfirmation') {{validationErrors.passwordConfirmation[0]}}
-    div.form-group
-      input(type="submit" class="btn btn-success" ng-click="update(profile)" value="save")
-      =' '
-      input(type="submit" class="btn btn-danger" ng-click="reset()" value="cancel")
-
-  button(class="btn btn-info" ng-click="edit()" ng-if='!editable') edit
+section.wrapper#profile
+  section.wrapper_centered
+    h2.alert.alert-danger(ng-if='errorMessage') {{errorMessage}}
+    h2.alert.alert-success(ng-if='successMessage') {{successMessage}}
+    h1 Profile
+    button.btn.btn_turquoise(ng-click="edit()" ng-if='!editable') edit
+    table.list(ng-if='!editable')
+      tr
+        td Name:
+        td {{profile.name}}
+      tr
+        td E-Mail:
+        td {{profile.email}}
+        
+    form.form-table(ng-if='editable')
+      button.btn.btn_turquoise(ng-click="update(profile)") save
+      button.btn.btn_red(ng-click="reset()") cancel
+      table.list
+        tr(ng-class="{'error': validationErrors.name}")
+          td Name:
+          td 
+            input(type="text" ng-model="profile.name")
+            span.validation_error_message(ng-if='validationErrors.name') {{validationErrors.name[0]}}
+        tr(ng-class="{'error': validationErrors.email}")
+          td E-Mail:
+          td 
+            input(type="text" ng-model="profile.email")
+            span.validation_error_message(ng-if='validationErrors.email') {{validationErrors.email[0]}}
+        tr(ng-class="{'error': validationErrors.password}")
+          td Password:
+          td 
+            input(type="password" ng-model="profile.password" )
+            span.validation_error_message(ng-if='validationErrors.password') {{validationErrors.password[0]}}
+        tr(ng-class="{'error': validationErrors.passwordConfirmation}")
+          td Confirm Password:
+          td 
+            input(type="password" ng-model="profile.passwordConfirmation" )
+            span.validation_error_message(ng-if='validationErrors.passwordConfirmation') {{validationErrors.passwordConfirmation[0]}}

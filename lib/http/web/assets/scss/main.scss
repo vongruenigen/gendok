@@ -1,0 +1,227 @@
+/* ///////////////////////////////// VARIABLES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+$dark_grey: rgb(73, 73, 73);
+$grey: rgb(230, 230, 230);
+$light_grey: rgb(244, 244, 244);
+$red: rgb(217, 93, 93);
+$red_hover: rgb(200, 80, 80);
+$green: #89d669;
+$green_hover: #73be55;
+$turquoise: #15d0a6;
+$turquoise_hover: #14bb96;
+$pastel_blue: #5a8190;
+
+$wrapper_centered_width: 1300px;
+$height_navigation: 70px;
+
+/* ///////////////////////////////// GERNERAL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+.wrapper {
+  padding-top: $height_navigation;
+  padding-bottom: 20px;
+  height: auto;
+
+  & + .wrapper {
+    padding-top: 20px;
+  }
+}
+
+.wrapper_centered {
+  width: calc(#{$wrapper_centered_width} - 20px);
+  padding: 10px 10px;
+  margin: auto;
+  position: relative;
+  //background-color: rgba(102, 193, 0, 0.18);
+}
+
+/* ******************************** INDEX GENERAL ******************************** */
+@media screen and (max-width: $wrapper_centered_width) {
+  .wrapper_centered {
+    width: calc(100% - 20px);
+  }
+}
+
+/* ///////////////////////////////// HOME \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+#home {
+  background-color: $pastel_blue;
+  background-image: url('img/document.svg');
+  background-repeat: no-repeat;
+  background-position: 70% bottom;
+  background-size: 300px;
+  height: 400px;
+
+  div {
+    width: 400px;
+    position: absolute;
+    left: 50%;
+    margin-left: -400px;
+    top: 120px;
+
+    h1 {
+      line-height: 40px;
+      color: #D2D2D2;
+    }
+
+    span {
+      color: #D2D2D2;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      padding: 10px 30px;
+      margin-left: 20px;
+    }
+  }
+}
+
+/* ******************************** INDEX MOBILE ******************************** */
+@media screen and (max-width:$wrapper_centered_width) {
+
+}
+
+/* ///////////////////////////////// SIGNIN \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+#signin {
+  background-color: $pastel_blue;
+  height: calc(100vh - #{$height_navigation} - 20px);
+  min-height: 600px;
+
+  & > div {
+    background-color: white;
+    width: 500px;
+    margin: auto;
+    margin-top: 100px;
+    border-radius: 12px;
+    position: relative;
+    padding-bottom: 20px;
+
+    form {
+      text-align: center;
+
+      input {
+        width: calc(90% - 14px);
+      }
+    }
+
+    button {
+      width: 200px;
+      margin: 30px auto;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      display: block;
+    }
+
+    a {
+      color: black;
+      font-size: 0.9em;
+      padding: 0 5px;
+      position: absolute;
+      right: 10px;
+      bottom: 5px;
+
+      &:first-of-type {
+        border-right: 1px solid black;
+        right: 130px;
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    & > div {
+      background-color: $turquoise;
+      border-radius: 12px 12px 0 0;
+      padding-bottom: 20px;
+
+      h2 {
+        color: white;
+        font-size: 1.5em;
+        line-height: 3em;
+        text-align: center;
+      }
+
+      img {
+        margin: auto;
+        display: block;
+        width: 20px;
+      }
+    }
+  }
+}
+
+/* ///////////////////////////////// FORM TABLE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+.form-table tr {
+  td {
+    padding: 3px 10px !important;
+
+    div.inline-inputs {
+      width: 100%;
+
+      input {
+        width: calc(50% - 12px) !important;
+      }
+
+      select {
+        width: calc(50% - 10px) !important;
+      }
+    }
+
+    input {
+      padding: 10px 10px;
+      border: 1px solid $light_grey;
+    }
+
+    select {
+      appearance: none;
+      padding: 11px 10px;
+      border: none;
+      background-color: $light_grey;
+    }
+
+    textarea {
+      font-family: monospace;
+    }
+
+    &:first-of-type {
+      width: 140px;
+    }
+  }
+
+  &:last-of-type td {
+    padding: 12px 10px;
+  }
+}
+
+/* ///////////////////////////////// PROFILE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+#profile {
+  .form-table tr {
+    td:first-of-type {
+      width: 150px !important;
+    }
+
+    &:last-of-type td {
+      vertical-align: middle !important;
+    }
+  }
+}
+
+/* ///////////////////////////////// ERROR PAGES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+#error_page section div {
+  border-radius: 5px;
+  border: 1px solid $grey;
+  width: 400px;
+  padding: 0 10px 10px 10px;
+  margin: auto;
+  margin-top: 20px;
+  text-align: center;
+
+  h1 {
+    color: $red;
+  }
+}
+
+/* ///////////////////////////////// FOOTER \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+footer {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  background-color: rgb(228, 228, 228);
+}
