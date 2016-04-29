@@ -36,7 +36,7 @@ section.wrapper(ng-init="getTemplate()")
             textarea.form-control(type="text" rows="10" ng-model="payload")
         
     form.edit-template-form.form-table(ng-if='editable')
-      button.btn.btn_green(ng-click="update()") save
+      button.btn.btn_turquoise(ng-click="update()") save
       button.btn.btn_red(ng-click="reset()") cancel
       table.list
         tr(ng-class="{'error': validationErrors.name}")

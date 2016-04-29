@@ -3,7 +3,7 @@ section.wrapper#template_create(ng-init="setDefaultTemplate()")
     h2.alert.alert-danger(ng-if='errorMessage') {{errorMessage}}
     h1 Create Template
     form.edit-template-form.form-table
-      button.btn.btn_green(ng-click="create()") save
+      button.btn.btn_turquoise(ng-click="create()") save
       table.list
         tr(ng-class="{'error': validationErrors.name}")
           td Name:
