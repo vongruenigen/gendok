@@ -255,6 +255,7 @@ describe('templates', function () {
 
         expect(editPayloadForm.isPresent()).to.eventually.eql(true);
 
+        payload.clear();
         payload.sendKeys('not json');
         renderButton.click();
 
@@ -275,6 +276,8 @@ describe('templates', function () {
         stateHelper.go('templateViewUpdate', {templateId: tmplCreate.id});
         previewButton.click();
         browser.waitForAngular();
+
+        payload.clear();
         payload.sendKeys('{}');
         renderButton.click();
 
