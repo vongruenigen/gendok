@@ -203,6 +203,21 @@ $height_navigation: 70px;
   }
 }
 
+/* ///////////////////////////////// ERROR PAGES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+#error_page section div {
+  border-radius: 5px;
+  border: 1px solid $grey;
+  width: 400px;
+  padding: 0 10px 10px 10px;
+  margin: auto;
+  margin-top: 20px;
+  text-align: center;
+
+  h1 {
+    color: $red;
+  }
+}
+
 /* ///////////////////////////////// FOOTER \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
 footer {
   width: 100%;
