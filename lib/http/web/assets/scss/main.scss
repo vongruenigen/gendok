@@ -176,6 +176,10 @@ $height_navigation: 70px;
       background-color: $light_grey;
     }
 
+    textarea {
+      font-family: monospace;
+    }
+
     &:first-of-type {
       width: 140px;
     }

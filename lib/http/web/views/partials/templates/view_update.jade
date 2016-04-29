@@ -26,7 +26,7 @@ section.wrapper(ng-init="getTemplate()")
         td 
           pre {{template.body}}
 
-    form.edit-payload-form(ng-if='payloadOptions')
+    form.edit-payload-form.form-table(ng-if='payloadOptions')
       button.btn(ng-click="render(template, payload)") generate preview
       button.btn.btn_red(ng-click="reset()") cancel
       table.list
