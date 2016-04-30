@@ -89,6 +89,30 @@ describe('gendok.data.model.user', function () {
     });
   });
 
+  describe('.confirmationToken', function () {
+    it('generates a token when a user is created', function () {
+      var u = User.build();
+      expect(u.confirmationToken).to.exist;
+      expect(u.confirmationToken).to.be.of.length(64);
+    });
+  });
+
+  describe('isConfirmed()', function () {
+    describe('when a confirmationToken is present', function () {
+      it('returns false', function () {
+        var u = User.build();
+        expect(u.isConfirmed()).to.be.false;
+      });
+    });
+
+    describe('when no confirmationToken is present', function () {
+      it('returns true', function () {
+        var u = User.build({confirmationToken: ''});
+        expect(u.isConfirmed()).to.be.true;
+      });
+    });
+  });
+
   describe('validation', function () {
     describe('.password', function () {
       it('error if password differs to the confirmation', function (done) {
@@ -153,7 +177,7 @@ describe('gendok.data.model.user', function () {
         });
       });
 
-      it('email adress has to be unique', function (done) {
+      it('has to be unique', function (done) {
         factory.create('User', function (err, usr1) {
           expect(err).to.not.exist;
           factory.build('User', function (err, usr2) {
