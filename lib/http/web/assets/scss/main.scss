@@ -223,7 +223,6 @@ $height_navigation: 70px;
   margin: auto;
   border: 1px solid $grey;
   position: relative;
-  background-color: rgba(108, 221, 171, 0.44);
 
   .current-paper-format {
     font-family: 'Lato', sans-serif;
@@ -246,14 +245,14 @@ $height_navigation: 70px;
   .content {
     width: 100%;
     height: 100%;
-    background-color: rgb(236, 236, 236);
+    border: 1px solid $grey;
     margin: auto;
     position: relative;
 
     .header {
       width: 100%;
       height: 0;
-      background-color: rgba(83, 118, 132, 0.56);
+      border-bottom: 1px solid $grey;
       position: absolute;
       top: 0;
     }
@@ -262,13 +261,14 @@ $height_navigation: 70px;
       width: 100%;
       position: absolute;
       top: 0;
+      background-color: white;
       background-image: url('img/format_preview_background.svg');
     }
 
     .footer {
       width: 100%;
       height: 0;
-      background-color: rgba(83, 118, 132, 0.56);
+      border-top: 1px solid $grey;
       position: absolute;
       bottom: 0;
     }
