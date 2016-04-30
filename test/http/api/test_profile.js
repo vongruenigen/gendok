@@ -171,8 +171,9 @@ describe('gendok.http.api.profile', function () {
     describe('when no confirmationToken is given', function () {
       it('returns a bad request error', function (done) {
         request.get(url).end(function (err, res) {
-          expect(err.statusCode).to.not.eql(errors.badRequest.code);
-          expect(res.body).to.not.eql(errors.badRequest.data);
+          expect(err).to.exist;
+          expect(res.statusCode).to.eql(errors.badRequest.code);
+          expect(res.body).to.eql(errors.badRequest.data);
           done();
         });
       });
@@ -215,5 +216,64 @@ describe('gendok.http.api.profile', function () {
 
   describe('POST /api/profile/signup', function () {
     var url = helper.getUrl('/api/profile/signup');
+
+    describe('when invalid values are posted', function () {
+      it('returns the validation errors', function (done) {
+        var values = {
+          name: 'John The Error Doe',
+          email: 'my-invalid-email',
+          password: 'blub1234577',
+          passwordConfirmation: 'blub12345678892'
+        };
+
+        factory.build('User', values, function (err, u) {
+          request.post(url)
+                 .send(JSON.stringify(values))
+                 .set('Content-Type', 'application/json')
+                 .end(function (err, res) {
+                   expect(err).to.exist;
+                   expect(res.statusCode).to.eql(errors.validation.code);
+
+                   User.create(u.toJSON()).catch(function (err) {
+                     var expectedError = errors.validation.data(err);
+                     expect(res.body).to.eql(expectedError);
+                     done();
+                   });
+                 });
+        });
+      });
+    });
+
+    describe('when valid values are posted', function () {
+      it('creates a new user', function (done) {
+        factory.build('User', function (err, u) {
+          expect(err).to.not.exist;
+
+          var values = {
+            email: u.email,
+            name: u.name,
+            password: 'abc1234567',
+            passwordConfirmation: 'abc1234567'
+          };
+
+          request.post(url)
+                 .send(JSON.stringify(values))
+                 .set('Content-Type', 'application/json')
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.statusCode).to.eql(201);
+                   expect(res.body.name).to.eql(values.name);
+                   expect(res.body.email).to.eql(values.email);
+
+                   User.findOne({
+                     where: {email: res.body.email}
+                   }).then(function (u) {
+                     expect(u).to.exist;
+                     done();
+                   });
+                 });
+        });
+      });
+    });
   });
 });
