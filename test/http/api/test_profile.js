@@ -14,6 +14,7 @@ var profile = gendokHttp.api.profile;
 var all = gendokHttp.middleware.all;
 var errors = gendokHttp.api.errors;
 var db = require('../../..').data.db;
+var util = require('../../..').util;
 var expect = require('chai').expect;
 var helper = require('../../helper');
 var request = require('superagent');
@@ -162,5 +163,57 @@ describe('gendok.http.api.profile', function () {
                });
       });
     });
+  });
+
+  describe('GET /api/profile/confirm', function () {
+    var url = helper.getUrl('/api/profile/confirm');
+
+    describe('when no confirmationToken is given', function () {
+      it('returns a bad request error', function (done) {
+        request.get(url).end(function (err, res) {
+          expect(err.statusCode).to.not.eql(errors.badRequest.code);
+          expect(res.body).to.not.eql(errors.badRequest.data);
+          done();
+        });
+      });
+    });
+
+    describe('when a valid confirmationToken is given', function () {
+      it('returns a valid JWT and confirms the user', function (done) {
+        var token = util.randomToken(32);
+
+        factory.create('User', {confirmationToken: token}, function (err, u) {
+          request.get(url + '?token=' + token)
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.statusCode).to.eql(200);
+                   expect(res.body.token).to.exist;
+                   expect(res.body.email).to.eql(u.email);
+
+                   u.reload().then(function (u1) {
+                     expect(u.apiToken).to.eql(res.body.token);
+                     expect(u.isConfirmed()).to.be.true;
+                     done();
+                   });
+                 });
+        });
+      });
+    });
+
+    describe('when an invalid confirmationToken is given', function () {
+      it('returns a bad request error', function (done) {
+        request.get(url + '?token=bogus')
+               .end(function (err, res) {
+                 expect(err).to.exist;
+                 expect(res.statusCode).to.eql(errors.badRequest.code);
+                 expect(res.body).to.eql(errors.badRequest.data);
+                 done();
+               });
+      });
+    });
+  });
+
+  describe('POST /api/profile/signup', function () {
+    var url = helper.getUrl('/api/profile/signup');
   });
 });

@@ -54,6 +54,7 @@ describe('gendok.http.api.auth', function () {
 
                    user.reload().then(function (u) {
                      expect(u.apiToken).to.eql(res.body.token);
+                     expect(u.email).to.eql(res.body.email);
                      expect(util.verifyJwt(u.apiToken)).to.be.true;
                      done();
                    });
