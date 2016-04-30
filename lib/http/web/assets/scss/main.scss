@@ -80,6 +80,8 @@ $height_navigation: 70px;
 /* ///////////////////////////////// SIGNIN \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
 #signin {
   background-color: $pastel_blue;
+  background-image: url('img/pattern.svg');
+  background-size: 300px;
   height: calc(100vh - #{$height_navigation} - 20px);
   min-height: 600px;
 
@@ -217,6 +219,7 @@ $height_navigation: 70px;
 #format-preview {
   width: 300px;
   height: 425px;
+  overflow: hidden;
   margin: auto;
   border: 1px solid $grey;
   position: relative;
@@ -259,6 +262,7 @@ $height_navigation: 70px;
       width: 100%;
       position: absolute;
       top: 0;
+      background-image: url('img/format_preview_background.svg');
     }
 
     .footer {
