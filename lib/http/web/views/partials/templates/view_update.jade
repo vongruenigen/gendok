@@ -58,7 +58,7 @@ section.wrapper(ng-init="getTemplate()")
           tr
             td Paper Format:
             td 
-              select(ng-model="template.paperFormat" )
+              select(ng-model="template.paperFormat" ng-change="updateFormatPreview()")
                 option A5
                 option A4
                 option A3
@@ -66,8 +66,8 @@ section.wrapper(ng-init="getTemplate()")
             td Paper Margin:
             td
               div.inline-inputs
-                input(type="number" ng-model="template.paperMarginValue" ng-change="updateConcatenatePaperFormat()")
-                select(ng-model="template.paperMarginUnit" ng-change="updateConcatenatePaperFormat()")
+                input(type="number" ng-model="template.paperMarginValue" ng-change="updateFormatPreview()")
+                select(ng-model="template.paperMarginUnit" ng-change="updateFormatPreview()")
                   option px
                   option cm
               span.validation_error_message(ng-if='validationErrors.paperMargin') {{validationErrors.paperMargin[0]}}
@@ -75,8 +75,8 @@ section.wrapper(ng-init="getTemplate()")
             td Header Height:
             td
               div.inline-inputs
-                input(type="number" ng-model="template.headerHeightValue"  ng-change="updateConcatenatePaperFormat()")
-                select(ng-model="template.headerHeightUnit"  ng-change="updateConcatenatePaperFormat()")
+                input(type="number" ng-model="template.headerHeightValue"  ng-change="updateFormatPreview()")
+                select(ng-model="template.headerHeightUnit"  ng-change="updateFormatPreview()")
                   option px
                   option cm
               span.validation_error_message(ng-if='validationErrors.headerHeight') {{validationErrors.headerHeight[0]}}
@@ -84,8 +84,8 @@ section.wrapper(ng-init="getTemplate()")
             td Footer Height:
             td
               div.inline-inputs
-                input(type="number" ng-model="template.footerHeightValue"  ng-change="updateConcatenatePaperFormat()")
-                select(ng-model="template.footerHeightUnit"  ng-change="updateConcatenatePaperFormat()")
+                input(type="number" ng-model="template.footerHeightValue"  ng-change="updateFormatPreview()")
+                select(ng-model="template.footerHeightUnit"  ng-change="updateFormatPreview()")
                     option px
                     option cm
               span.validation_error_message(ng-if='validationErrors.footerHeight') {{validationErrors.footerHeight[0]}}
@@ -99,15 +99,15 @@ section.wrapper(ng-init="getTemplate()")
       #format-preview
         .current-paper-format {{template.paperFormat}}
         .content(ng-style="{\
-          'height': 'calc(100% - (2 * ' + template.paperMargin + '))', \
-          'width': 'calc(100% - (2 * ' + template.paperMargin + '))', \
-          'margin-top': template.paperMargin \
+          'height': 'calc(100% - (2 * ' + template.formatPreviewMargin + '))', \
+          'width': 'calc(100% - (2 * ' + template.formatPreviewMargin + '))', \
+          'margin-top': template.formatPreviewMargin \
           }")
           .header(ng-style="{\
-              'height': template.headerHeight\
+              'height': template.formatPreviewHeaderHeight\
             }")
           .body(ng-style="{\
-              'height': 'calc(100% - ' + template.headerHeight + ' - ' + template.footerHeight + ')', \
-              'top': template.headerHeight \
-            }") content 
-          .footer(ng-style="{'height': template.footerHeight}")
+              'height': 'calc(100% - ' + template.formatPreviewHeaderHeight + ' - ' + template.formatPreviewFooterHeight + ')', \
+              'top': template.formatPreviewHeaderHeight \
+            }")
+          .footer(ng-style="{'height': template.formatPreviewFooterHeight}")
