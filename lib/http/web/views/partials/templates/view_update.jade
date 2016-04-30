@@ -39,8 +39,8 @@ section.wrapper(ng-init="getTemplate()")
         
     .template-details-split-left(ng-if='editable')
       form.edit-template-form.form-table
-        button.btn.btn_turquoise(ng-click="update()") save
-        button.btn.btn_red(ng-click="reset()") cancel
+        button.btn.btn_turquoise(ng-click="update(); hightlightFormatAttribute('')") save
+        button.btn.btn_red(ng-click="reset(); hightlightFormatAttribute('')") cancel
         table.list
           tr(ng-class="{'error': validationErrors.name}")
             td Name:
@@ -58,7 +58,7 @@ section.wrapper(ng-init="getTemplate()")
           tr
             td Paper Format:
             td 
-              select(ng-model="template.paperFormat" ng-change="updateFormatPreview()" ng-click="hightlightFormatAttribute('')")
+              select(ng-model="template.paperFormat" ng-change="updateFormatPreview()" ng-click="hightlightFormatAttribute('paperFormat')")
                 option A5
                 option A4
                 option A3
@@ -99,7 +99,9 @@ section.wrapper(ng-init="getTemplate()")
       #format-preview(ng-style="{\
         'background-color': template.formatPreviewPaperMarginColor \
       }")
-        .current-paper-format {{template.paperFormat}}
+        .current-paper-format(ng-style="{\
+          'background-color': template.formatPreviewPaperFormatColor \
+        }") {{template.paperFormat}}
         .content(ng-style="{\
           'height': 'calc(100% - (2 * ' + template.formatPreviewMargin + '))', \
           'width': 'calc(100% - (2 * ' + template.formatPreviewMargin + '))', \
@@ -111,7 +113,8 @@ section.wrapper(ng-init="getTemplate()")
           }")
           .body(ng-style="{\
             'height': 'calc(100% - ' + template.formatPreviewHeaderHeight + ' - ' + template.formatPreviewFooterHeight + ')', \
-            'top': template.formatPreviewHeaderHeight \
+            'top': template.formatPreviewHeaderHeight, \
+            'background-image': 'url(css/img/format_preview_bg_' + template.paperFormat + '.svg)' \
           }")
           .footer(ng-style="{\
             'height': template.formatPreviewFooterHeight,\
