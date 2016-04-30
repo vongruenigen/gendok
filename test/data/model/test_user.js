@@ -16,6 +16,7 @@ var util = require('../../..').util;
 var expect = require('chai').expect;
 var bcrypt = require('bcrypt');
 var format = require('util').format;
+var simple = require('simple-mock');
 
 describe('gendok.data.model.user', function () {
   var factory = helper.loadFactories(this);
@@ -154,6 +155,27 @@ describe('gendok.data.model.user', function () {
 
             done();
           });
+        });
+      });
+    });
+  });
+
+  describe('.email', function () {
+    describe('when it changes', function () {
+      it('sends a confirmation mail and clears the apiToken', function (done) {
+        factory.create('User', function (err, u) {
+          simple.mock(u, 'sendConfirmationMail').callOriginal();
+
+          expect(err).to.not.exist;
+          expect(u.apiToken).to.exist;
+          expect(u.confirmationToken).to.not.exist;
+
+          u.update({email: 'my-new-email@gendok.com'}).then(function (u) {
+            expect(u.apiToken).to.be.empty;
+            expect(u.confirmationToken).to.be.not.empty;
+            expect(u.sendConfirmationMail.callCount).to.eql(1);
+            done();
+          }).catch(done);
         });
       });
     });
