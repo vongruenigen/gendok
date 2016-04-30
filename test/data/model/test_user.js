@@ -11,11 +11,15 @@
 
 var helper = require('../../helper');
 var db = require('../../..').data.db;
+var config = require('../../..').config;
+var util = require('../../..').util;
 var expect = require('chai').expect;
 var bcrypt = require('bcrypt');
+var format = require('util').format;
 
 describe('gendok.data.model.user', function () {
   var factory = helper.loadFactories(this);
+  var queue = helper.createQueue(this);
   var User = null;
 
   beforeEach(function () {
@@ -109,6 +113,72 @@ describe('gendok.data.model.user', function () {
       it('returns true', function () {
         var u = User.build({confirmationToken: ''});
         expect(u.isConfirmed()).to.be.true;
+      });
+    });
+  });
+
+  describe('sendConfirmationMail()', function () {
+    describe('when isConfirmed() returns true', function () {
+      it('sends no email', function (done) {
+        var u = User.build({confirmationToken: ''});
+
+        u.sendConfirmationMail(function (err) {
+          expect(err).to.exist;
+          expect(queue.testMode.jobs).to.be.empty;
+          done();
+        });
+      });
+    });
+
+    describe('when isConfirmed() returns false', function () {
+      it('it sends the confirmation mail', function (done) {
+        factory.create('User', {confirmationToken: 'abc123'}, function (err, u) {
+          expect(err).to.not.exist;
+
+          u.sendConfirmationMail(function (err) {
+            expect(err).to.not.exist;
+            expect(queue.testMode.jobs).to.be.of.length(1);
+
+            var mailAttrs = {
+              confirmationLink: u.getConfirmationLink(),
+              name: u.name
+            };
+
+            var job = queue.testMode.jobs[0];
+            var htmlMail = util.renderView('emails/confirmation', mailAttrs);
+
+            expect(job).to.exist;
+            expect(job.data.subject).to.exist;
+            expect(job.data.to).to.eql(u.email);
+            expect(job.data.html).to.eql(htmlMail);
+
+            done();
+          });
+        });
+      });
+    });
+  });
+
+  describe('getConfirmationLink()', function () {
+    describe('when a confirmationToken is present', function () {
+      it('returns a link to /api/profile/confirm?token=...', function () {
+        var u = User.build();
+
+        var expectedLink = format(
+          'http://%s:%s/api/profile/confirm?token=%s',
+          config.get('http_host'),
+          config.get('http_port'),
+          u.confirmationToken
+        );
+
+        expect(u.getConfirmationLink()).to.eql(expectedLink);
+      });
+    });
+
+    describe('when no confirmationToken is present', function () {
+      it('returns null', function () {
+        var u = User.build({confirmationToken: ''});
+        expect(u.getConfirmationLink()).to.be.null;
       });
     });
   });
