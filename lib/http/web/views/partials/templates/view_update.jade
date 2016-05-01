@@ -39,8 +39,8 @@ section.wrapper(ng-init="getTemplate()")
         
     .template-details-split-left(ng-if='editable')
       form.edit-template-form.form-table
-        button.btn.btn_turquoise(ng-click="update(); hightlightFormatAttribute('')") save
-        button.btn.btn_red(ng-click="reset(); hightlightFormatAttribute('')") cancel
+        button.btn.btn_turquoise(ng-click="update()") save
+        button.btn.btn_red(ng-click="reset()") cancel
         table.list
           tr(ng-class="{'error': validationErrors.name}")
             td Name:
