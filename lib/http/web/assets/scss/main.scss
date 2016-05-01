@@ -196,22 +196,21 @@ $height_navigation: 70px;
 .template-details-split-left {
   display: inline-block;
   vertical-align: top;
-  width: calc(100% - 400px);
+  width: calc(100% - 370px);
 }
 
 .template-details-split-right {
   display: inline-block;
-  width: 400px;
+  width: 370px;
   position: fixed;
-  //background-color: rgba(208, 218, 255, 0.31);
-  left: calc(50% + 240px);
+  left: calc(50% + 280px);
 }
 
 /* ******************************** FORM DETAIL MOBILE ******************************** */
 @media screen and (max-width: $wrapper_centered_width) {
   .template-details-split-right {
     left: auto;
-    right: 10px;
+    right: 0px;
   }
 }
 
