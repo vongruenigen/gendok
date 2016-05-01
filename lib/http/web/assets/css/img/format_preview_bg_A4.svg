@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="210.7" height="298.55" viewBox="0, 0, 602, 853">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="301" height="426.5" viewBox="0, 0, 602, 853">
   <g id="Ebene_1">
+    <path d="M0,0 L602,0 L602,853 L0,853 L0,0 z" fill="#F2F2F2"/>
     <g>
       <path d="M-10,-0 L607.989,-0 L607.989,7.089 L-10,7.089 L-10,-0 z" fill="#7A8FA5"/>
       <path d="M-10,17.623 L607.989,17.623 L607.989,24.713 L-10,24.713 L-10,17.623 z" fill="#7A8FA5"/>
