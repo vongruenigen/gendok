@@ -29,7 +29,6 @@ $height_navigation: 70px;
   padding: 10px 10px;
   margin: auto;
   position: relative;
-  //background-color: rgba(102, 193, 0, 0.18);
 }
 
 /* ******************************** INDEX GENERAL ******************************** */
@@ -42,17 +41,19 @@ $height_navigation: 70px;
 /* ///////////////////////////////// HOME \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
 #home {
   background-color: $pastel_blue;
-  background-image: url('img/document.svg');
-  background-repeat: no-repeat;
-  background-position: 70% bottom;
+  background-image: url('img/pattern.svg');
   background-size: 300px;
-  height: 400px;
+  padding-bottom: 0;
 
-  div {
+  section.wrapper_centered {
+    height: 400px;
+  }
+
+  div:first-of-type {
     width: 400px;
     position: absolute;
-    left: 50%;
-    margin-left: -400px;
+    left: 48%;
+    margin-left: -350px;
     top: 120px;
 
     h1 {
@@ -68,6 +69,19 @@ $height_navigation: 70px;
     .btn {
       padding: 10px 30px;
       margin-left: 20px;
+    }
+  }
+
+  div.document {
+    width: 300px;
+    position: absolute;
+    right: 48%;
+    margin-right: -350px;
+    bottom: 0;
+
+    img {
+      width: 100%;
+      display: block;
     }
   }
 }
