@@ -38,6 +38,12 @@ $height_navigation: 70px;
   }
 }
 
+@media screen and (max-width: 800px) {
+  .wrapper {
+    font-size: 90%;
+  }
+}
+
 /* ///////////////////////////////// HOME \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
 #home {
   background-color: $pastel_blue;
@@ -87,8 +93,73 @@ $height_navigation: 70px;
 }
 
 /* ******************************** INDEX MOBILE ******************************** */
-@media screen and (max-width:$wrapper_centered_width) {
+@media screen and (max-width: 900px) {
+  #home {
+    section.wrapper_centered {
+      height: 300px;
+    }
 
+    div:first-of-type {
+      margin-left: -300px;
+      top: 90px;
+    }
+
+    div.document {
+      width: 250px;
+      margin-right: -300px;
+    }
+  }
+}
+
+@media screen and (max-width: 700px) {
+  #home {
+    section.wrapper_centered {
+      height: 250px;
+    }
+
+    div:first-of-type {
+      margin-left: -260px;
+      top: 70px;
+    }
+
+    div.document {
+      width: 200px;
+      margin-right: -260px;
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  #home {
+    section.wrapper_centered {
+      height: 250px;
+    }
+
+    div:first-of-type {
+      width: 100%;
+      text-align: center;
+      left: auto;
+      top: auto;
+      position: relative;
+      margin: 50px auto 0 auto;
+    }
+
+    div.document {
+      display: none;
+    }
+  }
+}
+
+@media screen and (max-width: 400px) {
+  #home {
+    section.wrapper_centered {
+      height: 210px;
+    }
+
+    div:first-of-type {
+      margin: 40px auto 0 auto;
+    }
+  }
 }
 
 /* ///////////////////////////////// SIGNIN \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
@@ -146,6 +217,11 @@ $height_navigation: 70px;
       background-color: $turquoise;
       border-radius: 12px 12px 0 0;
       padding-bottom: 20px;
+      position: relative;
+
+      div.arrow-down {
+        display: none;
+      }
 
       h2 {
         color: white;
@@ -158,6 +234,108 @@ $height_navigation: 70px;
         margin: auto;
         display: block;
         width: 20px;
+      }
+    }
+  }
+}
+
+/* ******************************** SIGNIN MOBILE ******************************** */
+@media screen and (max-width: 800px) {
+  #signin  > div a:first-of-type {
+    right: 118px;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  #signin {
+    & > div {
+      width: 400px;
+      margin-top: 50px;
+      border-radius: 12px;
+      padding-bottom: 20px;
+
+      button {
+        width: 140px;
+        margin: 20px auto;
+      }
+
+      & > div {
+        padding-bottom: 10px;
+
+        h2 {
+          line-height: 2.5em;
+        }
+
+        img {
+          width: 15px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 450px) {
+  #signin {
+    & > div {
+      width: 100%;
+      margin-top: 0px;
+      border-radius: 0px;
+      background-color: rgba(255, 255, 255, 0.2);
+      height: 100%;
+
+      form {
+        margin-top: 30px;
+
+        input {
+          background-color: rgba(255, 255, 255, 0.39);
+          color: white;
+          border-radius: 0 !important;
+          margin-top: 10px;
+          padding: 15px 10px;
+          width: 85%;
+        }
+
+        *::-webkit-input-placeholder {
+            color: white;
+        }
+        *::-moz-placeholder {
+            color: white;
+        }
+
+        label {
+          display: none;
+        }
+      }
+
+      button {
+        width: 90%;
+        border-radius: 0;
+      }
+
+      a {
+        color: white;
+        bottom: 10px;
+
+        &:first-of-type {
+          border-color: white;
+        }
+      }
+
+      & > div {
+        border-radius: 0;
+
+        div.arrow-down {
+          position: absolute;
+          display: block;
+          width: 0;
+          height: 0;
+          border-left: 30px solid transparent;
+          border-right: 30px solid transparent;
+          border-top: 20px solid $turquoise;
+          bottom: -20px;
+          left: 50%;
+          margin-left: -30px;
+        }
       }
     }
   }
