@@ -2,58 +2,85 @@ section.wrapper#template_create(ng-init="setDefaultTemplate()")
   section.wrapper_centered
     h2.alert.alert-danger(ng-if='errorMessage') {{errorMessage}}
     h1 Create Template
-    form.edit-template-form.form-table
-      button.btn.btn_turquoise(ng-click="create()") save
-      table.list
-        tr(ng-class="{'error': validationErrors.name}")
-          td Name:
-          td 
-            input(type="text" ng-model="template.name")
-            span.validation_error_message(ng-if='validationErrors.name') {{validationErrors.name[0]}}
-        tr(ng-class="{'error': validationErrors.type}")
-          td Type:
-          td 
-            select(ng-model="template.type")
-              option mustache
-              option html
-              option markdown
-            span.validation_error_message(ng-if='validationErrors.type') {{validationErrors.type[0]}}
-        tr
-          td Paper Format:
-          td 
-            select(ng-model="template.paperFormat" )
-              option A5
-              option A4
-              option A3
-        tr(ng-class="{'error': validationErrors.paperMargin}")
-          td Paper Margin:
-          td
-            div.inline-inputs
-              input(type="number" ng-model="template.paperMarginValue" ng-change="check()")
-              select(ng-model="template.paperMarginUnit" )
-                option px
-                option cm
-            span.validation_error_message(ng-if='validationErrors.paperMargin') {{validationErrors.paperMargin[0]}}
-        tr(ng-class="{'error': validationErrors.headerHeight}")
-          td Header Height:
-          td
-            div.inline-inputs
-              input(type="number" ng-model="template.headerHeightValue" )
-              select(ng-model="template.headerHeightUnit" )
-                option px
-                option cm
-            span.validation_error_message(ng-if='validationErrors.headerHeight') {{validationErrors.headerHeight[0]}}
-        tr(ng-class="{'error': validationErrors.footerHeight}")
-          td Footer Height:
-          td
-            div.inline-inputs
-              input(type="number" ng-model="template.footerHeightValue" )
-              select(ng-model="template.footerHeightUnit" )
+    .template-details-split-left
+      form.edit-template-form.form-table
+        button.btn.btn_turquoise(ng-click="create()") save
+        table.list
+          tr(ng-class="{'error': validationErrors.name}")
+            td Name:
+            td 
+              input(type="text" ng-model="template.name" ng-click="hightlightFormatAttribute('')")
+              span.validation_error_message(ng-if='validationErrors.name') {{validationErrors.name[0]}}
+          tr(ng-class="{'error': validationErrors.type}")
+            td Type:
+            td 
+              select(ng-model="template.type" ng-click="hightlightFormatAttribute('')")
+                option mustache
+                option html
+                option markdown
+              span.validation_error_message(ng-if='validationErrors.type') {{validationErrors.type[0]}}
+          tr
+            td Paper Format:
+            td 
+              select(ng-model="template.paperFormat" ng-change="updateFormatPreview()" ng-click="hightlightFormatAttribute('paperFormat')")
+                option A5
+                option A4
+                option A3
+          tr(ng-class="{'error': validationErrors.paperMargin}")
+            td Paper Margin:
+            td
+              div.inline-inputs
+                input(type="number" ng-model="template.paperMarginValue" ng-change="updateFormatPreview()" ng-click="hightlightFormatAttribute('paperMargin')")
+                select(ng-model="template.paperMarginUnit" ng-change="updateFormatPreview()" ng-click="hightlightFormatAttribute('paperMargin')")
                   option px
                   option cm
-            span.validation_error_message(ng-if='validationErrors.footerHeight') {{validationErrors.footerHeight[0]}}
-        tr(ng-class="{'error': validationErrors.body}")
-          td Body:
-          td
-            textarea.form-control(type="text" rows="10" ng-model="template.body")
-            span.validation_error_message(ng-if='validationErrors.body') {{validationErrors.body[0]}}
+              span.validation_error_message(ng-if='validationErrors.paperMargin') {{validationErrors.paperMargin[0]}}
+          tr(ng-class="{'error': validationErrors.headerHeight}")
+            td Header Height:
+            td
+              div.inline-inputs
+                input(type="number" ng-model="template.headerHeightValue" ng-change="updateFormatPreview()" ng-click="hightlightFormatAttribute('headerHeight')")
+                select(ng-model="template.headerHeightUnit" ng-change="updateFormatPreview()" ng-click="hightlightFormatAttribute('headerHeight')")
+                  option px
+                  option cm
+              span.validation_error_message(ng-if='validationErrors.headerHeight') {{validationErrors.headerHeight[0]}}
+          tr(ng-class="{'error': validationErrors.footerHeight}")
+            td Footer Height:
+            td
+              div.inline-inputs
+                input(type="number" ng-model="template.footerHeightValue" ng-change="updateFormatPreview()" ng-click="hightlightFormatAttribute('footerHeight')")
+                select(ng-model="template.footerHeightUnit" ng-change="updateFormatPreview()" ng-click="hightlightFormatAttribute('footerHeight')")
+                    option px
+                    option cm
+              span.validation_error_message(ng-if='validationErrors.footerHeight') {{validationErrors.footerHeight[0]}}
+          tr(ng-class="{'error': validationErrors.body}")
+            td Body:
+            td
+              textarea.form-control(type="text" rows="10" ng-model="template.body" ng-click="hightlightFormatAttribute('')")
+              span.validation_error_message(ng-if='validationErrors.body') {{validationErrors.body[0]}}
+              
+    .template-details-split-right
+      #format-preview(ng-style="{\
+        'background-color': template.formatPreviewPaperMarginColor \
+      }")
+        .current-paper-format(ng-style="{\
+          'background-color': template.formatPreviewPaperFormatColor \
+        }") {{template.paperFormat}}
+        .content(ng-style="{\
+          'height': 'calc(100% - (2 * ' + template.formatPreviewMargin + '))', \
+          'width': 'calc(100% - (2 * ' + template.formatPreviewMargin + '))', \
+          'margin-top': template.formatPreviewMargin \
+        }")
+          .header(ng-style="{\
+            'height': template.formatPreviewHeaderHeight,\
+            'background-color': template.formatPreviewHeaderHeightColor \
+          }")
+          .body(ng-style="{\
+            'height': 'calc(100% - ' + template.formatPreviewHeaderHeight + ' - ' + template.formatPreviewFooterHeight + ')', \
+            'top': template.formatPreviewHeaderHeight, \
+            'background-image': 'url(css/img/format_preview_bg_' + template.paperFormat + '.svg)' \
+          }")
+          .footer(ng-style="{\
+            'height': template.formatPreviewFooterHeight,\
+            'background-color': template.formatPreviewFooterHeightColor \
+          }")
