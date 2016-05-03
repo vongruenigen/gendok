@@ -184,6 +184,55 @@ describe('gendok.http.api.users', function () {
     });
   });
 
+  describe('GET /api/users/', function () {
+    it('returns all users of the user as JSON objects', function (done) {
+      factory.create('User', {isAdmin: true}, function (err, user) {
+        factory.createMany('User', 3, function (err, users) {
+          var createdUsers = [user.toPublicObject()];
+          users.forEach(function (u) {
+            createdUsers.push(u.toPublicObject());
+          });
+
+          request.get(url)
+                 .set('Authorization', 'Bearer ' + user.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+
+                   createdUsers.forEach(function (u) {
+                     expect(res.body).to.include(u);
+                   });
+
+                   done();
+                 });
+        });
+      });
+    });
+
+    it('returns an unauthorized error without a valid api token', function (done) {
+      request.get(url + '/12345')
+             .set('Authorization', 'Bearer blubiblub')
+             .end(function (err, res) {
+               expect(err).to.exist;
+               expect(res.statusCode).to.eql(errors.unauthorized.code);
+               expect(res.body).to.eql(errors.unauthorized.data);
+               done();
+             });
+    });
+
+    it('returns an unauthorized error if the specified user is not an admin', function (done) {
+      factory.create('User', function (err, user) {
+        request.get(url + '/123456')
+               .set('Authorization', 'Bearer ' + user.apiToken)
+               .end(function (err, res) {
+                 expect(err).to.exist;
+                 expect(res.statusCode).to.eql(errors.unauthorized.code);
+                 expect(res.body).to.eql(errors.unauthorized.data);
+                 done();
+               });
+      });
+    });
+  });
+
   describe('PUT /api/users/:id', function () {
     it('update a user in the database', function (done) {
       factory.create('User', {isAdmin: true}, function (err, user) {
