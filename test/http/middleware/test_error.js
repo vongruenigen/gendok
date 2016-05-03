@@ -33,11 +33,9 @@ describe('gendok.http.middleware.error', function () {
            .send(invalidJson)
            .set('Content-Type', 'application/json')
            .end(function (err, res) {
-             console.log(err);
-             console.log(res);
              expect(err).to.exist;
-             expect(res.statusCode).to.eql(400);
-             epxect(res.body).to.eql(errors.jsonSyntaxError.data);
+             expect(res.statusCode).to.eql(errors.jsonSyntaxError.code);
+             expect(res.body).to.eql(errors.jsonSyntaxError.data);
              done();
            });
   });
