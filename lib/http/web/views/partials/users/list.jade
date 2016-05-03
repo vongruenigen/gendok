@@ -1,0 +1,25 @@
+section.wrapper(ng-init="getAllUsers()")
+  section.wrapper_centered
+    h2.alert.alert-danger(ng-if='errorMessage') {{errorMessage}}
+    h2.alert.alert-success(ng-if='successMessage') {{successMessage}}
+    h1 Users
+    button.btn(ui-sref="userCreate()") Create User
+    table.table
+      tr
+        td ID
+        td Name
+        td E-Mail
+        td Admin
+        td Created at
+        td Updated at
+        td
+      tr(ng-repeat='user in users')
+        td
+          a(ui-sref="userViewUpdate({userId: user.id})") {{user.id}}
+        td {{user.name}}
+        td {{user.email}}
+        td {{user.isAdmin ? 'Yes' : 'No'}}
+        td {{user.createdAt}}
+        td {{user.updatedAt}}
+        td
+          button(class="btn btn-default"  ng-click="delete(user.id)") Delete
