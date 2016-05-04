@@ -1,4 +1,4 @@
-section.wrapper(ng-init="getAlltemplates()") 
+section.wrapper#template_list(ng-init="getAlltemplates()") 
   section.wrapper_centered
     h2.alert.alert-danger(ng-if='errorMessage') {{errorMessage}}
     h2.alert.alert-success(ng-if='successMessage') {{successMessage}}
@@ -20,4 +20,5 @@ section.wrapper(ng-init="getAlltemplates()")
         td {{template.createdAt}}
         td {{template.updatedAt}}
         td 
-          button(class="btn btn-default"  ng-click="delete(template.id)") Delete
+          button(class="btn btn-default"  ng-click="delete(template.id)") Delete 
+            span
