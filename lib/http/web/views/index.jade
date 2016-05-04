@@ -21,7 +21,7 @@ html(ng-app='gendok')
               a(href='#/templates') Templates
             li(ng-if='authService.isAuthenticated()')
               a(href='#/jobs') Jobs
-            li(ng-if='authService.isAuthenticated()')
+            li(ng-if='authService.isAuthenticated() && authService.isAdmin()')
               a.profile-link(href='/#/users') Users
             li
               a(href='#/about') About us
