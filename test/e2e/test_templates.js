@@ -291,6 +291,8 @@ describe('templates', function () {
                 expect(currentUrl.toString().substring(0, 4)).to.eql('blob');
               });
             });
+
+            browser.switchTo().window(handles[0]);
           });
         });
       });
