@@ -61,7 +61,9 @@ section.wrapper#template_create(ng-init="setDefaultTemplate()")
               
     .template-details-split-right
       #format-preview(ng-style="{\
-        'background-color': template.formatPreviewPaperMarginColor \
+        'background-color': template.formatPreviewPaperMarginColor, \
+        'width': template.formatPreviewWidth, \
+        'height': template.formatPreviewHeight \
       }")
         .current-paper-format(ng-style="{\
           'background-color': template.formatPreviewPaperFormatColor \

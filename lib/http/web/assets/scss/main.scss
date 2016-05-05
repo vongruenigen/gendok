@@ -31,7 +31,7 @@ $height_navigation: 70px;
   position: relative;
 }
 
-/* ******************************** INDEX GENERAL ******************************** */
+/* ******************************** GENERAL MOBILE ******************************** */
 @media screen and (max-width: $wrapper_centered_width) {
   .wrapper_centered {
     width: calc(100% - 20px);
@@ -92,7 +92,7 @@ $height_navigation: 70px;
   }
 }
 
-/* ******************************** INDEX MOBILE ******************************** */
+/* ******************************** HOME MOBILE ******************************** */
 @media screen and (max-width: 900px) {
   #home {
     section.wrapper_centered {
@@ -343,7 +343,7 @@ $height_navigation: 70px;
   }
 }
 
-/* ///////////////////////////////// TEMPLATE LIST \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+/* ///////////////////////////////// TEMPLATE LIST (templates overview) \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
 #template_list {
   table.table {
     tr {
@@ -398,7 +398,7 @@ $height_navigation: 70px;
   }
 }
 
-/* ///////////////////////////////// FORM TABLE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+/* ////////////////// FORM TABLE (update/create template) \\\\\\\\\\\\\\\\\\ */
 .form-table tr {
   td {
     padding: 3px 10px !important;
@@ -441,7 +441,7 @@ $height_navigation: 70px;
   }
 }
 
-/* ///////////////////////////////// FORM DETAIL (CREATE/VIEW/UPDATE TEMPLATE) \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+/* ////////////// TEMPLATE DETAIL (CREATE/VIEW/UPDATE TEMPLATE) \\\\\\\\\\\\\\ */
 .template-details-split-left {
   display: inline-block;
   vertical-align: top;
@@ -455,7 +455,7 @@ $height_navigation: 70px;
   left: calc(50% + 280px);
 }
 
-/* ******************************** FORM DETAIL MOBILE ******************************** */
+/* ******************************** TEMPLATE DETAIL MOBILE ******************************** */
 @media screen and (max-width: $wrapper_centered_width) {
   .template-details-split-right {
     left: auto;
@@ -463,10 +463,34 @@ $height_navigation: 70px;
   }
 }
 
-/* ///////////////////////////////// FORMAT PREVIEW \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+@media screen and (max-width: 1000px) {
+  .template-details-split-left {
+    width: calc(100% - 250px);
+  }
+
+  .template-details-split-right {
+    width: 250px;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  table.list tr td:first-of-type {
+    width: 110px;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .template-details-split-left {
+    width: 100%;
+  }
+
+  .template-details-split-right {
+    display: none;
+  }
+}
+
+/* ///////////////////////////// FORMAT PREVIEW \\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
 #format-preview {
-  width: 300px;
-  height: 425px;
   overflow: hidden;
   margin: auto;
   border: 1px solid $grey;
