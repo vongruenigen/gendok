@@ -1,0 +1,50 @@
+section.wrapper#signin(ng-controller='profileController')
+  div
+    div 
+      h2.form-signin-heading Register for gendok
+    form.form-signin(novalidate)
+      p.alert.alert-danger(ng-show='error') {{error}}
+      div.form-group
+        label(for='name') Name:
+        input(
+          type='text'
+          id='name'
+          placeholder='Your name...'
+          ng-model='profile.name'
+          required
+          autofocus
+        )
+
+      div.form-group
+        label(for='email') E-Mail:
+        input(
+          type='email'
+          id='email'
+          placeholder='Your e-mail...'
+          ng-model='profile.email'
+          required
+        )
+
+      div.form-group
+        label(for='password') Password:
+        input(
+          type='password'
+          id='password'
+          placeholder='Your password...'
+          ng-model='profile.password'
+          required
+        )
+
+      div.form-group
+        label(for='passwordConfirmation') Password confirmation:
+        input(
+          type='passwordConfirmation'
+          id='passwordConfirmation'
+          placeholder='Your password...'
+          ng-model='profile.passwordConfirmation'
+          required
+        )
+
+      button.btn.btn_turquoise.btn-signup(
+        type='submit' ng-click='signup(profile)'
+      ) Signup

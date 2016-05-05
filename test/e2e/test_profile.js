@@ -212,4 +212,23 @@ describe('profile edit', function () {
       });
     });
   });
+
+  describe('#/profile/signup', function () {
+    describe('when submitting valid data', function () {
+      it('createas a user and sends a confirmation mail', function () {
+        factory.build('User', function (err, u) {
+          expect(User.truncate()).to.eventually.be.truthy;
+
+          stateHelper.go('signup');
+
+          name.sendKeys(u.name);
+          email.sendKeys(u.email);
+          password.sendKeys(u.password);
+          passwordConfirmation.sendKeys(u.passwordConfirmation);
+
+          registerButton.click();
+        });
+      });
+    });
+  });
 });
