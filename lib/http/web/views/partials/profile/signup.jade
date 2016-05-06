@@ -3,7 +3,7 @@ section.wrapper#signin(ng-controller='profileController')
     div 
       h2.form-signin-heading Sign up for gendok!
     form.form-signin(novalidate)
-      p.alert.alert-danger(ng-show='error') {{error}}
+      p.alert.alert-danger(ng-show='errorMessage') {{errorMessage}}
       div.form-group
         label(for='name') Name:
         br
@@ -40,7 +40,7 @@ section.wrapper#signin(ng-controller='profileController')
       div.form-group
         label(for='passwordConfirmation') Password confirmation:
         input(
-          type='passwordConfirmation'
+          type='password'
           id='passwordConfirmation'
           placeholder='Your password...'
           ng-model='profile.passwordConfirmation'

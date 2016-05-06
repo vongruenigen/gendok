@@ -30,5 +30,4 @@ html(ng-app='gendok')
               a.profile-link(href='/#/profile') My profile
             li(ng-if='authService.isAuthenticated()')
               a(href='#' ng-click='signoutUser()') Sign out
-
     div(ui-view)
