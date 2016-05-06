@@ -3,6 +3,7 @@ section.wrapper#signin(ng-controller='signinController')
     div 
       h2.form-signin-heading Please sign in
       img(src='img/lock.svg')
+      div.arrow-down
     form.form-signin(novalidate)
 
       p.alert.alert-danger(ng-show='error') {{error}}
