@@ -1,4 +1,4 @@
-section.wrapper#profile
+section.wrapper#profile(ng-init='getProfile()')
   section.wrapper_centered
     h2.alert.alert-danger(ng-if='errorMessage') {{errorMessage}}
     h2.alert.alert-success(ng-if='successMessage') {{successMessage}}

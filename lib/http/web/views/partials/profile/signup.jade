@@ -1,11 +1,12 @@
 section.wrapper#signin(ng-controller='profileController')
   div
     div 
-      h2.form-signin-heading Register for gendok
+      h2.form-signin-heading Sign up for gendok!
     form.form-signin(novalidate)
       p.alert.alert-danger(ng-show='error') {{error}}
       div.form-group
         label(for='name') Name:
+        br
         input(
           type='text'
           id='name'
@@ -17,6 +18,7 @@ section.wrapper#signin(ng-controller='profileController')
 
       div.form-group
         label(for='email') E-Mail:
+        br
         input(
           type='email'
           id='email'
@@ -47,4 +49,4 @@ section.wrapper#signin(ng-controller='profileController')
 
       button.btn.btn_turquoise.btn-signup(
         type='submit' ng-click='signup(profile)'
-      ) Signup
+      ) Submit

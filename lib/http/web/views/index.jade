@@ -25,7 +25,7 @@ html(ng-app='gendok')
               a(href='#/about') About us
           ul.right
             li(ng-if='!authService.isAuthenticated()')
-              a.signup-link(href='/#/register') Want to sign up?
+              a.signup-link(ui-sref="signup") Want to sign up?
             li(ng-if='authService.isAuthenticated()')
               a.profile-link(href='/#/profile') My profile
             li(ng-if='authService.isAuthenticated()')
