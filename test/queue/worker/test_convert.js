@@ -12,6 +12,7 @@
 var gendok = require('../../../');
 var db = gendok.data.db;
 var Config = gendok.config;
+var util = gendok.util;
 var convert = gendok.queue.worker.convert;
 var Compiler = gendok.compiler.compiler;
 var helper = require('../../helper');
@@ -199,6 +200,25 @@ describe('gendok.queue.worker.convert', function () {
               }).catch(done);
             }, done);
           }).catch(done);
+        });
+      });
+    });
+  });
+
+  it('adds additional css to the html before converting to pdf', function (done) {
+    var css = 'h1 { color: red; }';
+
+    simple.mock(util, 'addCssToHtml').callOriginal();
+
+    factory.create('Template', {additionalCss: css}, function (err, tmpl) {
+      factory.create('Job', {templateId: tmpl.id}, function (err, j) {
+        var queueJobData = {data: {jobId: j.id}};
+
+        convert(queueJobData, function (err) {
+          expect(err).to.not.exist;
+          expect(util.addCssToHtml.callCount).to.eql(1);
+          expect(util.addCssToHtml.calls[0].args[1]).to.eql(tmpl.additionalCss);
+          done();
         });
       });
     });

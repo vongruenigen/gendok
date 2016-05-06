@@ -11,6 +11,10 @@ section.wrapper(ng-init="getTemplate()")
           td Type:
           td {{template.type}}
         tr
+          td Body:
+          td 
+            pre {{template.body}}
+        tr
           td Paper Format:
           td {{template.paperFormat}}
         tr
@@ -23,9 +27,9 @@ section.wrapper(ng-init="getTemplate()")
           td Footer Height:
           td {{template.footerHeight}}
         tr
-          td Body:
-          td 
-            pre {{template.body}}
+          td Additional CSS
+          td
+            pre {{template.additionalCss}}
 
     .template-details-split-left(ng-if='payloadOptions')
       form.edit-payload-form.form-table
@@ -55,6 +59,11 @@ section.wrapper(ng-init="getTemplate()")
                 option html
                 option markdown
               span.validation_error_message(ng-if='validationErrors.type') {{validationErrors.type[0]}}
+          tr(ng-class="{'error': validationErrors.body}")
+            td Body:
+            td
+              textarea.form-control(type="text" rows="10" ng-model="template.body" ng-click="hightlightFormatAttribute('')")
+              span.validation_error_message(ng-if='validationErrors.body') {{validationErrors.body[0]}}
           tr
             td Paper Format:
             td 
@@ -75,8 +84,8 @@ section.wrapper(ng-init="getTemplate()")
             td Header Height:
             td
               div.inline-inputs
-                input(type="number" ng-model="template.headerHeightValue"  ng-change="updateFormatPreview()" ng-click="hightlightFormatAttribute('headerHeight')")
-                select(ng-model="template.headerHeightUnit"  ng-change="updateFormatPreview()" ng-click="hightlightFormatAttribute('headerHeight')")
+                input(type="number" ng-model="template.headerHeightValue" ng-change="updateFormatPreview()" ng-click="hightlightFormatAttribute('headerHeight')")
+                select(ng-model="template.headerHeightUnit" ng-change="updateFormatPreview()" ng-click="hightlightFormatAttribute('headerHeight')")
                   option px
                   option cm
               span.validation_error_message(ng-if='validationErrors.headerHeight') {{validationErrors.headerHeight[0]}}
@@ -84,16 +93,16 @@ section.wrapper(ng-init="getTemplate()")
             td Footer Height:
             td
               div.inline-inputs
-                input(type="number" ng-model="template.footerHeightValue"  ng-change="updateFormatPreview()" ng-click="hightlightFormatAttribute('footerHeight')")
-                select(ng-model="template.footerHeightUnit"  ng-change="updateFormatPreview()" ng-click="hightlightFormatAttribute('footerHeight')")
+                input(type="number" ng-model="template.footerHeightValue" ng-change="updateFormatPreview()" ng-click="hightlightFormatAttribute('footerHeight')")
+                select(ng-model="template.footerHeightUnit" ng-change="updateFormatPreview()" ng-click="hightlightFormatAttribute('footerHeight')")
                     option px
                     option cm
               span.validation_error_message(ng-if='validationErrors.footerHeight') {{validationErrors.footerHeight[0]}}
-          tr(ng-class="{'error': validationErrors.body}")
-            td Body:
+          tr(ng-class="{'error': validationErrors.additionalCss}")
+            td Additional CSS:
             td
-              textarea.form-control(type="text" rows="10" ng-model="template.body" ng-click="hightlightFormatAttribute('')")
-              span.validation_error_message(ng-if='validationErrors.body') {{validationErrors.body[0]}}
+              textarea.form-control(type="text" rows="10" ng-model="template.additionalCss")
+              span.validation_error_message(ng-if='validationErrors.additionalCss') {{validationErrors.additionalCss[0]}}
               
     .template-details-split-right
       #format-preview(ng-style="{\
