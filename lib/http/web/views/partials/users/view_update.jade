@@ -9,8 +9,8 @@ section.wrapper(ng-init="getUser()")
         td E-Mail:
         td {{user.email}}
       tr
-        td isAdmin:
-        td {{user.isAdmin}}
+        td Admin:
+        td {{user.isAdmin === 'true' ? 'Yes' : 'No'}}
 
     form.edit-user-form.form-table(ng-if='editable')
       button.btn.btn_turquoise(ng-click="update()") Save
