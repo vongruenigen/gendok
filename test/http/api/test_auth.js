@@ -21,6 +21,7 @@ var expect = require('chai').expect;
 var helper = require('../../helper');
 var request = require('superagent');
 var jwt = require('jsonwebtoken');
+var simple = require('simple-mock');
 
 describe('gendok.http.api.auth', function () {
   var factory = helper.loadFactories(this);
@@ -60,6 +61,29 @@ describe('gendok.http.api.auth', function () {
                        done();
                      });
                    });
+          });
+        });
+      });
+
+      describe('when an already valid JWT is set on the user', function () {
+        it('returns the existing JWT', function (done) {
+          factory.create('User', function (err, user) {
+            expect(err).to.not.exist;
+
+            var fakeToken = 'my-fake-jwt-token';
+            simple.mock(util, 'verifyJwt').returnWith(true);
+
+            user.update({apiToken: fakeToken}).then(function () {
+              request.post(signInUrl)
+                     .send({username: user.email, password: user.password})
+                     .end(function (err, res) {
+                       expect(err).to.not.exist;
+                       console.log(res.body);
+                       expect(res.body.token).to.exist;
+                       expect(res.body.token).to.eql(fakeToken);
+                       done();
+                     });
+            });
           });
         });
       });
