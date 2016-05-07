@@ -160,8 +160,8 @@ describe('gendok.data.model.user', function () {
     });
   });
 
-  describe('.email', function () {
-    describe('when it changes', function () {
+  describe('afterUpdate() hook', function () {
+    describe('when the email changes', function () {
       it('sends a confirmation mail and clears the apiToken', function (done) {
         factory.create('User', function (err, u) {
           simple.mock(u, 'sendConfirmationMail').callOriginal();
@@ -177,6 +177,17 @@ describe('gendok.data.model.user', function () {
             done();
           }).catch(done);
         });
+      });
+    });
+  });
+
+  describe('afterCreate() hook', function () {
+    it.only('sends a confirmation e-mail', function (done) {
+      factory.create('User', function (err, u) {
+        expect(err).to.not.exist;
+        expect(queue.testMode.jobs.length).to.eql(1);
+        expect(queue.testMode.jobs[0].type).to.eql('email');
+        done();
       });
     });
   });
