@@ -33,7 +33,14 @@ module.exports = function (model) {
     })
   }, {
     afterCreate: function (user, options, fn) {
-      user.update({apiToken: util.generateJwt(user.id)}).then(function () {
+      // We clear the confirmationToken by hand, otherwise the created user
+      // is not able to signin because of isConfirmed(). Also set a valid JWT
+      // so that this user can sign in directly without having to create one
+      // by issueing a request to /api/auth/signin.
+      user.update({
+        confirmationToken: null,
+        apiToken: util.generateJwt(user.id)
+      }).then(function () {
         fn(null, user);
       }).catch(function (err) {
         fn(err, null);

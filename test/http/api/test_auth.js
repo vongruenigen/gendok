@@ -66,17 +66,19 @@ describe('gendok.http.api.auth', function () {
 
       describe('when a confirmationToken is set on the user', function () {
         it('returns 403', function (done) {
-          factory.create('User', {confirmationToken: 'abc'}, function (err, user) {
+          factory.create('User', function (err, user) {
             expect(err).to.not.exist;
 
-            request.post(signInUrl)
-                   .send({username: user.email, password: user.password})
-                   .end(function (err, res) {
-                     expect(err).to.exist;
-                     expect(res.statusCode).to.eql(errors.forbidden.code);
-                     expect(res.body).to.eql(errors.forbidden.data);
-                     done();
-                   });
+            user.update({confirmationToken: 'abc'}).then(function () {
+              request.post(signInUrl)
+                     .send({username: user.email, password: user.password})
+                     .end(function (err, res) {
+                       expect(err).to.exist;
+                       expect(res.statusCode).to.eql(errors.forbidden.code);
+                       expect(res.body).to.eql(errors.forbidden.data);
+                       done();
+                     });
+            });
           });
         });
       });

@@ -183,20 +183,22 @@ describe('gendok.http.api.profile', function () {
       it('returns a valid JWT and confirms the user', function (done) {
         var token = util.randomToken(32);
 
-        factory.create('User', {confirmationToken: token}, function (err, u) {
-          request.get(url + '?token=' + token)
-                 .end(function (err, res) {
-                   expect(err).to.not.exist;
-                   expect(res.statusCode).to.eql(200);
-                   expect(res.body.token).to.exist;
-                   expect(res.body.email).to.eql(u.email);
+        factory.create('User', function (err, u) {
+          u.update({confirmationToken: token}).then(function (u) {
+            request.get(url + '?token=' + token)
+                   .end(function (err, res) {
+                      expect(err).to.not.exist;
+                      expect(res.statusCode).to.eql(200);
+                      expect(res.body.token).to.exist;
+                      expect(res.body.email).to.eql(u.email);
 
-                   u.reload().then(function (u1) {
-                     expect(u.apiToken).to.eql(res.body.token);
-                     expect(u.isConfirmed()).to.be.true;
-                     done();
-                   });
-                 });
+                      u.reload().then(function (u1) {
+                        expect(u.apiToken).to.eql(res.body.token);
+                        expect(u.isConfirmed()).to.be.true;
+                        done();
+                      });
+                    });
+          });
         });
       });
     });

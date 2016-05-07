@@ -19,6 +19,7 @@ describe('profile edit', function () {
   var factory = helper.loadFactories(this);
   helper.runHttpServer(this);
 
+  var User = null;
   var user = null; // set in beforeEach
 
   var name = element(by.model('profile.name'));
@@ -31,6 +32,8 @@ describe('profile edit', function () {
   var errorMessage = $('.alert');
 
   beforeEach(function (done) {
+    User = gendok.data.db.getModel('User');
+
     authHelper.signout(function () {
       factory.create('User', function (err, u) {
         expect(err).to.not.exist;
@@ -208,25 +211,6 @@ describe('profile edit', function () {
           expect(passwordConfirmation.getCssValue('border-bottom-color')).to.eventually.eql(
            'rgba(255, 0, 0, 1)' // === 'red'
           );
-        });
-      });
-    });
-  });
-
-  describe('#/profile/signup', function () {
-    describe('when submitting valid data', function () {
-      it('createas a user and sends a confirmation mail', function () {
-        factory.build('User', function (err, u) {
-          expect(User.truncate()).to.eventually.be.truthy;
-
-          stateHelper.go('signup');
-
-          name.sendKeys(u.name);
-          email.sendKeys(u.email);
-          password.sendKeys(u.password);
-          passwordConfirmation.sendKeys(u.passwordConfirmation);
-
-          registerButton.click();
         });
       });
     });

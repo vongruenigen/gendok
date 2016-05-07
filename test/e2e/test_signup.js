@@ -28,51 +28,51 @@ describe('signup', function () {
   var password = element(by.model('profile.password'));
   var passwordConfirmation = element(by.model('profile.passwordConfirmation'));
 
-  var registerButton = $('[ng-click="registerprofile)"]');
+  var submitButton = $('[ng-click="signup(profile)"]');
   var errorMessage = $('.alert');
 
   beforeEach(function (done) {
-    User = gendok.db.getModel('User');
+    browser.get('#/');
+    User = gendok.data.db.getModel('User');
 
-    authHelper.signout(function () {
-      factory.create('User', function (err, u) {
-        expect(err).to.not.exist;
-        user = u;
-
-        authHelper.signin(user, done);
-      });
+    factory.create('User', function (err, u) {
+      expect(err).to.not.exist;
+      user = u;
+      done();
     });
   });
 
-  describe('#/register', function () {
+  describe('#/signup', function () {
     describe('when a valid input is given', function () {
-      it('registers the user', function (done) {
+      it('signs up the user', function (done) {
+        var jobsCountBefore = queue.testMode.jobs.length;
+
         User.count().then(function (n) {
-          var attrs = {
-            name: 'blubb',
-            email: 'test@blubb.com',
-            password: 'abc123456',
-            passwordConfirmation: 'abc123456'
-          };
+          factory.build('User', function (err, u) {
+            var attrs = u.toPublicObject();
 
-          stateHelper.go('signup');
+            stateHelper.go('signup');
 
-          name.clear();
-          name.sendKeys(attrs.name);
+            name.clear();
+            name.sendKeys(attrs.name);
 
-          email.clear();
-          email.sendKeys(attrs.email);
+            email.clear();
+            email.sendKeys(attrs.email);
 
-          password.clear();
-          password.sendKeys(attrs.password);
+            password.clear();
+            password.sendKeys(attrs.password);
 
-          passwordConfirmation.clear();
-          passwordConfirmation.sendKeys(attrs.passwordConfirmation);
+            passwordConfirmation.clear();
+            passwordConfirmation.sendKeys(attrs.passwordConfirmation);
 
-          registerButton.click().then(function () {
-            browser.waitForAngular().then(function () {
-              expect(User.count()).to.eventually.eql(n + 1);
-              expect(queue.testMode.jobs.count).to.eql(1);
+            submitButton.click().then(function () {
+              browser.waitForAngular().then(function () {
+                User.count().then(function (n2) {
+                  expect(n2).to.eql(n + 1);
+                  expect(queue.testMode.jobs.length).to.eql(jobsCountBefore + 1);
+                  done();
+                });
+              });
             });
           });
         });
@@ -86,10 +86,10 @@ describe('signup', function () {
         email.clear();
         email.sendKeys('my-invalid-email@-address');
 
-        registerButton.click();
+        submitButton.click();
 
         expect(errorMessage.getInnerHtml()).to.eventually.eql(
-          'An error occured while registering your account.'
+          'Error(s) occured while creating your profile.'
         );
 
         expect(email.getCssValue('border-bottom-color')).to.eventually.eql(

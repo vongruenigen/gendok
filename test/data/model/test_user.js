@@ -133,27 +133,32 @@ describe('gendok.data.model.user', function () {
 
     describe('when isConfirmed() returns false', function () {
       it('it sends the confirmation mail', function (done) {
-        factory.create('User', {confirmationToken: 'abc123'}, function (err, u) {
-          expect(err).to.not.exist;
-
-          u.sendConfirmationMail(function (err) {
+        factory.create('User', function (err, u) {
+          u.update({confirmationToken: 'abc123'}).then(function (u) {
             expect(err).to.not.exist;
-            expect(queue.testMode.jobs).to.be.of.length(1);
 
-            var mailAttrs = {
-              confirmationLink: u.getConfirmationLink(),
-              name: u.name
-            };
+            var jobsCounterBefore = queue.testMode.jobs.length;
 
-            var job = queue.testMode.jobs[0];
-            var htmlMail = util.renderView('emails/confirmation', mailAttrs);
+            u.sendConfirmationMail(function (err) {
+              expect(err).to.not.exist;
+              expect(queue.testMode.jobs).to.be.of.length(jobsCounterBefore + 1);
 
-            expect(job).to.exist;
-            expect(job.data.subject).to.exist;
-            expect(job.data.to).to.eql(u.email);
-            expect(job.data.html).to.eql(htmlMail);
+              var mailAttrs = {
+                confirmationLink: u.getConfirmationLink(),
+                name: u.name
+              };
 
-            done();
+              var htmlMail = util.renderView('emails/confirmation', mailAttrs);
+
+              expect(queue.testMode.jobs.length).to.be.above(0);
+              expect(queue.testMode.jobs.some(function (j) {
+                return j.data.subject &&
+                       j.data.to === u.email &&
+                       j.data.html === htmlMail;
+              })).to.be.true;
+
+              done();
+            });
           });
         });
       });
@@ -182,7 +187,7 @@ describe('gendok.data.model.user', function () {
   });
 
   describe('afterCreate() hook', function () {
-    it.only('sends a confirmation e-mail', function (done) {
+    it('sends a confirmation e-mail', function (done) {
       factory.create('User', function (err, u) {
         expect(err).to.not.exist;
         expect(queue.testMode.jobs.length).to.eql(1);
