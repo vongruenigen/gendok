@@ -4,7 +4,7 @@ section.wrapper#signin(ng-controller='profileController')
       h2.form-signin-heading Sign up for gendok!
     form.form-signin(novalidate)
       p.alert.alert-danger(ng-show='errorMessage') {{errorMessage}}
-      div.form-group
+      div.form-group(ng-class="{'error': validationErrors.name}")
         label(for='name') Name:
         br
         input(
@@ -15,8 +15,10 @@ section.wrapper#signin(ng-controller='profileController')
           required
           autofocus
         )
+        br
+        span.validation_error_message(ng-if='validationErrors.name') {{validationErrors.name[0]}}
 
-      div.form-group
+      div.form-group(ng-class="{'error': validationErrors.email}")
         label(for='email') E-Mail:
         br
         input(
@@ -26,8 +28,10 @@ section.wrapper#signin(ng-controller='profileController')
           ng-model='profile.email'
           required
         )
+        br
+        span.validation_error_message(ng-if='validationErrors.email') {{validationErrors.email[0]}}
 
-      div.form-group
+      div.form-group(ng-class="{'error': validationErrors.password}")
         label(for='password') Password:
         input(
           type='password'
@@ -36,8 +40,10 @@ section.wrapper#signin(ng-controller='profileController')
           ng-model='profile.password'
           required
         )
+        br
+        span.validation_error_message(ng-if='validationErrors.password') {{validationErrors.password[0]}}
 
-      div.form-group
+      div.form-group(ng-class="{'error': validationErrors.passwordConfirmation}")
         label(for='passwordConfirmation') Password confirmation:
         input(
           type='password'
@@ -46,6 +52,8 @@ section.wrapper#signin(ng-controller='profileController')
           ng-model='profile.passwordConfirmation'
           required
         )
+        br
+        span.validation_error_message(ng-if='validationErrors.passwordConfirmation') {{validationErrors.passwordConfirmation[0]}}
 
       button.btn.btn_turquoise.btn-signup(
         type='submit' ng-click='signup(profile)'
