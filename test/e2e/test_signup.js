@@ -12,6 +12,7 @@
 var expect = require('chai').expect;
 var gendok = require('../../');
 var helper = require('../helper');
+var util = gendok.util;
 var stateHelper = require('./helpers/state_helper');
 var authHelper = require('./helpers/auth_helper');
 
@@ -22,6 +23,8 @@ describe('signup', function () {
 
   var User = null;
   var user = null; // set in beforeEach
+  var token = null;
+  var unconfirmedUser = null;
 
   var name = element(by.model('profile.name'));
   var email = element(by.model('profile.email'));
@@ -32,13 +35,25 @@ describe('signup', function () {
   var errorMessage = $('.alert');
 
   beforeEach(function (done) {
-    browser.get('#/');
+    browser.get(helper.getUrl('/'));
     User = gendok.data.db.getModel('User');
 
-    factory.create('User', function (err, u) {
-      expect(err).to.not.exist;
-      user = u;
-      done();
+    authHelper.signout(function () {
+      factory.create('User', function (err, u) {
+        expect(err).to.not.exist;
+
+        user = u;
+        token = util.randomToken(32);
+
+        factory.create('User', function (err, u2) {
+          expect(err).to.not.exist;
+
+          u2.update({confirmationToken: token}).then(function (u) {
+            unconfirmedUser = u;
+            done();
+          }).catch(done);
+        });
+      });
     });
   });
 
@@ -95,6 +110,26 @@ describe('signup', function () {
         expect(email.getCssValue('border-bottom-color')).to.eventually.eql(
           'rgba(255, 0, 0, 1)' // === 'red'
         );
+      });
+    });
+  });
+
+  describe('#/profile/confirm', function () {
+    describe('when a valid confirmation token is given', function () {
+      it('signs in the user and redirects it to home', function () {
+        browser.get(unconfirmedUser.getConfirmationLink());
+        browser.waitForAngular();
+        expect(authHelper.isAuthenticated()).to.eventually.be.true;
+        expect(stateHelper.current()).to.eventually.eql('home');
+      });
+    });
+
+    describe('when an invalid confirmation token is given', function () {
+      it('redirects to user to home without signing it in', function () {
+        browser.get(unconfirmedUser.getConfirmationLink() + 'abc');
+        browser.waitForAngular();
+        expect(authHelper.isAuthenticated()).to.eventually.be.false;
+        expect(stateHelper.current()).to.eventually.eql('home');
       });
     });
   });
