@@ -105,7 +105,7 @@ describe('gendok.data.model.user', function () {
   describe('isConfirmed()', function () {
     describe('when a confirmationToken is present', function () {
       it('returns false', function () {
-        var u = User.build();
+        var u = User.build({confirmationToken: 'my-fake-conf-token'});
         expect(u.isConfirmed()).to.be.false;
       });
     });
@@ -169,13 +169,16 @@ describe('gendok.data.model.user', function () {
     describe('when the email changes', function () {
       it('sends a confirmation mail and clears the apiToken', function (done) {
         factory.create('User', function (err, u) {
+          expect(err).to.not.exist;
           simple.mock(u, 'sendConfirmationMail').callOriginal();
 
           expect(err).to.not.exist;
           expect(u.apiToken).to.exist;
           expect(u.confirmationToken).to.not.exist;
 
-          u.update({email: 'my-new-email@gendok.com'}).then(function (u) {
+          var newEmail = 'my-new-' + (new Date()).getTime() + '@gugus.com';
+
+          u.update({email: newEmail}).then(function (u) {
             expect(u.apiToken).to.be.empty;
             expect(u.confirmationToken).to.be.not.empty;
             expect(u.sendConfirmationMail.callCount).to.eql(1);
@@ -188,11 +191,18 @@ describe('gendok.data.model.user', function () {
 
   describe('afterCreate() hook', function () {
     it('sends a confirmation e-mail', function (done) {
-      factory.create('User', function (err, u) {
+      var token = 'abc';
+
+      factory.build('User', {confirmationToken: token}, function (err, u) {
         expect(err).to.not.exist;
-        expect(queue.testMode.jobs.length).to.eql(1);
-        expect(queue.testMode.jobs[0].type).to.eql('email');
-        done();
+
+        User.build(u.toJSON())
+            .save()
+            .then(function () {
+              expect(queue.testMode.jobs.length).to.eql(1);
+              expect(queue.testMode.jobs[0].type).to.eql('email');
+              done();
+            });
       });
     });
   });
@@ -200,16 +210,16 @@ describe('gendok.data.model.user', function () {
   describe('getConfirmationLink()', function () {
     describe('when a confirmationToken is present', function () {
       it('returns a link to /api/profile/confirm?token=...', function () {
-        var u = User.build();
+        factory.build('User', {confirmationToken: 'abc'}, function (err, u) {
+          var expectedLink = format(
+            'http://%s:%s/#/profile/confirm?token=%s',
+            config.get('http_host'),
+            config.get('http_port'),
+            u.confirmationToken
+          );
 
-        var expectedLink = format(
-          'http://%s:%s/api/profile/confirm?token=%s',
-          config.get('http_host'),
-          config.get('http_port'),
-          u.confirmationToken
-        );
-
-        expect(u.getConfirmationLink()).to.eql(expectedLink);
+          expect(u.getConfirmationLink()).to.eql(expectedLink);
+        });
       });
     });
 
