@@ -332,7 +332,7 @@ h2.alert {
 }
 
 // validation error messages
-form tr.error {
+form tr.error, form div.error {
   input {
     border: 1px solid red !important;
   }
@@ -356,6 +356,7 @@ form tr.error {
   }
 
   span.validation_error_message {
+    font-family: 'Lato', sans-serif;
     color: red;
   }
 }

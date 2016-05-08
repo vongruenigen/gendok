@@ -19,6 +19,7 @@ describe('profile edit', function () {
   var factory = helper.loadFactories(this);
   helper.runHttpServer(this);
 
+  var User = null;
   var user = null; // set in beforeEach
 
   var name = element(by.model('profile.name'));
@@ -31,6 +32,8 @@ describe('profile edit', function () {
   var errorMessage = $('.alert');
 
   beforeEach(function (done) {
+    User = gendok.data.db.getModel('User');
+
     authHelper.signout(function () {
       factory.create('User', function (err, u) {
         expect(err).to.not.exist;

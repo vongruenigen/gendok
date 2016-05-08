@@ -14,6 +14,7 @@ var profile = gendokHttp.api.profile;
 var all = gendokHttp.middleware.all;
 var errors = gendokHttp.api.errors;
 var db = require('../../..').data.db;
+var util = require('../../..').util;
 var expect = require('chai').expect;
 var helper = require('../../helper');
 var request = require('superagent');
@@ -160,6 +161,120 @@ describe('gendok.http.api.profile', function () {
                  expect(res.body).to.eql(errors.unauthorized.data);
                  done();
                });
+      });
+    });
+  });
+
+  describe('GET /api/profile/confirm', function () {
+    var url = helper.getUrl('/api/profile/confirm');
+
+    describe('when no confirmationToken is given', function () {
+      it('returns a bad request error', function (done) {
+        request.get(url).end(function (err, res) {
+          expect(err).to.exist;
+          expect(res.statusCode).to.eql(errors.badRequest.code);
+          expect(res.body).to.eql(errors.badRequest.data);
+          done();
+        });
+      });
+    });
+
+    describe('when a valid confirmationToken is given', function () {
+      it('returns a valid JWT and confirms the user', function (done) {
+        var token = util.randomToken(32);
+
+        factory.create('User', function (err, u) {
+          u.update({confirmationToken: token}).then(function (u) {
+            request.get(url + '?token=' + token)
+                   .end(function (err, res) {
+                      expect(err).to.not.exist;
+                      expect(res.statusCode).to.eql(200);
+                      expect(res.body.token).to.exist;
+                      expect(res.body.email).to.eql(u.email);
+
+                      u.reload().then(function (u1) {
+                        expect(u.apiToken).to.eql(res.body.token);
+                        expect(u.isConfirmed()).to.be.true;
+                        done();
+                      });
+                    });
+          });
+        });
+      });
+    });
+
+    describe('when an invalid confirmationToken is given', function () {
+      it('returns a bad request error', function (done) {
+        request.get(url + '?token=bogus')
+               .end(function (err, res) {
+                 expect(err).to.exist;
+                 expect(res.statusCode).to.eql(errors.badRequest.code);
+                 expect(res.body).to.eql(errors.badRequest.data);
+                 done();
+               });
+      });
+    });
+  });
+
+  describe('POST /api/profile/signup', function () {
+    var url = helper.getUrl('/api/profile/signup');
+
+    describe('when invalid values are posted', function () {
+      it('returns the validation errors', function (done) {
+        var values = {
+          name: 'John The Error Doe',
+          email: 'my-invalid-email',
+          password: 'blub1234577',
+          passwordConfirmation: 'blub12345678892'
+        };
+
+        factory.build('User', values, function (err, u) {
+          request.post(url)
+                 .send(JSON.stringify(values))
+                 .set('Content-Type', 'application/json')
+                 .end(function (err, res) {
+                   expect(err).to.exist;
+                   expect(res.statusCode).to.eql(errors.validation.code);
+
+                   User.create(u.toJSON()).catch(function (err) {
+                     var expectedError = errors.validation.data(err);
+                     expect(res.body).to.eql(expectedError);
+                     done();
+                   });
+                 });
+        });
+      });
+    });
+
+    describe('when valid values are posted', function () {
+      it('creates a new user', function (done) {
+        factory.build('User', function (err, u) {
+          expect(err).to.not.exist;
+
+          var values = {
+            email: u.email,
+            name: u.name,
+            password: 'abc1234567',
+            passwordConfirmation: 'abc1234567'
+          };
+
+          request.post(url)
+                 .send(JSON.stringify(values))
+                 .set('Content-Type', 'application/json')
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.statusCode).to.eql(201);
+                   expect(res.body.name).to.eql(values.name);
+                   expect(res.body.email).to.eql(values.email);
+
+                   User.findOne({
+                     where: {email: res.body.email}
+                   }).then(function (u) {
+                     expect(u).to.exist;
+                     done();
+                   });
+                 });
+        });
       });
     });
   });

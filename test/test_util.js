@@ -16,6 +16,8 @@ var expect = require('chai').expect;
 var os = require('os');
 var fs = require('fs');
 var jwt = require('jsonwebtoken');
+var jade = require('jade');
+var path = require('path');
 
 describe('gendok.util', function () {
   it('is an object', function () {
@@ -84,6 +86,33 @@ describe('gendok.util', function () {
       var expected = htmlTmpl.replace('%%', '<style>' + css + '</style>');
 
       expect(util.addCssToHtml(html, css)).to.eql(expected);
+    });
+  });
+
+  describe('renderView()', function () {
+    describe('when a valid view name is given', function () {
+      it('renders the given view', function () {
+        var viewName = 'emails/confirmation.jade';
+        var viewPath = path.join(__dirname, '../lib/http/web/views/emails/confirmation.jade');
+        var expectedHtml = jade.renderFile(viewPath);
+        expect(util.renderView(viewName)).to.eql(expectedHtml);
+      });
+    });
+
+    describe('when an invalid view name is given', function () {
+      it('throws an error', function () {
+        expect(function () {
+          util.renderView('bogusView');
+        }).to.throw(Error);
+      });
+    });
+
+    describe('when .jade is omitted at the end', function () {
+      it('automatically appends it', function () {
+        expect(function () {
+          util.renderView('emails/confirmation');
+        }).to.not.throw(Error);
+      });
     });
   });
 

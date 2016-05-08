@@ -173,9 +173,9 @@ describe('gendok.data.model.job', function () {
           job.schedule(queue, function errorHandler(err, j) {
             expect(err).to.not.exist;
 
-            expect(queue.testMode.jobs).to.be.length(1);
-            expect(queue.testMode.jobs[0].type).to.eql('convert');
-            expect(queue.testMode.jobs[0].data).to.eql({jobId: job.id});
+            expect(queue.testMode.jobs.some(function (j) {
+              return j.type === 'convert' && j.data === {jobId: job.id};
+            }));
 
             done();
           });

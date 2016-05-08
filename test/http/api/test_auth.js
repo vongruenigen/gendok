@@ -21,6 +21,7 @@ var expect = require('chai').expect;
 var helper = require('../../helper');
 var request = require('superagent');
 var jwt = require('jsonwebtoken');
+var simple = require('simple-mock');
 
 describe('gendok.http.api.auth', function () {
   var factory = helper.loadFactories(this);
@@ -39,25 +40,89 @@ describe('gendok.http.api.auth', function () {
 
   describe('POST /api/auth/signin', function () {
     describe('when valid username and password are given', function () {
-      it('returns a 200 and a valid JWT', function (done) {
-        factory.create('User', function (err, user) {
-          expect(err).to.not.exist;
+      describe('when no confirmationToken is set on the user', function () {
+        it('returns a 200 and a valid JWT', function (done) {
+          factory.create('User', function (err, user) {
+            expect(err).to.not.exist;
 
-          request.post(signInUrl)
-                 .send({username: user.email, password: user.password})
-                 .end(function (err, res) {
-                   expect(err).to.not.exist;
-                   expect(res.body.token).to.exist;
+            request.post(signInUrl)
+                   .send({username: user.email, password: user.password})
+                   .end(function (err, res) {
+                     expect(err).to.not.exist;
+                     expect(res.body.token).to.exist;
 
-                   var token = res.body.token;
-                   var secret = config.get('jwt_secret');
+                     var token = res.body.token;
+                     var secret = config.get('jwt_secret');
 
-                   user.reload().then(function (u) {
-                     expect(u.apiToken).to.eql(res.body.token);
-                     expect(util.verifyJwt(u.apiToken)).to.be.true;
+                     user.reload().then(function (u) {
+                       expect(u.apiToken).to.eql(res.body.token);
+                       expect(u.email).to.eql(res.body.email);
+                       expect(util.verifyJwt(u.apiToken)).to.be.true;
+                       done();
+                     });
+                   });
+          });
+        });
+      });
+
+      describe('when an already valid JWT is set on the user', function () {
+        it('returns the existing JWT', function (done) {
+          factory.create('User', function (err, user) {
+            expect(err).to.not.exist;
+
+            var fakeToken = 'my-fake-jwt-token';
+            simple.mock(util, 'verifyJwt').returnWith(true);
+
+            user.update({apiToken: fakeToken}).then(function () {
+              request.post(signInUrl)
+                     .send({username: user.email, password: user.password})
+                     .end(function (err, res) {
+                       expect(err).to.not.exist;
+                       expect(res.body.token).to.exist;
+                       expect(res.body.token).to.eql(fakeToken);
+                       done();
+                     });
+            });
+          });
+        });
+      });
+
+      describe('when an invalid JWT is set on the user', function () {
+        it('returns a new JWT', function (done) {
+          var fakeToken = 'fake-jwt';
+
+          factory.create('User', {apiToken: fakeToken}, function (err, user) {
+            expect(err).to.not.exist;
+
+            request.post(signInUrl)
+                   .send({username: user.email, password: user.password})
+                   .end(function (err, res) {
+                     expect(err).to.not.exist;
+                     expect(res.body.token).to.exist;
+                     expect(res.body.token).to.not.eql(fakeToken);
+                     expect(util.verifyJwt(res.body.token)).to.be.true;
                      done();
                    });
-                 });
+          });
+        });
+      });
+
+      describe('when a confirmationToken is set on the user', function () {
+        it('returns 403', function (done) {
+          factory.create('User', function (err, user) {
+            expect(err).to.not.exist;
+
+            user.update({confirmationToken: 'abc'}).then(function () {
+              request.post(signInUrl)
+                     .send({username: user.email, password: user.password})
+                     .end(function (err, res) {
+                       expect(err).to.exist;
+                       expect(res.statusCode).to.eql(errors.forbidden.code);
+                       expect(res.body).to.eql(errors.forbidden.data);
+                       done();
+                     });
+            });
+          });
         });
       });
     });

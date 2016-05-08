@@ -11,11 +11,16 @@
 
 var helper = require('../../helper');
 var db = require('../../..').data.db;
+var config = require('../../..').config;
+var util = require('../../..').util;
 var expect = require('chai').expect;
 var bcrypt = require('bcrypt');
+var format = require('util').format;
+var simple = require('simple-mock');
 
 describe('gendok.data.model.user', function () {
   var factory = helper.loadFactories(this);
+  var queue = helper.createQueue(this);
   var User = null;
 
   beforeEach(function () {
@@ -85,6 +90,143 @@ describe('gendok.data.model.user', function () {
           expect(user.isPassword(user.password)).to.be.true;
           done();
         });
+      });
+    });
+  });
+
+  describe('.confirmationToken', function () {
+    it('generates a token when a user is created', function () {
+      var u = User.build();
+      expect(u.confirmationToken).to.exist;
+      expect(u.confirmationToken).to.be.of.length(64);
+    });
+  });
+
+  describe('isConfirmed()', function () {
+    describe('when a confirmationToken is present', function () {
+      it('returns false', function () {
+        var u = User.build({confirmationToken: 'my-fake-conf-token'});
+        expect(u.isConfirmed()).to.be.false;
+      });
+    });
+
+    describe('when no confirmationToken is present', function () {
+      it('returns true', function () {
+        var u = User.build({confirmationToken: ''});
+        expect(u.isConfirmed()).to.be.true;
+      });
+    });
+  });
+
+  describe('sendConfirmationMail()', function () {
+    describe('when isConfirmed() returns true', function () {
+      it('sends no email', function (done) {
+        var u = User.build({confirmationToken: ''});
+
+        u.sendConfirmationMail(function (err) {
+          expect(err).to.exist;
+          expect(queue.testMode.jobs).to.be.empty;
+          done();
+        });
+      });
+    });
+
+    describe('when isConfirmed() returns false', function () {
+      it('it sends the confirmation mail', function (done) {
+        factory.create('User', function (err, u) {
+          u.update({confirmationToken: 'abc123'}).then(function (u) {
+            expect(err).to.not.exist;
+
+            var jobsCounterBefore = queue.testMode.jobs.length;
+
+            u.sendConfirmationMail(function (err) {
+              expect(err).to.not.exist;
+              expect(queue.testMode.jobs).to.be.of.length(jobsCounterBefore + 1);
+
+              var mailAttrs = {
+                confirmationLink: u.getConfirmationLink(),
+                name: u.name
+              };
+
+              var htmlMail = util.renderView('emails/confirmation', mailAttrs);
+
+              expect(queue.testMode.jobs.length).to.be.above(0);
+              expect(queue.testMode.jobs.some(function (j) {
+                return j.data.subject &&
+                       j.data.to === u.email &&
+                       j.data.html === htmlMail;
+              })).to.be.true;
+
+              done();
+            });
+          });
+        });
+      });
+    });
+  });
+
+  describe('afterUpdate() hook', function () {
+    describe('when the email changes', function () {
+      it('sends a confirmation mail and clears the apiToken', function (done) {
+        factory.create('User', function (err, u) {
+          expect(err).to.not.exist;
+          simple.mock(u, 'sendConfirmationMail').callOriginal();
+
+          expect(err).to.not.exist;
+          expect(u.apiToken).to.exist;
+          expect(u.confirmationToken).to.not.exist;
+
+          var newEmail = 'my-new-' + (new Date()).getTime() + '@gugus.com';
+
+          u.update({email: newEmail}).then(function (u) {
+            expect(u.apiToken).to.be.empty;
+            expect(u.confirmationToken).to.be.not.empty;
+            expect(u.sendConfirmationMail.callCount).to.eql(1);
+            done();
+          }).catch(done);
+        });
+      });
+    });
+  });
+
+  describe('afterCreate() hook', function () {
+    it('sends a confirmation e-mail', function (done) {
+      var token = 'abc';
+
+      factory.build('User', {confirmationToken: token}, function (err, u) {
+        expect(err).to.not.exist;
+
+        User.build(u.toJSON())
+            .save()
+            .then(function () {
+              expect(queue.testMode.jobs.length).to.eql(1);
+              expect(queue.testMode.jobs[0].type).to.eql('email');
+              done();
+            });
+      });
+    });
+  });
+
+  describe('getConfirmationLink()', function () {
+    describe('when a confirmationToken is present', function () {
+      it('returns a link to /api/profile/confirm?token=...', function () {
+        factory.build('User', {confirmationToken: 'abc'}, function (err, u) {
+          var expectedLink = format(
+            'http://%s:%s/#/profile/confirm?token=%s',
+            config.get('http_host'),
+            config.get('http_port'),
+            u.confirmationToken
+          );
+
+          expect(u.getConfirmationLink()).to.eql(expectedLink);
+        });
+      });
+    });
+
+    describe('when no confirmationToken is present', function () {
+      it('returns null', function () {
+        var u = User.build({confirmationToken: ''});
+        expect(u.getConfirmationLink()).to.be.null;
       });
     });
   });
@@ -167,7 +309,7 @@ describe('gendok.data.model.user', function () {
         });
       });
 
-      it('email adress has to be unique', function (done) {
+      it('has to be unique', function (done) {
         factory.create('User', function (err, usr1) {
           expect(err).to.not.exist;
           factory.build('User', function (err, usr2) {

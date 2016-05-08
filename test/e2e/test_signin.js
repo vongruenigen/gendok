@@ -50,7 +50,7 @@ describe('user signin / signout', function () {
           signinButton.click();
 
           var text = errorParagraph.getInnerHtml();
-          expect(text).to.eventually.eql('invalid username and/or password');
+          expect(text).to.eventually.eql('Invalid username and/or password entered.');
         });
       });
 
@@ -69,7 +69,7 @@ describe('user signin / signout', function () {
           signinButton.click();
 
           expect(errorParagraph.getInnerHtml()).to.eventually.eql(
-            'invalid username and/or password'
+            'Invalid username and/or password entered.'
           );
         });
       });

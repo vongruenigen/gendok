@@ -25,6 +25,7 @@ module.exports = function (model) {
     name: faker.name.findName(),
     password: 'testpassword',
     passwordConfirmation: 'testpassword',
+    confirmationToken: null,
     email: factory.seq(function () {
       //TODO: Ugly email generator, later we dont need this, because of db clear.
       var milliseconds = (new Date()).getTime();
@@ -32,7 +33,10 @@ module.exports = function (model) {
     })
   }, {
     afterCreate: function (user, options, fn) {
-      user.update({apiToken: util.generateJwt(user.id)}).then(function () {
+      user.update({
+        apiToken: util.generateJwt(user.id),
+        confirmationToken: null
+      }, {hooks: false}).then(function () {
         fn(null, user);
       }).catch(function (err) {
         fn(err, null);

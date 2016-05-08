@@ -1,0 +1,60 @@
+section.wrapper#signin(ng-controller='profileController')
+  div
+    div 
+      h2.form-signin-heading Sign up for gendok!
+    form.form-signin(novalidate)
+      p.alert.alert-danger(ng-show='errorMessage') {{errorMessage}}
+      div.form-group(ng-class="{'error': validationErrors.name}")
+        label(for='name') Name:
+        br
+        input(
+          type='text'
+          id='name'
+          placeholder='Your name...'
+          ng-model='profile.name'
+          required
+          autofocus
+        )
+        br
+        span.validation_error_message(ng-if='validationErrors.name') {{validationErrors.name[0]}}
+
+      div.form-group(ng-class="{'error': validationErrors.email}")
+        label(for='email') E-Mail:
+        br
+        input(
+          type='email'
+          id='email'
+          placeholder='Your e-mail...'
+          ng-model='profile.email'
+          required
+        )
+        br
+        span.validation_error_message(ng-if='validationErrors.email') {{validationErrors.email[0]}}
+
+      div.form-group(ng-class="{'error': validationErrors.password}")
+        label(for='password') Password:
+        input(
+          type='password'
+          id='password'
+          placeholder='Your password...'
+          ng-model='profile.password'
+          required
+        )
+        br
+        span.validation_error_message(ng-if='validationErrors.password') {{validationErrors.password[0]}}
+
+      div.form-group(ng-class="{'error': validationErrors.passwordConfirmation}")
+        label(for='passwordConfirmation') Password confirmation:
+        input(
+          type='password'
+          id='passwordConfirmation'
+          placeholder='Your password...'
+          ng-model='profile.passwordConfirmation'
+          required
+        )
+        br
+        span.validation_error_message(ng-if='validationErrors.passwordConfirmation') {{validationErrors.passwordConfirmation[0]}}
+
+      button.btn.btn_turquoise.btn-signup(
+        type='submit' ng-click='signup(profile)'
+      ) Submit
