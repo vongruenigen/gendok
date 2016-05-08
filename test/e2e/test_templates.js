@@ -255,10 +255,11 @@ describe('templates', function () {
 
         expect(editPayloadForm.isPresent()).to.eventually.eql(true);
 
-        payload.sendKeys('not json');
+        payload.clear();
+        payload.sendKeys('not JSON');
         renderButton.click();
 
-        expect(errorMessage.getInnerHtml()).to.eventually.eql('The payload isn\'t valid json.');
+        expect(errorMessage.getInnerHtml()).to.eventually.eql('The payload isn\'t valid JSON.');
 
         cancelButton.click();
 
@@ -275,6 +276,8 @@ describe('templates', function () {
         stateHelper.go('templateViewUpdate', {templateId: tmplCreate.id});
         previewButton.click();
         browser.waitForAngular();
+
+        payload.clear();
         payload.sendKeys('{}');
         renderButton.click();
 
@@ -288,6 +291,8 @@ describe('templates', function () {
                 expect(currentUrl.toString().substring(0, 4)).to.eql('blob');
               });
             });
+
+            browser.switchTo().window(handles[0]);
           });
         });
       });

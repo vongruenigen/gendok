@@ -1,22 +1,24 @@
-div(ng-init="getAlltemplates()")
-  h2.alert.alert-danger(ng-if='errorMessage') {{errorMessage}}
-  h2.alert.alert-success(ng-if='successMessage') {{successMessage}}
-  h2 Templates
-  button(class="btn btn-default" ui-sref="templateCreate()") Create Template
-  table.table
-    tr
-      td ID
-      td Name
-      td Type
-      td Created at
-      td Updated at
-      td 
-    tr(ng-repeat='template in templates')
-      td
-        a(ui-sref="templateViewUpdate({templateId: template.id})") {{template.id}}
-      td {{template.name}}
-      td {{template.type}}
-      td {{template.createdAt}}
-      td {{template.UpdatedAt}}
-      td 
-        button(class="btn btn-default"  ng-click="delete(template.id)") Delete
+section.wrapper#template_list(ng-init="getAlltemplates()") 
+  section.wrapper_centered
+    h2.alert.alert-danger(ng-if='errorMessage') {{errorMessage}}
+    h2.alert.alert-success(ng-if='successMessage') {{successMessage}}
+    h1 Templates
+    button.btn(ui-sref="templateCreate()") Create Template
+    table.table
+      tr
+        td ID
+        td Name
+        td Type
+        td Created at
+        td Updated at
+        td 
+      tr(ng-repeat='template in templates')
+        td
+          a(ui-sref="templateViewUpdate({templateId: template.id})") {{template.id}}
+        td {{template.name}}
+        td {{template.type}}
+        td {{template.createdAt}}
+        td {{template.updatedAt}}
+        td 
+          button(class="btn btn-default"  ng-click="delete(template.id)") Delete 
+            span

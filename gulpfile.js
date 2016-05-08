@@ -50,6 +50,7 @@ var publicFontsPath = path.join(publicPath, 'fonts');
 var publicCssPath = path.join(publicPath, 'css');
 var publicJsPath = path.join(publicPath, 'js');
 var publicImgPath = path.join(publicPath, 'img');
+var publicImgCssPath = path.join(publicPath, 'css/img');
 
 var allJsFilename = 'all.js';
 var allCssFilename = 'all.css';
@@ -59,10 +60,7 @@ var redisConfig = path.join(__dirname, 'config', 'redis.conf');
 var redisLogfile = path.join(__dirname, 'log', 'redis.log');
 
 // List of file patterns to glob for all required css files
-var requiredCssPaths = [
-  'bower_components/bootstrap/dist/css/bootstrap.css',
-  'lib/http/web/assets/css/**/*.css'
-];
+var requiredCssPaths = ['lib/http/web/assets/css/**/*.css'];
 
 // List of file patterns to glob for all required js files. Order is IMPORTANT!
 var requiredJsPaths = [
@@ -71,8 +69,8 @@ var requiredJsPaths = [
   'bower_components/bootstrap/dist/js/bootstrap.js',
   'bower_components/angular-ui-router/release/angular-ui-router.js',
   'bower_components/ngstorage/ngStorage.js',
-  'lib/http/web/assets/js/app.js',  // app.js has to be first because of the
-  'lib/http/web/assets/js/**/*.js', // gendok object required by all others
+  'lib/http/web/app/gendok.js', // gendok.js has to be first because of the
+  'lib/http/web/app/*/*.js'     // gendok object required by all others
 ];
 
 // Helper function which prints the error if given and exits.
@@ -296,7 +294,9 @@ gulp.task('build-fonts', function () {
 
 gulp.task('build-img', function () {
   var imagesPath = path.join(__dirname, 'lib/http/web/assets/img/**/*');
+  var imagesPathCss = path.join(__dirname, 'lib/http/web/assets/css/img/*');
   gulp.src(imagesPath).pipe(gulp.dest(publicImgPath));
+  gulp.src(imagesPathCss).pipe(gulp.dest(publicImgCssPath));
 });
 
 gulp.task('check-bower-components', function (done) {

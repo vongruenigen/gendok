@@ -1,28 +1,33 @@
-div(ng-controller='signinController')
-  form.form-signin(novalidate)
-    h2.form-signin-heading Please sign in
+section.wrapper#signin(ng-controller='signinController')
+  div
+    div 
+      h2.form-signin-heading Please sign in
+      img(src='img/lock.svg')
+      div.arrow-down
+    form.form-signin(novalidate)
 
-    .alert.alert-danger(ng-show='error') {{error}}
+      p.alert.alert-danger(ng-show='error') {{error}}
+      div.form-group
+        label(for='username') Username:
+        input(
+          type='email'
+          id='username'
+          placeholder='username'
+          ng-model='username'
+          required
+          autofocus
+        )
 
-    label.sr-only(for='username') Username
-    input.form-control(
-      type='email'
-      id='username'
-      placeholder='username'
-      ng-model='username'
-      required
-      autofocus
-    )
+      div.form-group
+        label(for='password') Password:
+        input(
+          type='password'
+          id='password'
+          placeholder='password'
+          ng-model='password'
+          required
+        )
 
-    label.sr-only(for='password') Password
-    input.form-control(
-      type='password'
-      id='password'
-      placeholder='password'
-      ng-model='password'
-      required
-    )
-
-    button.btn.btn-signin.btn-lg.btn-primary.btn-block(
-      type='submit' ng-click='signin(username, password)'
-    ) Sign in
+      button.btn.btn_turquoise.btn-signin(
+        type='submit' ng-click='signin(username, password)'
+      ) Sign in

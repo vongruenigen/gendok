@@ -447,13 +447,13 @@ describe('gendok.http.api.templates', function () {
       it('schedules job for the worker', function (done) {
         var payload = {gugus: 'blub', async: true};
 
-        queue.once('job enqueue', function (id, type) {
-          expect(type).to.eql('convert');
-          done();
-        });
-
         factory.create('Template', function (err, template) {
           template.getUser().then(function (user) {
+            queue.once('job enqueue', function (id, type) {
+              expect(type).to.eql('convert');
+              done();
+            });
+
             request.post(renderUrl.replace(':id', template.id))
                    .send(payload)
                    .set('Content-Type', 'application/json')

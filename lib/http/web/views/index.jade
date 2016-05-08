@@ -2,40 +2,34 @@ doctype html
 html(ng-app='gendok')
   head
     title gendok
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
     script(src='/js/all.js')
     link(rel='stylesheet', href='/css/all.css')
   body(ng-controller='layoutController')
-    .navbar.navbar-default
-      .container
-        .navbar-header
-          button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
-            span.sr-only Toggle navigation
-            span.icon-bar
-            span.icon-bar
-            span.icon-bar
-          a.navbar-brand(href='#') gendok
-        .navbar-collapse.collapse
-          ul.nav.navbar-nav
-            li.active
-              a(href='#/') Home
+    #menu_extension.hide_extension
+    nav
+      section
+        #menu_button
+          span
+          | MENU
+        a.logo_link(href='#')
+          img(src='img/logo.svg', alt='gendok-logo')
+        .nav_list
+          ul.left
             li(ng-if='authService.isAuthenticated()')
               a(href='#/templates') Templates
             li(ng-if='authService.isAuthenticated()')
               a(href='#/jobs') Jobs
+            li(ng-if='authService.isAuthenticated() && authService.isAdmin()')
+              a.profile-link(href='/#/users') Users
             li
               a(href='#/about') About us
-
-          ul.nav.navbar-nav.navbar-right
+          ul.right
             li(ng-if='!authService.isAuthenticated()')
-              a.signup-link(href='/#/register') Want to sign up?
-            li.dropdown(ng-if='authService.isAuthenticated()')
-              a.dropdown-toggle(href='#', data-toggle='dropdown')
-                | Hello, {{authService.getUser().username}}!
-                span.caret
-              ul.dropdown-menu(role='menu')
-                li
-                  a(href='#/profile') My profile
-                li.divider
-                li
-                  a.signout-link(href='#' ng-click='signoutUser()') Sign out
-    .container(ui-view)
+              a.signup-link(ui-sref="signup") Want to sign up?
+            li(ng-if='authService.isAuthenticated()')
+              a.profile-link(href='/#/profile') My profile
+            li(ng-if='authService.isAuthenticated()')
+              a(href='#' ng-click='signoutUser()') Sign out
+    div(ui-view)

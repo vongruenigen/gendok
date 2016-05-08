@@ -1,0 +1,585 @@
+/* ///////////////////////////////// VARIABLES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+$dark_grey: rgb(73, 73, 73);
+$grey: rgb(230, 230, 230);
+$light_grey: rgb(244, 244, 244);
+$red: rgb(217, 93, 93);
+$red_hover: rgb(200, 80, 80);
+$green: #89d669;
+$green_hover: #73be55;
+$turquoise: #15d0a6;
+$turquoise_hover: #14bb96;
+$pastel_blue: #5a8190;
+
+$wrapper_centered_width: 1300px;
+$height_navigation: 70px;
+
+/* ///////////////////////////////// GERNERAL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+.wrapper {
+  padding-top: $height_navigation;
+  padding-bottom: 20px;
+  height: auto;
+
+  & + .wrapper {
+    padding-top: 20px;
+  }
+}
+
+.wrapper_centered {
+  width: calc(#{$wrapper_centered_width} - 20px);
+  padding: 10px 10px;
+  margin: auto;
+  position: relative;
+}
+
+/* ******************************** GENERAL MOBILE ******************************** */
+@media screen and (max-width: $wrapper_centered_width) {
+  .wrapper_centered {
+    width: calc(100% - 20px);
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .wrapper {
+    font-size: 90%;
+  }
+}
+
+/* ///////////////////////////////// HOME \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+#home {
+  background-color: $pastel_blue;
+  background-image: url('img/pattern.svg');
+  background-size: 300px;
+  padding-bottom: 0;
+
+  section.wrapper_centered {
+    height: 400px;
+  }
+
+  div:first-of-type {
+    width: 400px;
+    position: absolute;
+    left: 48%;
+    margin-left: -350px;
+    top: 120px;
+
+    h1 {
+      line-height: 40px;
+      color: #D2D2D2;
+    }
+
+    span {
+      color: #D2D2D2;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      padding: 10px 30px;
+      margin-left: 20px;
+    }
+  }
+
+  div.document {
+    width: 300px;
+    position: absolute;
+    right: 48%;
+    margin-right: -350px;
+    bottom: 0;
+
+    img {
+      width: 100%;
+      display: block;
+    }
+  }
+}
+
+/* ******************************** HOME MOBILE ******************************** */
+@media screen and (max-width: 900px) {
+  #home {
+    section.wrapper_centered {
+      height: 300px;
+    }
+
+    div:first-of-type {
+      margin-left: -300px;
+      top: 90px;
+    }
+
+    div.document {
+      width: 250px;
+      margin-right: -300px;
+    }
+  }
+}
+
+@media screen and (max-width: 700px) {
+  #home {
+    section.wrapper_centered {
+      height: 250px;
+    }
+
+    div:first-of-type {
+      margin-left: -260px;
+      top: 70px;
+    }
+
+    div.document {
+      width: 200px;
+      margin-right: -260px;
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  #home {
+    section.wrapper_centered {
+      height: 250px;
+    }
+
+    div:first-of-type {
+      width: 100%;
+      text-align: center;
+      left: auto;
+      top: auto;
+      position: relative;
+      margin: 50px auto 0 auto;
+    }
+
+    div.document {
+      display: none;
+    }
+  }
+}
+
+@media screen and (max-width: 400px) {
+  #home {
+    section.wrapper_centered {
+      height: 210px;
+    }
+
+    div:first-of-type {
+      margin: 40px auto 0 auto;
+    }
+  }
+}
+
+/* ///////////////////////////////// SIGNIN \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+#signin {
+  background-color: $pastel_blue;
+  background-image: url('img/pattern.svg');
+  background-size: 300px;
+  height: calc(100vh - #{$height_navigation} - 20px);
+  min-height: 600px;
+
+  & > div {
+    background-color: white;
+    width: 500px;
+    margin: auto;
+    margin-top: 100px;
+    border-radius: 12px;
+    position: relative;
+    padding-bottom: 20px;
+
+    form {
+      text-align: center;
+
+      input {
+        width: calc(90% - 14px);
+      }
+    }
+
+    button {
+      width: 200px;
+      margin: 30px auto;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      display: block;
+    }
+
+    a {
+      color: black;
+      font-size: 0.9em;
+      padding: 0 5px;
+      position: absolute;
+      right: 10px;
+      bottom: 5px;
+
+      &:first-of-type {
+        border-right: 1px solid black;
+        right: 130px;
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    & > div {
+      background-color: $turquoise;
+      border-radius: 12px 12px 0 0;
+      padding-bottom: 20px;
+      position: relative;
+
+      div.arrow-down {
+        display: none;
+      }
+
+      h2 {
+        color: white;
+        font-size: 1.5em;
+        line-height: 3em;
+        text-align: center;
+      }
+
+      img {
+        margin: auto;
+        display: block;
+        width: 20px;
+      }
+    }
+  }
+}
+
+/* ******************************** SIGNIN MOBILE ******************************** */
+@media screen and (max-width: 800px) {
+  #signin  > div a:first-of-type {
+    right: 118px;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  #signin {
+    min-height: 390px;
+
+    & > div {
+      width: 400px;
+      margin-top: 50px;
+      border-radius: 12px;
+      padding-bottom: 20px;
+
+      button {
+        width: 140px;
+        margin: 20px auto;
+      }
+
+      & > div {
+        padding-bottom: 10px;
+
+        h2 {
+          line-height: 2.5em;
+        }
+
+        img {
+          width: 15px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 450px) {
+  #signin {
+    & > div {
+      width: 100%;
+      margin-top: 0px;
+      border-radius: 0px;
+      background-color: rgba(255, 255, 255, 0.2);
+      height: 100%;
+
+      form {
+        margin-top: 30px;
+
+        input {
+          background-color: rgba(255, 255, 255, 0.39);
+          color: white;
+          border-radius: 0 !important;
+          margin-top: 10px;
+          padding: 15px 10px;
+          width: 85%;
+        }
+
+        *::-webkit-input-placeholder {
+            color: white;
+        }
+        *::-moz-placeholder {
+            color: white;
+        }
+
+        label {
+          display: none;
+        }
+      }
+
+      button {
+        width: 90%;
+        border-radius: 0;
+      }
+
+      a {
+        color: white;
+        bottom: 10px;
+
+        &:first-of-type {
+          border-color: white;
+        }
+      }
+
+      & > div {
+        border-radius: 0;
+
+        div.arrow-down {
+          position: absolute;
+          display: block;
+          width: 0;
+          height: 0;
+          border-left: 30px solid transparent;
+          border-right: 30px solid transparent;
+          border-top: 20px solid $turquoise;
+          bottom: -20px;
+          left: 50%;
+          margin-left: -30px;
+        }
+      }
+    }
+  }
+}
+
+/* ///////////////////////////////// TEMPLATE LIST (templates overview) \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+#template_list {
+  table.table {
+    tr {
+      td:last-of-type {
+        width: 100px;
+      }
+    }
+  }
+}
+
+/* ******************************** TEMPLATE LIST MOBILE ******************************** */
+@media screen and (max-width: 700px) {
+  #template_list table.table tr {
+    td:last-of-type {
+      width: auto;
+
+      .btn {
+        text-indent: 1000px;
+        width: 44px;
+      }
+
+      span {
+        display: block;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  #template_list table.table tr {
+    td:nth-of-type(4) {
+      display: none;
+    }
+  }
+}
+
+@media screen and (max-width: 500px) {
+  #template_list table.table tr td {
+    padding: 10px 10px;
+
+    &:nth-of-type(5) {
+      display: none;
+    }
+  }
+}
+
+@media screen and (max-width: 420px) {
+  #template_list table.table tr {
+    td:nth-of-type(3) {
+      display: none;
+    }
+  }
+}
+
+/* ////////////////// FORM TABLE (update/create template) \\\\\\\\\\\\\\\\\\ */
+.form-table tr {
+  td {
+    padding: 3px 10px !important;
+
+    div.inline-inputs {
+      width: 100%;
+
+      input {
+        width: calc(50% - 12px) !important;
+      }
+
+      select {
+        width: calc(50% - 10px) !important;
+      }
+    }
+
+    input {
+      padding: 10px 10px;
+      border: 1px solid $light_grey;
+    }
+
+    select {
+      appearance: none;
+      padding: 11px 10px;
+      border: none;
+      background-color: $light_grey;
+    }
+
+    textarea {
+      font-family: monospace;
+    }
+
+    &:first-of-type {
+      width: 140px;
+    }
+  }
+
+  &:last-of-type td {
+    padding: 12px 10px;
+  }
+}
+
+/* ////////////// TEMPLATE DETAIL (CREATE/VIEW/UPDATE TEMPLATE) \\\\\\\\\\\\\\ */
+.template-details-split-left {
+  display: inline-block;
+  vertical-align: top;
+  width: calc(100% - 370px);
+}
+
+.template-details-split-right {
+  display: inline-block;
+  width: 370px;
+  position: fixed;
+  left: calc(50% + 280px);
+}
+
+/* ******************************** TEMPLATE DETAIL MOBILE ******************************** */
+@media screen and (max-width: $wrapper_centered_width) {
+  .template-details-split-right {
+    left: auto;
+    right: 0px;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .template-details-split-left {
+    width: calc(100% - 250px);
+  }
+
+  .template-details-split-right {
+    width: 250px;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  table.list tr td:first-of-type {
+    width: 110px;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .template-details-split-left {
+    width: 100%;
+  }
+
+  .template-details-split-right {
+    display: none;
+  }
+}
+
+/* ///////////////////////////// FORMAT PREVIEW \\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+#format-preview {
+  overflow: hidden;
+  margin: auto;
+  border: 1px solid $grey;
+  position: relative;
+
+  .current-paper-format {
+    font-family: 'Lato', sans-serif;
+    font-size: 1.2em;
+    font-weight: 400;
+    line-height: 40px;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.88);
+    z-index: 9000;
+    text-align: center;
+    border-radius: 3px;
+    left: 50%;
+    top: 50%;
+    margin-left: -20px;
+    margin-top: -20px;
+  }
+
+  .content {
+    width: 100%;
+    height: 100%;
+    border: 1px solid $grey;
+    margin: auto;
+    position: relative;
+
+    .header {
+      width: 100%;
+      height: 0;
+      border-bottom: 1px solid $grey;
+      position: absolute;
+      top: 0;
+    }
+
+    .body {
+      width: 100%;
+      position: absolute;
+      top: 0;
+      background-color: white;
+      background-size: 300px;
+    }
+
+    .footer {
+      width: 100%;
+      height: 0;
+      border-top: 1px solid $grey;
+      position: absolute;
+      bottom: 0;
+    }
+  }
+}
+
+
+/* ///////////////////////////////// PROFILE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+#profile {
+  .form-table tr {
+    td:first-of-type {
+      width: 150px !important;
+    }
+
+    &:last-of-type td {
+      vertical-align: middle !important;
+    }
+  }
+}
+
+/* ///////////////////////////////// ERROR PAGES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+#error_page section div {
+  border-radius: 5px;
+  border: 1px solid $grey;
+  width: 400px;
+  padding: 0 10px 10px 10px;
+  margin: auto;
+  margin-top: 20px;
+  text-align: center;
+
+  h1 {
+    color: $red;
+  }
+}
+
+/* ///////////////////////////////// FOOTER \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+footer {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  background-color: rgb(228, 228, 228);
+}
