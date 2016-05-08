@@ -247,6 +247,20 @@ describe('gendok.data.model.user', function () {
         });
       });
 
+      it('error if password and passwordConfirmation is not set', function (done) {
+        factory.create('User', function (err, usr) {
+          expect(err).to.not.exist;
+          usr.password = '';
+          usr.passwordConfirmation = '';
+          usr.validate().then(function (err) {
+            expect(err).to.exist;
+            expect(err.errors.length).to.eql(1);
+            expect(err.errors[0].path).to.eql('password');
+            done();
+          });
+        });
+      });
+
       it('error if password comfirmation is set when password is empty', function (done) {
         factory.create('User', function (err, usr) {
           expect(err).to.not.exist;

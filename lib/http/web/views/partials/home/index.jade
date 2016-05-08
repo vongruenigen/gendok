@@ -11,6 +11,8 @@ section.wrapper#home(ng-controller='homeController')
         ) Signin &raquo;
         span.subtitle(ng-if='authService.isAuthenticated()') Welcome 
           span.bold {{authService.getUser().username}}!
+    div.document
+      img(src='img/document.svg', alt='flat-document')
           
 section.wrapper
   section.wrapper_centered

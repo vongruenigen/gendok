@@ -3,6 +3,7 @@ section.wrapper#signin(ng-controller='signinController')
     div 
       h2.form-signin-heading Please sign in
       img(src='img/lock.svg')
+      div.arrow-down
     form.form-signin(novalidate)
 
       p.alert.alert-danger(ng-show='error') {{error}}
@@ -30,6 +31,3 @@ section.wrapper#signin(ng-controller='signinController')
       button.btn.btn_turquoise.btn-signin(
         type='submit' ng-click='signin(username, password)'
       ) Sign in
-      
-      a(href='') Sign up
-      a(href='') Forgot password?
