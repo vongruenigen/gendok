@@ -199,7 +199,7 @@ describe('users', function () {
 
         stateHelper.go('usersList');
 
-        var link = list.first().all(by.css('button'));
+        var link = list.last().all(by.css('button'));
         link.click();
 
         browser.switchTo().alert().accept();
