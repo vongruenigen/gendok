@@ -530,6 +530,37 @@ describe('gendok.http.api.templates', function () {
                });
       });
     });
+
+    describe('when an error occurs', function () {
+      it('returns an internal error', function (done) {
+        var css = 'h1 { color: red; }';
+
+        // Add a "mock" convert worker, otherwise this test never finishes
+        queue.process('convert', function (j, d) {
+          Job.findById(j.data.jobId).then(function (job) {
+            // Set the mock content above on the new Job object
+            job.update({state: 'failed'}).then(function () {
+              d();
+            }).catch(d);
+          }).catch(d);
+        });
+
+        factory.create('User', {additionalCss: css}, function (err, u) {
+          var attrs = {userId: u.id, additionalCss: css};
+
+          factory.create('Template', attrs, function (err, tmpl) {
+            request.post(renderUrl.replace(':id', tmpl.id))
+                   .set('Authorization', 'Bearer ' + u.apiToken)
+                   .end(function (err, res) {
+                     expect(err).to.exist;
+                     expect(res.statusCode).to.eql(errors.internal.code);
+                     expect(res.body).to.eql(errors.internal.data);
+                     done();
+                   });
+          });
+        });
+      });
+    });
   });
 
   describe('GET /api/templates/', function () {
