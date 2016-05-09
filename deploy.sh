@@ -25,6 +25,7 @@ export NODE_ENV=production
 cd $PULL_DIR/$REPO_NAME
 git pull
 $NPM_BIN install --production --no-optional
+bower install
 rm public/**/*.*
 gulp build
 forever stopall
