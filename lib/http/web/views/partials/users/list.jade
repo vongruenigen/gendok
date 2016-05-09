@@ -14,12 +14,11 @@ section.wrapper(ng-init="getAllUsers()")
         td Updated at
         td
       tr(ng-repeat='user in users')
-        td
-          a(ui-sref="userViewUpdate({userId: user.id})") {{user.id}}
-        td {{user.name}}
-        td {{user.email}}
-        td {{user.isAdmin ? 'Yes' : 'No'}}
-        td {{user.createdAt | date:"yyyy-MM-dd"}}
-        td {{user.updatedAt | date:"yyyy-MM-dd"}}
+        td(ui-sref='userViewUpdate({userId: user.id})') {{user.id}}
+        td(ui-sref='userViewUpdate({userId: user.id})') {{user.name}}
+        td(ui-sref='userViewUpdate({userId: user.id})') {{user.email}}
+        td(ui-sref='userViewUpdate({userId: user.id})') {{user.isAdmin ? 'Yes' : 'No'}}
+        td(ui-sref='userViewUpdate({userId: user.id})') {{user.createdAt | date:"yyyy-MM-dd"}}
+        td(ui-sref='userViewUpdate({userId: user.id})') {{user.updatedAt | date:"yyyy-MM-dd"}}
         td
           button(class="btn btn-default"  ng-click="delete(user.id)") Delete
