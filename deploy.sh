@@ -25,6 +25,7 @@ export NODE_ENV=production
 cd $PULL_DIR/$REPO_NAME
 git pull
 $NPM_BIN install --production --no-optional
+rm public/**/*.*
 gulp build
 forever stopall
 ./node_modules/.bin/sequelize db:migrate
