@@ -19,7 +19,7 @@ section.wrapper(ng-init="getAllUsers()")
         td {{user.name}}
         td {{user.email}}
         td {{user.isAdmin ? 'Yes' : 'No'}}
-        td {{user.createdAt}}
-        td {{user.updatedAt}}
+        td {{user.createdAt | date:"yyyy-MM-dd"}}
+        td {{user.updatedAt | date:"yyyy-MM-dd"}}
         td
           button(class="btn btn-default"  ng-click="delete(user.id)") Delete

@@ -17,8 +17,8 @@ section.wrapper#template_list(ng-init="getAlltemplates()")
           a(ui-sref="templateViewUpdate({templateId: template.id})") {{template.id}}
         td {{template.name}}
         td {{template.type}}
-        td {{template.createdAt}}
-        td {{template.updatedAt}}
+        td {{template.createdAt | date:"yyyy-MM-dd"}}
+        td {{template.updatedAt | date:"yyyy-MM-dd"}}
         td 
           button(class="btn btn-default"  ng-click="delete(template.id)") Delete 
             span
