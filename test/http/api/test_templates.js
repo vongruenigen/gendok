@@ -35,6 +35,10 @@ describe('gendok.http.api.templates', function () {
     Template = db.getModel('Template');
   });
 
+  afterEach(function (d) {
+    queue.shutdown(100, 'convert', d);
+  });
+
   it('is a function', function () {
     expect(templates).to.be.a('function');
   });
