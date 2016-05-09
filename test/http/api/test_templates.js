@@ -10,6 +10,7 @@
 'use strict';
 
 var gendok = require('../../..');
+var logger = gendok.logger;
 var templates = gendok.http.api.templates;
 var all = gendok.http.middleware.all;
 var errors = gendok.http.api.errors;
@@ -537,11 +538,10 @@ describe('gendok.http.api.templates', function () {
 
         // Add a "mock" convert worker, otherwise this test never finishes
         queue.process('convert', function (j, d) {
+          logger.debug('received job: ' + j.data);
+
           Job.findById(j.data.jobId).then(function (job) {
-            // Set the mock content above on the new Job object
-            job.update({state: 'failed'}).then(function () {
-              d();
-            }).catch(d);
+            job.update({state: 'failed'}).then(function () { d(); }).catch(d);
           }).catch(d);
         });
 
