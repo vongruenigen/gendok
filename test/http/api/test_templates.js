@@ -532,14 +532,12 @@ describe('gendok.http.api.templates', function () {
       });
     });
 
-    describe('when an error occurs', function () {
+    describe('when the job is "failed"', function () {
       it('returns an internal error', function (done) {
         var css = 'h1 { color: red; }';
 
         // Add a "mock" convert worker, otherwise this test never finishes
         queue.process('convert', function (j, d) {
-          logger.debug('received job: ' + j.data);
-
           Job.findById(j.data.jobId).then(function (job) {
             job.update({state: 'failed'}).then(function () { d(); }).catch(d);
           }).catch(d);
