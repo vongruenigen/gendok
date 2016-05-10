@@ -1,4 +1,4 @@
-section.wrapper(ng-init="getAllUsers()")
+section.wrapper#user_list(ng-init="getAllUsers()")
   section.wrapper_centered
     h2.alert.alert-danger(ng-if='errorMessage') {{errorMessage}}
     h2.alert.alert-success(ng-if='successMessage') {{successMessage}}
@@ -20,5 +20,6 @@ section.wrapper(ng-init="getAllUsers()")
         td(ui-sref='userViewUpdate({userId: user.id})') {{user.isAdmin ? 'Yes' : 'No'}}
         td(ui-sref='userViewUpdate({userId: user.id})') {{user.createdAt | date:"yyyy-MM-dd"}}
         td(ui-sref='userViewUpdate({userId: user.id})') {{user.updatedAt | date:"yyyy-MM-dd"}}
-        td
-          button(class="btn btn-default"  ng-click="delete(user.id)") Delete
+        td 
+          button(class="btn btn-default"  ng-click="delete(user.id)") Delete 
+            span
