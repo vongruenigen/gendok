@@ -282,7 +282,182 @@ $height_navigation: 70px;
       width: 100%;
       margin-top: 0px;
       border-radius: 0px;
-      background-color: rgba(255, 255, 255, 0.2);
+      background-color: rgba(255, 255, 255, 0.4);
+      height: 100%;
+
+      form {
+        margin-top: 30px;
+
+        input {
+          background-color: rgba(255, 255, 255, 0.39);
+          color: white;
+          border-radius: 0 !important;
+          margin-top: 10px;
+          padding: 15px 10px;
+          width: 85%;
+        }
+
+        *::-webkit-input-placeholder {
+            color: white;
+        }
+        *::-moz-placeholder {
+            color: white;
+        }
+
+        label {
+          display: none;
+        }
+      }
+
+      button {
+        width: 90%;
+        border-radius: 0;
+      }
+
+      a {
+        color: white;
+        bottom: 10px;
+
+        &:first-of-type {
+          border-color: white;
+        }
+      }
+
+      & > div {
+        border-radius: 0;
+
+        div.arrow-down {
+          position: absolute;
+          display: block;
+          width: 0;
+          height: 0;
+          border-left: 30px solid transparent;
+          border-right: 30px solid transparent;
+          border-top: 20px solid $turquoise;
+          bottom: -20px;
+          left: 50%;
+          margin-left: -30px;
+        }
+      }
+    }
+  }
+}
+
+/* ///////////////////////////////// SIGNUP \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+#signup {
+  background-color: $pastel_blue;
+  background-image: url('img/pattern.svg');
+  background-size: 300px;
+  height: calc(100vh - #{$height_navigation} - 20px);
+  min-height: 650px;
+
+  & > div {
+    background-color: white;
+    width: 500px;
+    margin: auto;
+    margin-top: 50px;
+    border-radius: 12px;
+    position: relative;
+    padding-bottom: 1px;
+
+    form {
+      text-align: center;
+
+      input {
+        width: calc(90% - 14px);
+      }
+    }
+
+    button {
+      width: 200px;
+      margin: 30px auto;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      display: block;
+    }
+
+    a {
+      color: black;
+      font-size: 0.9em;
+      padding: 0 5px;
+      position: absolute;
+      right: 10px;
+      bottom: 5px;
+
+      &:first-of-type {
+        border-right: 1px solid black;
+        right: 130px;
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    & > div {
+      background-color: $turquoise;
+      border-radius: 12px 12px 0 0;
+      padding-bottom: 15px;
+      position: relative;
+
+      div.arrow-down {
+        display: none;
+      }
+
+      h2 {
+        color: white;
+        font-size: 1.5em;
+        line-height: 2.5em;
+        text-align: center;
+      }
+
+      img {
+        margin: auto;
+        display: block;
+        width: 24px;
+      }
+    }
+  }
+}
+
+/* ******************************** SIGNUP MOBILE ******************************** */
+@media screen and (max-width: 700px) {
+  #signup {
+    min-height: 390px;
+
+    & > div {
+      width: 400px;
+      margin-top: 50px;
+      border-radius: 12px;
+      padding-bottom: 20px;
+
+      button {
+        width: 140px;
+        margin: 20px auto;
+      }
+
+      & > div {
+        padding-bottom: 10px;
+
+        h2 {
+          line-height: 2.5em;
+        }
+
+        img {
+          width: 17px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 450px) {
+  #signup {
+    & > div {
+      width: 100%;
+      margin-top: 0px;
+      border-radius: 0px;
+      background-color: rgba(255, 255, 255, 0.4);
       height: 100%;
 
       form {
