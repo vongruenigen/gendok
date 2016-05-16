@@ -23,6 +23,7 @@ var format = require('util').format;
 
 describe('gendok.http.api.profile', function () {
   var factory = helper.loadFactories(this);
+  var queue = helper.createQueue(this);
   var server = helper.runHttpServer(this, [all, profile]);
   var url = helper.getUrl('/api/profile/');
 
@@ -275,6 +276,51 @@ describe('gendok.http.api.profile', function () {
                    });
                  });
         });
+      });
+    });
+  });
+
+  describe('POST /api/profile/reset-password?email=...', function () {
+    var url = helper.getUrl('/api/profile/reset-password');
+
+    describe('when an existing email is given', function () {
+      it('sets the resetPasswordToken and sends an email', function (done) {
+        factory.create('User', function (err, u) {
+          expect(err).to.not.exist;
+
+          var jobsCountBefore = queue.testMode.jobs.length;
+
+          request.post(url + '?email=' + u.email)
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.body.email).to.eql(u.email);
+
+                   var jobsCountAfter = queue.testMode.jobs.length;
+                   expect(jobsCountAfter).to.eql(jobsCountBefore + 1);
+
+                   u.reload().then(function (u) {
+                     expect(u.resetPasswordToken).to.exist;
+                     done();
+                   });
+                 });
+        });
+      });
+    });
+
+    describe('when an inexistent username is given', function () {
+      it('returns 200 but sends no email', function (done) {
+        var jobsCountBefore = queue.testMode.jobs.length;
+        var email = 'abc12345@gendok.ch';
+
+        request.post(url + '?email=' + email)
+               .end(function (err, res) {
+                 expect(err).to.not.exist;
+                 expect(res.body.email).to.eql(email);
+
+                 var jobsCountAfter = queue.testMode.jobs.length;
+                 expect(jobsCountAfter).to.eql(jobsCountBefore);
+                 done();
+               });
       });
     });
   });
