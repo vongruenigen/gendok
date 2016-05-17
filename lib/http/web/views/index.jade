@@ -22,7 +22,7 @@ html(ng-app='gendok')
             li(ng-if='authService.isAuthenticated() && authService.isAdmin()')
               a.profile-link(href='/#/users') Users
             li
-              a(href='#/about') About us
+              a(href='#/about') About
           ul.right
             li(ng-if='!authService.isAuthenticated()')
               a.signup-link(ui-sref="signup") Want to sign up?
