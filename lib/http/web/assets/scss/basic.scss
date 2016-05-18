@@ -99,6 +99,11 @@ table.table {
   margin-top: 15px;
 
   tr {
+    &:hover td {
+      background-color: #b3ffee;//$grey;
+      cursor: pointer;
+    }
+
     td {
       font-family: 'Lato', sans-serif;
       font-weight: 300;
@@ -109,10 +114,6 @@ table.table {
       &:last-of-type button {
         width: 100px;
         overflow: hidden;
-      }
-
-      a {
-        color: $turquoise;
       }
 
       .btn {
@@ -147,9 +148,16 @@ table.table {
       }
     }
 
-    &:first-of-type td {
-      padding: 10px 10px;
-      font-weight: 400;
+    &:first-of-type {
+      td {
+        padding: 10px 10px;
+        font-weight: 400;
+      }
+
+      &:hover td {
+        background-color: white;
+        cursor: default;
+      }
     }
 
     &:last-of-type td {
@@ -260,6 +268,7 @@ label {
   font-weight: 400;
   font-size: 1em;
   line-height: 1.5em;
+  display: block;
 }
 
 input {

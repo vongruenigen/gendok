@@ -22,6 +22,10 @@ var JsZip = require('jszip');
 var fs = require('fs');
 
 describe('gendok.queue.worker.convert', function () {
+  afterEach(function () {
+    simple.restore();
+  });
+
   it('is a function', function () {
     expect(convert).to.be.a('function');
   });
@@ -219,6 +223,29 @@ describe('gendok.queue.worker.convert', function () {
           expect(util.addCssToHtml.callCount).to.eql(1);
           expect(util.addCssToHtml.calls[0].args[1]).to.eql(tmpl.additionalCss);
           done();
+        });
+      });
+    });
+  });
+
+  describe('when an error occurs while rendering', function () {
+    it('sets the job state to failed', function (done) {
+      // Might not be the best way to produce an error, but at least it's one...
+      simple.mock(util, 'addCssToHtml').throwWith('hello, I am your error');
+
+      var css = 'h1 { color: red; }';
+
+      factory.create('Template', {additionalCss: css}, function (err, tmpl) {
+        factory.create('Job', {templateId: tmpl.id}, function (err, j) {
+          var queueJobData = {data: {jobId: j.id}};
+
+          convert(queueJobData, function (err) {
+            j.reload().then(function (j) {
+              expect(j.state).to.eql('failed');
+              expect(err).to.exist;
+              done();
+            });
+          });
         });
       });
     });

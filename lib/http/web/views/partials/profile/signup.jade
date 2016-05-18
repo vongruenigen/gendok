@@ -1,12 +1,13 @@
-section.wrapper#signin(ng-controller='profileController')
+section.wrapper#signup(ng-controller='profileController')
   div
     div 
       h2.form-signin-heading Sign up for gendok!
+      img(src='img/signup.svg')
+      div.arrow-down
     form.form-signin(novalidate)
       p.alert.alert-danger(ng-show='errorMessage') {{errorMessage}}
       div.form-group(ng-class="{'error': validationErrors.name}")
         label(for='name') Name:
-        br
         input(
           type='text'
           id='name'
@@ -20,7 +21,6 @@ section.wrapper#signin(ng-controller='profileController')
 
       div.form-group(ng-class="{'error': validationErrors.email}")
         label(for='email') E-Mail:
-        br
         input(
           type='email'
           id='email'
