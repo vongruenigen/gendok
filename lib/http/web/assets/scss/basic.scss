@@ -184,7 +184,7 @@ table.list {
       list-style-type: none;
       border-bottom: 1px solid $grey;
       text-align: left;
-      vertical-align: middle;
+      vertical-align: top;
       padding: 15px 10px;
 
       &:first-of-type {
@@ -194,19 +194,8 @@ table.list {
 
     &:last-of-type td {
       border-bottom: none;
-      vertical-align: top;
     }
   }
-}
-
-/* ///////////////////////////////// CODE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
-pre {
-  background-color: $light_grey;
-  border: 1px solid $grey;
-  padding: 5px;
-  border-radius: 4px;
-  white-space: pre-wrap;
-  font-family: monospace;
 }
 
 /* ///////////////////////////////// BUTTONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */

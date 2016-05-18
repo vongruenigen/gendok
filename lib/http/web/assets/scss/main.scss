@@ -529,7 +529,7 @@ $height_navigation: 70px;
   }
 }
 
-/* ******************************** TEMPLATE LIST MOBILE ******************************** */
+/* ******************************** USER LIST MOBILE ******************************** */
 @media screen and (max-width: 900px) {
   #user_list table.table tr {
     td:last-of-type {
@@ -724,6 +724,45 @@ $height_navigation: 70px;
 
   .template-details-split-right {
     display: none;
+  }
+}
+
+/* ///////////////////////////// CODE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+pre {
+  background-color: $light_grey;
+  border: 1px solid $grey;
+  padding: 5px;
+  border-radius: 4px;
+  overflow: auto;
+  display: block;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: monospace;
+  width: 715px;
+}
+
+/* ******************************** CODE MOBILE ******************************** */
+@media screen and (max-width: $wrapper_centered_width) {
+  pre {
+    width: calc(100vw - 585px);
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  pre {
+    width: calc(100vw - 465px);
+  }
+}
+
+@media screen and (max-width: 800px) {
+  pre {
+    width: calc(100vw - 430px);
+  }
+}
+
+@media screen and (max-width: 750px) {
+  pre {
+    width: calc(100vw - 185px);
   }
 }
 
