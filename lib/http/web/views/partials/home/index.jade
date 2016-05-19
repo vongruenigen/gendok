@@ -13,8 +13,12 @@ section.wrapper#home(ng-controller='homeController')
           span.bold {{authService.getUser().username}}!
     div.document
       img(src='img/document.svg', alt='flat-document')
-          
-section.wrapper
+
+section.wrapper#about-language-image
+  img(src="img/languages_icon.svg")
+//section.wrapper#about-image
+//  img(src="img/about_icon.svg")
+section.wrapper#about
   section.wrapper_centered
     h2 About
     p
@@ -27,8 +31,45 @@ section.wrapper
       | engines like Jade or Mustache. 
       br
       br
+    p
       | gendok is intended to run as Software as a Service (SaaS) providing 
       | an extensive REST API as well as a graphical user interface (GUI).
       br
       br
     a(href='https://github.engineering.zhaw.ch/vongrdir/PSIT4-gendok/wiki' target='blank') &raquo; gendok on GitHub
+    br
+    br
+    br
+    h3 Features
+    p
+      | Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy 
+      | eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam 
+      | voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet 
+      | clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit 
+      | amet. 
+    table
+      tr
+        td Feature
+        td Description
+        td Blubb
+      tr
+        td Feature1
+        td This is feature number 1
+        td Lorem ipsum dolor sit amet
+      tr
+        td Feature2
+        td This is feature number 2
+        td Lorem ipsum dolor sit amet
+      tr
+        td Feature3
+        td This is feature number 3
+        td Lorem ipsum dolor sit amet
+    br
+    br
+    h3 Languages
+    p
+      | Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy 
+      | eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam 
+      | voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet 
+      | clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit 
+      | amet. 
