@@ -4,8 +4,8 @@ section.wrapper(ng-init="getTemplate()")
     h2.alert.alert-success(ng-if='successMessage') {{successMessage}}
     h1 Template: {{template.name}}
     .template-details-split-left(ng-if='!editable && !payloadOptions')
-      button.btn.btn_turquoise(ng-click="edit()") edit
-      button.btn(ng-click="openPayloadOptions()") preview
+      button.btn.btn_turquoise(ng-click="edit()") Edit
+      button.btn(ng-click="openPayloadOptions()") Preview
       table.list.template-detail-list
         tr
           td Type:
@@ -33,8 +33,8 @@ section.wrapper(ng-init="getTemplate()")
 
     .template-details-split-left(ng-if='payloadOptions')
       form.edit-payload-form.form-table
-        button.btn(ng-click="render(template, payload)") generate preview
-        button.btn.btn_red(ng-click="reset()") cancel
+        button.btn(ng-click="render(template, payload)") Generate preview
+        button.btn.btn_red(ng-click="reset()") Cancel
         table.list
           tr
             td Payload:
@@ -43,8 +43,8 @@ section.wrapper(ng-init="getTemplate()")
         
     .template-details-split-left(ng-if='editable')
       form.edit-template-form.form-table
-        button.btn.btn_turquoise(ng-click="update()") save
-        button.btn.btn_red(ng-click="reset()") cancel
+        button.btn.btn_turquoise(ng-click="update()") Save
+        button.btn.btn_red(ng-click="reset()") Cancel
         table.list
           tr(ng-class="{'error': validationErrors.name}")
             td Name:
