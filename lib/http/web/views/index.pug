@@ -1,0 +1,35 @@
+doctype html
+html(ng-app='gendok')
+  head
+    title gendok
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
+    script(src='/js/all.js')
+    link(rel='stylesheet', href='/css/all.css')
+  body(ng-controller='layoutController')
+    #menu_extension.hide_extension
+    nav
+      section
+        #menu_button
+          span
+          | MENU
+        a.logo_link(href='#')
+          img(src='img/logo.svg', alt='gendok-logo')
+        .nav_list
+          ul.left
+            li(ng-if='authService.isAuthenticated()')
+              a(href='#/templates') Templates
+            li(ng-if='authService.isAuthenticated()')
+              a(href='#/jobs') Jobs
+            li(ng-if='authService.isAuthenticated() && authService.isAdmin()')
+              a.profile-link(href='/#/users') Users
+            li
+              a(href='#/about') About us
+          ul.right
+            li(ng-if='!authService.isAuthenticated()')
+              a.signup-link(ui-sref="signup") Want to sign up?
+            li(ng-if='authService.isAuthenticated()')
+              a.profile-link(href='/#/profile') My profile
+            li(ng-if='authService.isAuthenticated()')
+              a(href='#' ng-click='signoutUser()') Sign out
+    div(ui-view)
