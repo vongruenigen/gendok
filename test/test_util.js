@@ -16,7 +16,7 @@ var expect = require('chai').expect;
 var os = require('os');
 var fs = require('fs');
 var jwt = require('jsonwebtoken');
-var jade = require('jade');
+var pug = require('pug');
 var path = require('path');
 
 describe('gendok.util', function () {
@@ -92,9 +92,9 @@ describe('gendok.util', function () {
   describe('renderView()', function () {
     describe('when a valid view name is given', function () {
       it('renders the given view', function () {
-        var viewName = 'emails/confirmation.jade';
-        var viewPath = path.join(__dirname, '../lib/http/web/views/emails/confirmation.jade');
-        var expectedHtml = jade.renderFile(viewPath);
+        var viewName = 'emails/confirmation.pug';
+        var viewPath = path.join(__dirname, '../lib/http/web/views/emails/confirmation.pug');
+        var expectedHtml = pug.renderFile(viewPath);
         expect(util.renderView(viewName)).to.eql(expectedHtml);
       });
     });
@@ -107,7 +107,7 @@ describe('gendok.util', function () {
       });
     });
 
-    describe('when .jade is omitted at the end', function () {
+    describe('when .pug is omitted at the end', function () {
       it('automatically appends it', function () {
         expect(function () {
           util.renderView('emails/confirmation');
