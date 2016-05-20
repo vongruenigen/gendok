@@ -86,6 +86,8 @@ module.exports = {
   /**
    * Sets the given options in the current config and invokes the callback.
    * The previous config is then restored after the callback has been executed.
+   * Be aware that this function can only be used in synchronous contexts due
+   * to the nature that callbacks.
    *
    * @param {Object} cfg Object containing the changes to the config
    * @param {Function} cb The callback to invoke after the changes on the config
@@ -201,7 +203,8 @@ module.exports = {
    * });
    *
    * An error is thrown if the context argument is missing. It returns the server
-   * object itself.
+   * object itself. It also ensure that not ssl validation errors occur by setting
+   * the env variable NODE_TLS_REJECT_UNAUTHORIZED to 0.
    *
    * @param {Object} context The current context
    * @param {Array} modules List of modules
@@ -211,6 +214,10 @@ module.exports = {
     if (!context) {
       throw new Error('context argument must be present');
     }
+
+    // See here for the discussion this:
+    // https://github.com/visionmedia/superagent/issues/197
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
     if (!modules) {
       modules = [
