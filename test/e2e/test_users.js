@@ -36,6 +36,7 @@ describe('users', function () {
   var updateButton = $('[ng-click="update()"]');
   var editButton = $('[ng-click="edit()"]');
   var cancelButton = $('[ng-click="reset()"]');
+  var deleteButton = $('[ng-click="delete(confirmUser.id)"]');
   var errorMessage = $('.alert-danger');
   var successMessage = $('.alert-success');
 
@@ -202,7 +203,7 @@ describe('users', function () {
         var link = list.last().all(by.css('button'));
         link.click();
 
-        browser.switchTo().alert().accept();
+        deleteButton.click();
 
         browser.waitForAngular().then(function () {
           expect(stateHelper.current()).to.eventually.eql('usersList');
@@ -222,7 +223,7 @@ describe('users', function () {
         var link = list.first().all(by.css('button'));
         link.click();
 
-        browser.switchTo().alert().dismiss();
+        cancelButton.click();
 
         browser.waitForAngular().then(function () {
           expect(stateHelper.current()).to.eventually.eql('usersList');

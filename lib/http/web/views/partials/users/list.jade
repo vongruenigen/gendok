@@ -21,5 +21,13 @@ section.wrapper#user_list(ng-init="getAllUsers()")
         td(ui-sref='userViewUpdate({userId: user.id})') {{user.createdAt | date:"yyyy-MM-dd"}}
         td(ui-sref='userViewUpdate({userId: user.id})') {{user.updatedAt | date:"yyyy-MM-dd"}}
         td 
-          button(class="btn btn-default"  ng-click="delete(user.id)") Delete 
+          button(class="btn btn-default"  ng-click="openConfirmMessage(user)") Delete 
             span
+    section.confirmMessage(ng-if='confirmMessage')
+      div
+        h2 Confirm
+        p Are your sure you want to delete the following user?
+        span {{confirmUser.name}}
+        div
+          button.btn(ng-click="delete(confirmUser.id)") Delete
+          button.btn.btn_red(ng-click="reset()") Cancel

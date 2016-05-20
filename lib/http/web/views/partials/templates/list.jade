@@ -19,5 +19,13 @@ section.wrapper#template_list(ng-init="getAlltemplates()")
         td(ui-sref='templateViewUpdate({templateId: template.id})') {{template.createdAt | date:"yyyy-MM-dd"}}
         td(ui-sref='templateViewUpdate({templateId: template.id})') {{template.updatedAt | date:"yyyy-MM-dd"}}
         td 
-          button(class="btn btn-default"  ng-click="delete(template.id)") Delete 
+          button(class="btn btn-default"  ng-click="openConfirmMessage(template)") Delete 
             span
+    section.confirmMessage(ng-if='confirmMessage')
+      div
+        h2 Confirm
+        p Are your sure you want to delete the following template?
+        span {{confirmTemplate.name}}
+        div
+          button.btn(ng-click="delete(confirmTemplate.id)") Delete
+          button.btn.btn_red(ng-click="reset()") Cancel
