@@ -280,8 +280,51 @@ describe('gendok.http.api.profile', function () {
     });
   });
 
-  describe('POST /api/profile/reset-password?email=...', function () {
+  describe('POST /api/profile/reset-password', function () {
     var url = helper.getUrl('/api/profile/reset-password');
+
+    describe('when a valid resetPasswordToken is given', function () {
+      it('signs in the user', function (done) {
+        var attrs = {resetPasswordToken: 'abc123450'};
+
+        factory.create('User', attrs, function (err, u) {
+          expect(err).to.not.exist;
+
+          request.post(url)
+                 .send({token: u.resetPasswordToken})
+                 .set('Content-Type', 'application/json')
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.body.email).to.eql(u.email);
+                   expect(res.body.token).to.exist;
+
+                   u.reload().then(function (u) {
+                     expect(res.body.token).to.eql(u.apiToken);
+                     expect(u.resetPasswordToken).to.be.empty;
+                     done();
+                   });
+                 });
+        });
+      });
+    });
+
+    describe('when an invalid resetPasswordToken is given', function () {
+      it('returns an error', function (done) {
+        request.post(url)
+               .send({token: 'inexistent?!'})
+               .set('Content-Type', 'application/json')
+               .end(function (err, res) {
+                 expect(err).to.exist;
+                 expect(res.statusCode).to.eql(errors.badRequest.code);
+                 expect(res.body).to.eql(errors.badRequest.data);
+                 done();
+               });
+      });
+    });
+  });
+
+  describe('POST /api/profile/reset-password-req', function () {
+    var url = helper.getUrl('/api/profile/reset-password-req');
 
     describe('when an existing email is given', function () {
       it('sets the resetPasswordToken and sends an email', function (done) {
@@ -290,7 +333,9 @@ describe('gendok.http.api.profile', function () {
 
           var jobsCountBefore = queue.testMode.jobs.length;
 
-          request.post(url + '?email=' + u.email)
+          request.post(url)
+                 .send({email: u.email})
+                 .set('Content-Type', 'application/json')
                  .end(function (err, res) {
                    expect(err).to.not.exist;
                    expect(res.body.email).to.eql(u.email);
@@ -312,7 +357,9 @@ describe('gendok.http.api.profile', function () {
         var jobsCountBefore = queue.testMode.jobs.length;
         var email = 'abc12345@gendok.ch';
 
-        request.post(url + '?email=' + email)
+        request.post(url)
+               .send({email: email})
+               .set('Content-Type', 'application/json')
                .end(function (err, res) {
                  expect(err).to.not.exist;
                  expect(res.body.email).to.eql(email);
@@ -321,6 +368,28 @@ describe('gendok.http.api.profile', function () {
                  expect(jobsCountAfter).to.eql(jobsCountBefore);
                  done();
                });
+      });
+    });
+
+    describe('when the user has a token set already', function () {
+      it('returns 200 but sends no email', function (done) {
+        var attrs = {resetPasswordToken: 'gugugs12345'};
+
+        factory.create('User', attrs, function (err, u) {
+          var jobsCountBefore = queue.testMode.jobs.length;
+
+          request.post(url)
+                 .send({email: u.email})
+                 .set('Content-Type', 'application/json')
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.body.email).to.eql(u.email);
+
+                   var jobsCountAfter = queue.testMode.jobs.length;
+                   expect(jobsCountAfter).to.eql(jobsCountBefore);
+                   done();
+                 });
+        });
       });
     });
   });
