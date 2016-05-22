@@ -155,13 +155,41 @@ describe('gendok.http.api.profile', function () {
     it('returns an unauthorized error without a valid api-token', function (done) {
       factory.create('User', function (err, user) {
         request.put(url)
-               .set('Authorization', 'Token blubiblub')
+               .set('Authorization', 'Bearer blubiblub')
                .end(function (err, res) {
                  expect(err).to.exist;
                  expect(res.statusCode).to.eql(errors.unauthorized.code);
                  expect(res.body).to.eql(errors.unauthorized.data);
                  done();
                });
+      });
+    });
+
+    describe('when a resetPasswordToken is set', function () {
+      it('clears it after the update', function (done) {
+        var attrs = {resetPasswordToken: 'abc123'};
+
+        factory.create('User', attrs, function (err, u) {
+          expect(err).to.not.exist;
+
+          var updAttrs = {
+            password: 'blub123467',
+            passwordConfirmation: 'blub123467'
+          };
+
+          request.put(url)
+                 .send(updAttrs)
+                 .set('Content-Type', 'application/json')
+                 .set('Authorization', 'Bearer ' + u.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+
+                   u.reload().then(function (u) {
+                     expect(u.resetPasswordToken).to.be.empty;
+                     done();
+                   });
+                 });
+        });
       });
     });
   });
