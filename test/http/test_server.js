@@ -74,7 +74,9 @@ describe('gendok.http.Server', function () {
       });
 
       it('also starts successfully', function (done) {
+        config.set('http_ssl_port', null);
         config.set('ssl_key', null);
+        config.set('ssl_cert', null);
 
         var h = new HttpServer();
 
@@ -82,6 +84,28 @@ describe('gendok.http.Server', function () {
           expect(err).to.not.exist;
           h.stop(done);
         });
+      });
+    });
+
+    describe('when ssl config is incomplete', function () {
+      var prevCfg = {};
+
+      beforeEach(function () {
+        prevCfg = config.toObject();
+      });
+
+      afterEach(function () {
+        config.load(prevCfg);
+      });
+
+      it('returns error', function () {
+        config.set('http_ssl_port', 'blablub');
+        config.set('http_ssl_port', null);
+        config.set('http_ssl_port', null);
+
+        var h = new HttpServer();
+
+        expect(function () { h.start(); }).to.throw(Error);
       });
     });
 
