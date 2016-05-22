@@ -23,7 +23,9 @@
     "smtp_password": "gendok",
     "smtp_from": "notify@gendok.com",
     "jwt_ttl": "24h",
-    "jwt_secret": "abc123"
+    "jwt_secret": "abc123",
+    "ssl_key": "test/ssl/private.key",
+    "ssl_cert": "test/ssl/certificate.pem"
   },
 
   "test": {
