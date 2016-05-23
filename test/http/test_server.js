@@ -99,8 +99,6 @@ describe('gendok.http.Server', function () {
       });
 
       it('returns error', function () {
-        config.set('http_ssl_port', 'blablub');
-        config.set('http_ssl_port', null);
         config.set('http_ssl_port', null);
 
         var h = new HttpServer();
