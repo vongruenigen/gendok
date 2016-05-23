@@ -69,6 +69,7 @@ var requiredJsPaths = [
   'bower_components/bootstrap/dist/js/bootstrap.js',
   'bower_components/angular-ui-router/release/angular-ui-router.js',
   'bower_components/ngstorage/ngStorage.js',
+  'bower_components/angular-scroll/angular-scroll.js',
   'lib/http/web/app/gendok.js', // gendok.js has to be first because of the
   'lib/http/web/app/*/*.js'     // gendok object required by all others
 ];
@@ -255,7 +256,11 @@ gulp.task('db-clean', function (done) {
  * Build and deploy tasks
  */
 gulp.task('build-watch', function () {
-  gulp.watch(['lib/http/web/assets/**/*', 'bower_components/**/*'], ['build']);
+  gulp.watch([
+    'lib/http/web/assets/**/*',
+    'lib/http/web/app/**/*',
+    'bower_components/**/*'
+  ], ['build']);
 });
 
 gulp.task('build', ['check-bower-components',

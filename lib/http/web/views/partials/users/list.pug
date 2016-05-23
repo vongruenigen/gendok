@@ -1,0 +1,33 @@
+section.wrapper#user_list(ng-init="getAllUsers()")
+  section.wrapper_centered
+    h2.alert.alert-danger(ng-if='errorMessage') {{errorMessage}}
+    h2.alert.alert-success(ng-if='successMessage') {{successMessage}}
+    h1 Users
+    button.btn(ui-sref="userCreate()") Create User
+    table.table
+      tr
+        td ID
+        td Name
+        td E-Mail
+        td Admin
+        td Created at
+        td Updated at
+        td
+      tr(ng-repeat='user in users')
+        td(ui-sref='userViewUpdate({userId: user.id})') {{user.id}}
+        td(ui-sref='userViewUpdate({userId: user.id})') {{user.name}}
+        td(ui-sref='userViewUpdate({userId: user.id})') {{user.email}}
+        td(ui-sref='userViewUpdate({userId: user.id})') {{user.isAdmin ? 'Yes' : 'No'}}
+        td(ui-sref='userViewUpdate({userId: user.id})') {{user.createdAt | date:"yyyy-MM-dd"}}
+        td(ui-sref='userViewUpdate({userId: user.id})') {{user.updatedAt | date:"yyyy-MM-dd"}}
+        td 
+          button(class="btn btn-default"  ng-click="openConfirmMessage(user)") Delete 
+            span
+    section.confirmMessage(ng-if='confirmMessage')
+      div
+        h2 Confirm
+        p Are your sure you want to delete the following user?
+        span {{confirmUser.name}}
+        div
+          button.btn(ng-click="delete(confirmUser.id)") Delete
+          button.btn.btn_red(ng-click="reset()") Cancel

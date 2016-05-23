@@ -41,10 +41,14 @@ module.exports = {
    * @return {String} The full URL.
    */
   getUrl: function (p) {
-    var host = format('%s:%d', config.get('http_host'), config.get('http_port'));
-    var url  = path.join(host, p);
+    var sslPort = config.get('http_ssl_port');
+    var host = format('%s:%d', config.get('http_host'),
+                               sslPort || config.get('http_port'));
 
-    return format('http://%s', url);
+    var url  = path.join(host, p);
+    var protocol = sslPort ? 'https' : 'http';
+
+    return format('%s://%s', protocol, url);
   },
 
   /**
@@ -76,6 +80,37 @@ module.exports = {
       overwriteEnv(curr);
       logger.error('Error while setting environment: %s', err);
       throw err;
+    }
+  },
+
+  /**
+   * Sets the given options in the current config and invokes the callback.
+   * The previous config is then restored after the callback has been executed.
+   * Be aware that this function can only be used in synchronous contexts due
+   * to the nature that callbacks.
+   *
+   * @param {Object} cfg Object containing the changes to the config
+   * @param {Function} cb The callback to invoke after the changes on the config
+   */
+  withConfig: function (cfg, cb) {
+    var keys = Object.keys(cfg);
+    var prev = config.toObject();
+
+    if (keys.length === 0 && cb) { cb(); }
+
+    try {
+      // Set the values of cfg on the config
+      Object.keys(cfg).forEach(function (k) {
+        config.set(k, cfg[k]);
+      });
+
+      (cb || this.noop)();
+    } catch (err) {
+      logger.error('Error while setting config: %s', err);
+      throw err;
+    } finally {
+      // Restore config afterwards
+      config.load(prev);
     }
   },
 
@@ -168,7 +203,8 @@ module.exports = {
    * });
    *
    * An error is thrown if the context argument is missing. It returns the server
-   * object itself.
+   * object itself. It also ensure that not ssl validation errors occur by setting
+   * the env variable NODE_TLS_REJECT_UNAUTHORIZED to 0.
    *
    * @param {Object} context The current context
    * @param {Array} modules List of modules
@@ -178,6 +214,10 @@ module.exports = {
     if (!context) {
       throw new Error('context argument must be present');
     }
+
+    // See here for the discussion this:
+    // https://github.com/visionmedia/superagent/issues/197
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
     if (!modules) {
       modules = [

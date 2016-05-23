@@ -3,7 +3,7 @@ section.wrapper#profile(ng-init='getProfile()')
     h2.alert.alert-danger(ng-if='errorMessage') {{errorMessage}}
     h2.alert.alert-success(ng-if='successMessage') {{successMessage}}
     h1 Profile
-    button.btn.btn_turquoise(ng-click="edit()" ng-if='!editable') edit
+    button.btn.btn_turquoise(ng-click="edit()" ng-if='!editable') Edit
     table.list(ng-if='!editable')
       tr
         td Name:
@@ -13,8 +13,8 @@ section.wrapper#profile(ng-init='getProfile()')
         td {{profile.email}}
         
     form.form-table(ng-if='editable')
-      button.btn.btn_turquoise(ng-click="update(profile)") save
-      button.btn.btn_red(ng-click="reset()") cancel
+      button.btn.btn_turquoise(ng-click="update(profile)") Save
+      button.btn.btn_red(ng-click="reset()") Cancel
       table.list
         tr(ng-class="{'error': validationErrors.name}")
           td Name:

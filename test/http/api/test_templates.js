@@ -10,6 +10,7 @@
 'use strict';
 
 var gendok = require('../../..');
+var logger = gendok.logger;
 var templates = gendok.http.api.templates;
 var all = gendok.http.middleware.all;
 var errors = gendok.http.api.errors;
@@ -32,6 +33,10 @@ describe('gendok.http.api.templates', function () {
   beforeEach(function () {
     Job = db.getModel('Job');
     Template = db.getModel('Template');
+  });
+
+  afterEach(function (d) {
+    queue.shutdown(100, 'convert', d);
   });
 
   it('is a function', function () {
@@ -528,6 +533,34 @@ describe('gendok.http.api.templates', function () {
                  expect(res.body).to.eql(errors.unauthorized.data);
                  done();
                });
+      });
+    });
+
+    describe('when the job is "failed"', function () {
+      it('returns an internal error', function (done) {
+        var css = 'h1 { color: red; }';
+
+        // Add a "mock" convert worker, otherwise this test never finishes
+        queue.process('convert', function (j, d) {
+          Job.findById(j.data.jobId).then(function (job) {
+            job.update({state: 'failed'}).then(function () { d(); }).catch(d);
+          }).catch(d);
+        });
+
+        factory.create('User', {additionalCss: css}, function (err, u) {
+          var attrs = {userId: u.id, additionalCss: css};
+
+          factory.create('Template', attrs, function (err, tmpl) {
+            request.post(renderUrl.replace(':id', tmpl.id))
+                   .set('Authorization', 'Bearer ' + u.apiToken)
+                   .end(function (err, res) {
+                     expect(err).to.exist;
+                     expect(res.statusCode).to.eql(errors.internal.code);
+                     expect(res.body).to.eql(errors.internal.data);
+                     done();
+                   });
+          });
+        });
       });
     });
   });

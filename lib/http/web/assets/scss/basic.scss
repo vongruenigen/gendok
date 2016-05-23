@@ -11,6 +11,7 @@ $green_hover: #73be55;
 $turquoise: #15d0a6;
 $turquoise_hover: #14bb96;
 $pastel_blue: #5a8190;
+$pastel_blue_dark: #2C3E50;
 
 /* ///////////////////////////////// RESET \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
 html, body, div, span, applet, object, iframe,
@@ -82,6 +83,12 @@ h2 {
   color: black;
 }
 
+h3 {
+  @include font(1.3em, 300);
+  line-height: 2em;
+  color: black;
+}
+
 p {
   @include font(1.1em, 300);
 }
@@ -99,6 +106,11 @@ table.table {
   margin-top: 15px;
 
   tr {
+    &:hover td {
+      background-color: #b3ffee;//$grey;
+      cursor: pointer;
+    }
+
     td {
       font-family: 'Lato', sans-serif;
       font-weight: 300;
@@ -109,10 +121,6 @@ table.table {
       &:last-of-type button {
         width: 100px;
         overflow: hidden;
-      }
-
-      a {
-        color: $turquoise;
       }
 
       .btn {
@@ -147,9 +155,16 @@ table.table {
       }
     }
 
-    &:first-of-type td {
-      padding: 10px 10px;
-      font-weight: 400;
+    &:first-of-type {
+      td {
+        padding: 10px 10px;
+        font-weight: 400;
+      }
+
+      &:hover td {
+        background-color: white;
+        cursor: default;
+      }
     }
 
     &:last-of-type td {
@@ -176,7 +191,7 @@ table.list {
       list-style-type: none;
       border-bottom: 1px solid $grey;
       text-align: left;
-      vertical-align: middle;
+      vertical-align: top;
       padding: 15px 10px;
 
       &:first-of-type {
@@ -186,19 +201,69 @@ table.list {
 
     &:last-of-type td {
       border-bottom: none;
-      vertical-align: top;
     }
   }
 }
 
-/* ///////////////////////////////// CODE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
-pre {
-  background-color: $light_grey;
-  border: 1px solid $grey;
-  padding: 5px;
-  border-radius: 4px;
-  white-space: pre-wrap;
-  font-family: monospace;
+/* ///////////////////////////////// CONFIRM MESSAGE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+section.confirmMessage {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background-color: rgba(50, 50, 50, 0.35);
+
+  & > div {
+    left: 50%;
+    top: 50%;
+    margin-left: -260px;
+    margin-top: -135px;
+    width: 500px;
+    height: 250px;
+    background-color: white;
+    position: absolute;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+
+    h2 {
+      text-align: center;
+      line-height: 3em;
+    }
+
+    span {
+      @include font(1.5em, 400);
+      line-height: 1.5em;
+      color: black;
+      display: block;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    div {
+      background-color: $pastel_blue_dark;
+      text-align: center;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      margin-left: -10px;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+      padding: 15px 0;
+    }
+  }
+}
+
+/* ******************************** CONFIRM MESSAGE MOBILE ******************************** */
+@media screen and (max-width: 600px) {
+  section.confirmMessage {
+    & > div {
+      margin-left: 5%;
+      left: auto;
+      width: calc(90% - 20px);
+    }
+  }
 }
 
 /* ///////////////////////////////// BUTTONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
@@ -260,6 +325,7 @@ label {
   font-weight: 400;
   font-size: 1em;
   line-height: 1.5em;
+  display: block;
 }
 
 input {

@@ -19,12 +19,10 @@ html(ng-app='gendok')
           ul.left
             li(ng-if='authService.isAuthenticated()')
               a(href='#/templates') Templates
-            li(ng-if='authService.isAuthenticated()')
-              a(href='#/jobs') Jobs
             li(ng-if='authService.isAuthenticated() && authService.isAdmin()')
               a.profile-link(href='/#/users') Users
             li
-              a(href='#/about') About us
+              a(ui-sref="about({anchor: 'about'})" ui-sref-opts="{reload: true}") About
           ul.right
             li(ng-if='!authService.isAuthenticated()')
               a.signup-link(ui-sref="signup") Want to sign up?

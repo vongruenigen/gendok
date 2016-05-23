@@ -26,6 +26,7 @@ module.exports = function (model) {
     password: 'testpassword',
     passwordConfirmation: 'testpassword',
     confirmationToken: null,
+    resetPasswordToken: null,
     email: factory.seq(function () {
       //TODO: Ugly email generator, later we dont need this, because of db clear.
       var milliseconds = (new Date()).getTime();
