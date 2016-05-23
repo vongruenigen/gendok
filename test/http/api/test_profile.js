@@ -349,6 +349,19 @@ describe('gendok.http.api.profile', function () {
                });
       });
     });
+
+    describe('when no resetPasswordToken is given', function () {
+      it('returns a bad request error', function (done) {
+        request.post(url)
+               .set('Content-Type', 'application/json')
+               .end(function (err, res) {
+                 expect(err).to.exist;
+                 expect(res.statusCode).to.eql(errors.badRequest.code);
+                 expect(res.body).to.eql(errors.badRequest.data);
+                 done();
+               });
+      });
+    });
   });
 
   describe('POST /api/profile/reset-password-req', function () {
