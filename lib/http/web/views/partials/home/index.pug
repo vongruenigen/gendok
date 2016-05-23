@@ -1,0 +1,75 @@
+section.wrapper#home
+  section.wrapper_centered
+    div
+      h1.title Welcome to
+        span.turquoise gendok
+      span.subtitle Document generation as a service
+      p
+        a.btn.btn_turquoise(
+          href='#/signin',
+          ng-if='!authService.isAuthenticated()'
+        ) Signin &raquo;
+        span.subtitle(ng-if='authService.isAuthenticated()') Welcome
+          span.bold {{authService.getUser().username}}!
+    div.document
+      img(src='img/document.svg', alt='flat-document')
+
+section.wrapper#about-language-image
+  img(src="img/languages_icon.svg")
+section.wrapper#about
+  section.wrapper_centered
+    h2 About
+    p
+      | gendok is a node.js application used to render documents based on templates
+      | and content data provided by the user. For example, one could use gendok to
+      | generate customer bills which then can be retrieved as one or multiple PDF
+      | files. It places an emphasis on using existing web standards, so users can
+      | start using it right away, without having to learn any new languages or
+      | complicated APIs. It makes heavy use of HTML, CSS and well-known templating
+      | engines like Pug or Mustache.
+      br
+      br
+    p
+      | gendok is intended to run as Software as a Service (SaaS) providing
+      | an extensive REST API as well as a graphical user interface (GUI).
+      br
+      br
+    a.btn.btn_turquoise(href='https://github.engineering.zhaw.ch/vongrdir/PSIT4-gendok/wiki' target='blank') &raquo; gendok on GitHub
+    br
+    br
+    br
+    h3 Features
+    p
+      | Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
+      | eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
+      | voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
+      | clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
+      | amet.
+    table
+      tr
+        td Feature
+        td Description
+        td Blubb
+      tr
+        td Feature1
+        td This is feature number 1
+        td Lorem ipsum dolor sit amet
+      tr
+        td Feature2
+        td This is feature number 2
+        td Lorem ipsum dolor sit amet
+      tr
+        td Feature3
+        td This is feature number 3
+        td Lorem ipsum dolor sit amet
+    br
+    br
+    h3 Languages
+    p
+      | Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
+      | eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
+      | voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
+      | clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
+      | amet.
+    section.wrapper#about-image
+      img(src="img/about_icon.svg")

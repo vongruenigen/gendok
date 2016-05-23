@@ -256,7 +256,11 @@ gulp.task('db-clean', function (done) {
  * Build and deploy tasks
  */
 gulp.task('build-watch', function () {
-  gulp.watch(['lib/http/web/assets/**/*', 'bower_components/**/*'], ['build']);
+  gulp.watch([
+    'lib/http/web/assets/**/*',
+    'lib/http/web/app/**/*',
+    'bower_components/**/*'
+  ], ['build']);
 });
 
 gulp.task('build', ['check-bower-components',

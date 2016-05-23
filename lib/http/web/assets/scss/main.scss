@@ -250,6 +250,11 @@ $height_navigation: 70px;
       input {
         width: calc(90% - 14px);
       }
+
+      p.text {
+        width: calc(90% - 14px);
+        margin: 1px auto;
+      }
     }
 
     button {

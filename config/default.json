@@ -2,6 +2,7 @@
   "development": {
     "http_host": "localhost",
     "http_port": 3000,
+    "http_ssl_port": 3001,
     "redis_host": "127.0.0.1",
     "redis_port": 6379,
     "username": "gendok",
@@ -22,12 +23,15 @@
     "smtp_password": "gendok",
     "smtp_from": "notify@gendok.com",
     "jwt_ttl": "24h",
-    "jwt_secret": "abc123"
+    "jwt_secret": "abc123",
+    "ssl_key": "test/ssl/private.key",
+    "ssl_cert": "test/ssl/certificate.pem"
   },
 
   "test": {
     "http_host": "localhost",
     "http_port": 3001,
+    "http_ssl_port": 3002,
     "redis_host": "127.0.0.1",
     "redis_port": 6379,
     "username": "gendok",
@@ -48,7 +52,9 @@
     "smtp_password": "gendok",
     "smtp_from": "notify@gendok.com",
     "jwt_ttl": "24h",
-    "jwt_secret": "abc123"
+    "jwt_secret": "abc123",
+    "ssl_key": "test/ssl/private.key",
+    "ssl_cert": "test/ssl/certificate.pem"
   },
 
   "production": {

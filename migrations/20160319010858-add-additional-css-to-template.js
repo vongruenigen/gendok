@@ -6,6 +6,6 @@ module.exports = {
   },
 
   down: function (queryInterface, Sequelize) {
-    return queryInterface.dropColumn('Templates', 'additionalCss');
+    return queryInterface.removeColumn('Templates', 'additionalCss');
   }
 };

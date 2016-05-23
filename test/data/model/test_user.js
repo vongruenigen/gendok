@@ -165,6 +165,57 @@ describe('gendok.data.model.user', function () {
     });
   });
 
+  describe('sendResetPasswordMail()', function () {
+    describe('when a resetPasswordToken is set', function () {
+      it('sends an email with a reset password link', function (done) {
+        factory.create('User', function (err, u) {
+          u.update({resetPasswordToken: 'abc123'}).then(function (u) {
+            expect(err).to.not.exist;
+
+            var jobsCounterBefore = queue.testMode.jobs.length;
+
+            u.sendResetPasswordMail(function (err) {
+              expect(err).to.not.exist;
+              expect(queue.testMode.jobs).to.be.of.length(jobsCounterBefore + 1);
+
+              var mailAttrs = {
+                resetPasswordLink: u.getResetPasswordLink(),
+                name: u.name
+              };
+
+              var htmlMail = util.renderView('emails/reset_password', mailAttrs);
+
+              expect(queue.testMode.jobs.length).to.be.above(0);
+              expect(queue.testMode.jobs.some(function (j) {
+                return j.data.subject &&
+                       j.data.to === u.email &&
+                       j.data.html === htmlMail;
+              })).to.be.true;
+
+              done();
+            });
+          });
+        });
+      });
+    });
+
+    describe('when no resetPasswordToken is set', function () {
+      it('returns an error and sends no email', function (done) {
+        factory.create('User', function (err, u) {
+          expect(err).to.not.exist;
+
+          var jobsCounterBefore = queue.testMode.jobs.length;
+
+          u.sendResetPasswordMail(function (err) {
+            expect(err).to.exist;
+            expect(queue.testMode.jobs).to.be.of.length(jobsCounterBefore);
+            done();
+          });
+        });
+      });
+    });
+  });
+
   describe('afterUpdate() hook', function () {
     describe('when the email changes', function () {
       it('sends a confirmation mail and clears the apiToken', function (done) {
@@ -227,6 +278,36 @@ describe('gendok.data.model.user', function () {
       it('returns null', function () {
         var u = User.build({confirmationToken: ''});
         expect(u.getConfirmationLink()).to.be.null;
+      });
+    });
+  });
+
+  describe('getResetPasswordLink()', function () {
+    it('when a resetPasswordToken is set', function (done) {
+      var token = 'abc123';
+
+      factory.create('User', {resetPasswordToken: token}, function (err, u) {
+        expect(err).to.not.exist;
+
+        var expectedLink = format(
+          'http://%s:%s/#/profile/reset-password?token=%s',
+          config.get('http_host'),
+          config.get('http_port'),
+          u.resetPasswordToken
+        );
+
+        expect(u.getResetPasswordLink()).to.eql(expectedLink);
+        done();
+      });
+    });
+
+    describe('when no resetPasswordToken is set', function () {
+      it('returns null', function (done) {
+        factory.create('User', {resetPasswordToken: null}, function (err, u) {
+          expect(err).to.not.exist;
+          expect(u.getResetPasswordLink()).to.be.null;
+          done();
+        });
       });
     });
   });

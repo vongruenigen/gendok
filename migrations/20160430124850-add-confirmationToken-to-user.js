@@ -6,6 +6,6 @@ module.exports = {
   },
 
   down: function (queryInterface, db) {
-    return queryInterface.dropColumn('Users', 'confirmationToken');
+    return queryInterface.removeColumn('Users', 'confirmationToken');
   }
 };
