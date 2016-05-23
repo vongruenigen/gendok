@@ -87,6 +87,24 @@ describe('gendok.http.api.auth', function () {
         });
       });
 
+      describe('when no JWT is set on the user', function () {
+        it('returns a new one', function (done) {
+          factory.create('User', function (err, user) {
+            expect(err).to.not.exist;
+
+            user.update({apiToken: ''}).then(function () {
+              request.post(signInUrl)
+                     .send({username: user.email, password: user.password})
+                     .end(function (err, res) {
+                       expect(err).to.not.exist;
+                       expect(res.body.token).to.exist;
+                       done();
+                     });
+            });
+          });
+        });
+      });
+
       describe('when an invalid JWT is set on the user', function () {
         it('returns a new JWT', function (done) {
           var fakeToken = 'fake-jwt';

@@ -13,12 +13,11 @@ section.wrapper#template_list(ng-init="getAlltemplates()")
         td Updated at
         td 
       tr(ng-repeat='template in templates')
-        td
-          a(ui-sref="templateViewUpdate({templateId: template.id})") {{template.id}}
-        td {{template.name}}
-        td {{template.type}}
-        td {{template.createdAt}}
-        td {{template.updatedAt}}
+        td(ui-sref='templateViewUpdate({templateId: template.id})') {{template.id}}
+        td(ui-sref='templateViewUpdate({templateId: template.id})') {{template.name}}
+        td(ui-sref='templateViewUpdate({templateId: template.id})') {{template.type}}
+        td(ui-sref='templateViewUpdate({templateId: template.id})') {{template.createdAt | date:"yyyy-MM-dd"}}
+        td(ui-sref='templateViewUpdate({templateId: template.id})') {{template.updatedAt | date:"yyyy-MM-dd"}}
         td 
           button(class="btn btn-default"  ng-click="delete(template.id)") Delete 
             span
