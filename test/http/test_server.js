@@ -11,6 +11,7 @@
 
 var HttpServer = require('../../').http.server;
 var config = require('../../').config;
+var helper = require('../helper');
 var expect = require('chai').expect;
 
 describe('gendok.http.Server', function () {
@@ -58,6 +59,51 @@ describe('gendok.http.Server', function () {
           expect(err).to.exist;
           h.stop(done);
         });
+      });
+    });
+
+    describe('when ssl is not activated', function () {
+      var prevCfg = {};
+
+      beforeEach(function () {
+        prevCfg = config.toObject();
+      });
+
+      afterEach(function () {
+        config.load(prevCfg);
+      });
+
+      it('also starts successfully', function (done) {
+        config.set('http_ssl_port', null);
+        config.set('ssl_key', null);
+        config.set('ssl_cert', null);
+
+        var h = new HttpServer();
+
+        h.start(function (err) {
+          expect(err).to.not.exist;
+          h.stop(done);
+        });
+      });
+    });
+
+    describe('when ssl config is incomplete', function () {
+      var prevCfg = {};
+
+      beforeEach(function () {
+        prevCfg = config.toObject();
+      });
+
+      afterEach(function () {
+        config.load(prevCfg);
+      });
+
+      it('returns error', function () {
+        config.set('http_ssl_port', null);
+
+        var h = new HttpServer();
+
+        expect(function () { h.start(); }).to.throw(Error);
       });
     });
 
@@ -121,6 +167,44 @@ describe('gendok.http.Server', function () {
         }).to.throw(Error);
 
         done();
+      });
+    });
+  });
+
+  describe('sslEnabled()', function () {
+    describe('when ssl related config values are given', function () {
+      it('returns true', function () {
+        // Required properties for ssl to be enabled are:
+        // http_ssl_port, ssl_cert, ssl_key
+        var cfgValues = {
+          http_ssl_port: 'blablub',
+          ssl_cert: 'blablub',
+          ssl_key: 'blablub'
+        };
+
+        helper.withConfig(cfgValues, function () {
+          var h = new HttpServer();
+          expect(h.sslEnabled()).to.be.true;
+        });
+      });
+    });
+
+    describe('when ssl related config values are missing', function () {
+      it('returns false', function () {
+        // Required properties for ssl to be enabled are:
+        // http_ssl_port, ssl_cert, ssl_key
+        var cfgValues = [
+          {http_ssl_port: null},
+          {ssl_cert: null},
+          {ssl_key: null}
+        ];
+
+        cfgValues.forEach(function (cfg) {
+          helper.withConfig(cfg, function () {
+            var h = new HttpServer();
+            expect(h.sslEnabled()).to.be.false;
+          });
+        });
       });
     });
   });
