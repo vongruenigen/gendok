@@ -42,6 +42,7 @@ describe('templates', function () {
   var updateButton = $('[ng-click="update()"]');
   var editButton = $('[ng-click="edit()"]');
   var cancelButton = $('[ng-click="reset()"]');
+  var deleteButton = $('[ng-click="delete(confirmTemplate.id)"]');
   var previewButton = $('[ng-click="openPayloadOptions()"]');
   var renderButton = $('[ng-click="render(template, payload)"]');
   var errorMessage = $('.alert-danger');
@@ -212,7 +213,7 @@ describe('templates', function () {
         var link = list.first().all(by.css('button'));
         link.click();
 
-        browser.switchTo().alert().accept();
+        deleteButton.click();
 
         browser.waitForAngular().then(function () {
           expect(stateHelper.current()).to.eventually.eql('templatesList');
@@ -232,7 +233,7 @@ describe('templates', function () {
         var link = list.first().all(by.css('button'));
         link.click();
 
-        browser.switchTo().alert().dismiss();
+        cancelButton.click();
 
         browser.waitForAngular().then(function () {
           expect(stateHelper.current()).to.eventually.eql('templatesList');
