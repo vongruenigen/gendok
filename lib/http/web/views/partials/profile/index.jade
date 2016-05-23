@@ -3,7 +3,7 @@ section.wrapper#profile(ng-init='getProfile()')
     h2.alert.alert-danger(ng-if='errorMessage') {{errorMessage}}
     h2.alert.alert-success(ng-if='successMessage') {{successMessage}}
     h1 Profile
-    button.btn.btn_turquoise(ng-click="edit()" ng-if='!editable') edit
+    button.btn.btn_turquoise(ng-click="edit()" ng-if='!editable') Edit
     table.list(ng-if='!editable')
       tr
         td Name:
