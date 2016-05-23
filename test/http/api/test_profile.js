@@ -23,6 +23,7 @@ var format = require('util').format;
 
 describe('gendok.http.api.profile', function () {
   var factory = helper.loadFactories(this);
+  var queue = helper.createQueue(this);
   var server = helper.runHttpServer(this, [all, profile]);
   var url = helper.getUrl('/api/profile/');
 
@@ -154,13 +155,41 @@ describe('gendok.http.api.profile', function () {
     it('returns an unauthorized error without a valid api-token', function (done) {
       factory.create('User', function (err, user) {
         request.put(url)
-               .set('Authorization', 'Token blubiblub')
+               .set('Authorization', 'Bearer blubiblub')
                .end(function (err, res) {
                  expect(err).to.exist;
                  expect(res.statusCode).to.eql(errors.unauthorized.code);
                  expect(res.body).to.eql(errors.unauthorized.data);
                  done();
                });
+      });
+    });
+
+    describe('when a resetPasswordToken is set', function () {
+      it('clears it after the update', function (done) {
+        var attrs = {resetPasswordToken: 'abc123'};
+
+        factory.create('User', attrs, function (err, u) {
+          expect(err).to.not.exist;
+
+          var updAttrs = {
+            password: 'blub123467',
+            passwordConfirmation: 'blub123467'
+          };
+
+          request.put(url)
+                 .send(updAttrs)
+                 .set('Content-Type', 'application/json')
+                 .set('Authorization', 'Bearer ' + u.apiToken)
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+
+                   u.reload().then(function (u) {
+                     expect(u.resetPasswordToken).to.be.empty;
+                     done();
+                   });
+                 });
+        });
       });
     });
   });
@@ -273,6 +302,120 @@ describe('gendok.http.api.profile', function () {
                      expect(u).to.exist;
                      done();
                    });
+                 });
+        });
+      });
+    });
+  });
+
+  describe('POST /api/profile/reset-password', function () {
+    var url = helper.getUrl('/api/profile/reset-password');
+
+    describe('when a valid resetPasswordToken is given', function () {
+      it('signs in the user', function (done) {
+        var attrs = {resetPasswordToken: 'abc123450'};
+
+        factory.create('User', attrs, function (err, u) {
+          expect(err).to.not.exist;
+
+          request.post(url)
+                 .send({token: u.resetPasswordToken})
+                 .set('Content-Type', 'application/json')
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.body.email).to.eql(u.email);
+                   expect(res.body.token).to.exist;
+
+                   u.reload().then(function (u) {
+                     expect(res.body.token).to.eql(u.apiToken);
+                     expect(u.resetPasswordToken).to.be.empty;
+                     done();
+                   });
+                 });
+        });
+      });
+    });
+
+    describe('when an invalid resetPasswordToken is given', function () {
+      it('returns an error', function (done) {
+        request.post(url)
+               .send({token: 'inexistent?!'})
+               .set('Content-Type', 'application/json')
+               .end(function (err, res) {
+                 expect(err).to.exist;
+                 expect(res.statusCode).to.eql(errors.badRequest.code);
+                 expect(res.body).to.eql(errors.badRequest.data);
+                 done();
+               });
+      });
+    });
+  });
+
+  describe('POST /api/profile/reset-password-req', function () {
+    var url = helper.getUrl('/api/profile/reset-password-req');
+
+    describe('when an existing email is given', function () {
+      it('sets the resetPasswordToken and sends an email', function (done) {
+        factory.create('User', function (err, u) {
+          expect(err).to.not.exist;
+
+          var jobsCountBefore = queue.testMode.jobs.length;
+
+          request.post(url)
+                 .send({email: u.email})
+                 .set('Content-Type', 'application/json')
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.body.email).to.eql(u.email);
+
+                   var jobsCountAfter = queue.testMode.jobs.length;
+                   expect(jobsCountAfter).to.eql(jobsCountBefore + 1);
+
+                   u.reload().then(function (u) {
+                     expect(u.resetPasswordToken).to.exist;
+                     done();
+                   });
+                 });
+        });
+      });
+    });
+
+    describe('when an inexistent username is given', function () {
+      it('returns 200 but sends no email', function (done) {
+        var jobsCountBefore = queue.testMode.jobs.length;
+        var email = 'abc12345@gendok.ch';
+
+        request.post(url)
+               .send({email: email})
+               .set('Content-Type', 'application/json')
+               .end(function (err, res) {
+                 expect(err).to.not.exist;
+                 expect(res.body.email).to.eql(email);
+
+                 var jobsCountAfter = queue.testMode.jobs.length;
+                 expect(jobsCountAfter).to.eql(jobsCountBefore);
+                 done();
+               });
+      });
+    });
+
+    describe('when the user has a token set already', function () {
+      it('returns 200 but sends no email', function (done) {
+        var attrs = {resetPasswordToken: 'gugugs12345'};
+
+        factory.create('User', attrs, function (err, u) {
+          var jobsCountBefore = queue.testMode.jobs.length;
+
+          request.post(url)
+                 .send({email: u.email})
+                 .set('Content-Type', 'application/json')
+                 .end(function (err, res) {
+                   expect(err).to.not.exist;
+                   expect(res.body.email).to.eql(u.email);
+
+                   var jobsCountAfter = queue.testMode.jobs.length;
+                   expect(jobsCountAfter).to.eql(jobsCountBefore);
+                   done();
                  });
         });
       });
